@@ -97,9 +97,11 @@ public class BowlingRuleImpl implements BowlingRule {
             int currentScore = 0;
             if (isMiss(allTurns[i]))
                 currentScore = allTurns[i].getFirstPin() + allTurns[i].getSecondPin();
-            else if (isSpare(allTurns[i]))
-                currentScore = getMaxPin() + allTurns[i + 1].getFirstPin();
-            else if (isStrike(allTurns[i])) {
+            else if (isSpare(allTurns[i])) {
+                currentScore = getMaxPin();
+                if (allTurns.length > i + 1 && allTurns[i + 1] != null && allTurns[i + 1].getFirstPin() != null)
+                    currentScore += allTurns[i + 1].getFirstPin();
+            } else if (isStrike(allTurns[i])) {
                 currentScore = getMaxPin();
 
                 int bonusScoreAdded = 0;
@@ -180,10 +182,15 @@ public class BowlingRuleImpl implements BowlingRule {
             } else if (isFinish(tempTurn)) {
                 tempTurns.add(tempTurn);
                 continue;
-//            } else if (i == pins.length && !isFinish(new BowlingTurnImpl(pins[i - 1], pins[i]))) {
-//                return null;
-            } else if (!isValid(new BowlingTurnImpl(pins[i - 1], pins[i]))) {
-                return null;
+            } else if (!isFinish(tempTurns.get(tempTurns.size() - 1))) {
+                if (isValid(new BowlingTurnImpl(tempTurns.get(tempTurns.size() - 1).getFirstPin(),
+                        pins[i]))) {
+                    int firstPinOfLastTurn = tempTurns.get(tempTurns.size() - 1).getFirstPin();
+                    tempTurns.remove(tempTurns.size() - 1);
+                    tempTurns.add(new BowlingTurnImpl(firstPinOfLastTurn, pins[i]));
+                } else {
+                    return null;
+                }
             } else
                 tempTurns.add(tempTurn);
 
