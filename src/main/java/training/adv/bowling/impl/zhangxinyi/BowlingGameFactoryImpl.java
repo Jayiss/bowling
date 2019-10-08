@@ -5,6 +5,7 @@ import training.adv.bowling.api.BowlingGameFactory;
 import training.adv.bowling.api.BowlingRule;
 
 public class BowlingGameFactoryImpl implements BowlingGameFactory {
+
     @Override
     public BowlingGame getGame() {
         BowlingRule rule = new BowlingRuleImpl();

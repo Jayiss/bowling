@@ -3,9 +3,7 @@ package training.adv.bowling.impl.zhangxinyi;
 import training.adv.bowling.api.*;
 import training.adv.bowling.impl.AbstractGame;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> implements BowlingGame {
 
@@ -16,10 +14,10 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
 
     BowlingGameImpl(BowlingRule rule) {
         super(rule);
+        this.rule = rule;
         totalScore = 0;
         scores = new ArrayList<Integer>();
         turns = new ArrayList<BowlingTurn>();
-        this.rule = rule;
     }
 
     @Override
@@ -38,26 +36,32 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
     }
 
     @Override
+    // Add a list of pins, first check if legal, then calculate.
+    // Return the score array(also update the total score).
     public Integer[] addScores(Integer... pins) {
-        BowlingTurn[] turnsArray = turns.toArray(new BowlingTurn[0]);
-        if (!rule.isGameFinished(turnsArray)) {
-            if (rule.isNewPinsAllowed(turnsArray, pins)) {
-                turns = Arrays.asList(rule.addScores(turnsArray, pins));
-                turnsArray = turns.toArray(new BowlingTurn[0]);
-                scores = Arrays.asList(rule.calcScores(turnsArray));
+        if (!rule.isGameFinished(turns.toArray(new BowlingTurn[0]))) {
+            if (rule.isNewPinsAllowed(turns.toArray(new BowlingTurn[0]), pins)) {
+                BowlingTurn[] turnsArray = rule.addScores(turns.toArray(new BowlingTurn[0]), pins);
+                turns = Arrays.asList(turnsArray);
+                Integer[] scoresArray = rule.calcScores(turns.toArray(new BowlingTurn[0]));
+                scores = Arrays.asList(scoresArray);
+                totalScore = updateTotalScore(scores.toArray(new Integer[0]));
             }
         }
-        int sum = 0;
-        for (int num : scores) {
-            sum += num;
-        }
-        totalScore = sum;
-        System.out.println(scores.toString());
-        return getScores();
+        return scores.toArray(new Integer[0]);
     }
 
     @Override
+    // Need to be implemented.
     public GameEntity getEntity() {
         return null;
+    }
+
+    private Integer updateTotalScore(Integer[] scores) {
+        int sum = 0;
+        for (Integer score : scores) {
+            sum += score;
+        }
+        return sum;
     }
 }

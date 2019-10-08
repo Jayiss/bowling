@@ -29,6 +29,7 @@ public class BowlingTurnImpl implements BowlingTurn {
     }
 
     @Override
+    // Need to be implemented.
     public BowlingTurnEntity getEntity() {
         return null;
     }
