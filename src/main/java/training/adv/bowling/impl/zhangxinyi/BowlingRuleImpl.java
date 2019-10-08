@@ -65,17 +65,26 @@ public class BowlingRuleImpl implements BowlingRule {
 
     @Override
     public Boolean isStrike(BowlingTurn turn) {
-        return null;
+        if (!isFinish(turn)) {
+            return false;
+        }
+        return turn.getSecondPin() == null;
     }
 
     @Override
     public Boolean isSpare(BowlingTurn turn) {
-        return null;
+        if (!isFinish(turn)) {
+            return false;
+        }
+        return turn.getSecondPin() != null && turn.getFirstPin() + turn.getSecondPin() == MAX_PIN;
     }
 
     @Override
     public Boolean isMiss(BowlingTurn turn) {
-        return null;
+        if (!isFinish(turn)) {
+            return false;
+        }
+        return turn.getSecondPin() != null && turn.getFirstPin() + turn.getSecondPin() < MAX_PIN;
     }
 
     @Override
@@ -101,30 +110,106 @@ public class BowlingRuleImpl implements BowlingRule {
     public Boolean isGameFinished(BowlingTurn[] allTurns) {
         if (allTurns.length >= MAX_TURN + 2) {
             return true;
-        } else if (allTurns.length == (MAX_TURN + 1) && allTurns[MAX_TURN - 1].getSecondPin()!=null
-                    && allTurns[MAX_TURN - 1].getFirstPin() + allTurns[MAX_TURN - 1].getSecondPin() == MAX_PIN) {
-                return true;
-        } else if (allTurns.length == MAX_TURN && allTurns[MAX_TURN - 1].getSecondPin()!=null
-                && allTurns[MAX_TURN - 1].getFirstPin() + allTurns[MAX_TURN - 1].getSecondPin() < MAX_PIN) {
+        } else if (allTurns.length == (MAX_TURN + 1) && isSpare(allTurns[MAX_TURN - 1])) {
             return true;
-        } else {
-            return false;
-        }
+        } else return allTurns.length == MAX_TURN && isMiss(allTurns[MAX_TURN - 1]);
     }
 
     @Override
     public Integer[] calcScores(BowlingTurn[] allTurns) {
-        return new Integer[0];
+        Integer[] arr = new Integer[allTurns.length];
+        for (int i = 0; i < allTurns.length - 2; i++) {
+            if (isMiss(allTurns[i])) {
+                arr[i] = allTurns[i].getFirstPin() + allTurns[i].getSecondPin();
+            } else if (isSpare(allTurns[i])) {
+                arr[i] = 10 + allTurns[i + 1].getFirstPin();
+            } else {
+                arr[i] = 10 + allTurns[i + 1].getFirstPin() + allTurns[i + 1].getSecondPin();
+            }
+        }
+
+        if (isStrike(allTurns[allTurns.length - 2])) {
+            arr[allTurns.length - 2] = 10 + allTurns[allTurns.length - 1].getFirstPin();
+            if (allTurns[allTurns.length - 1].getSecondPin() != null) {
+                arr[allTurns.length - 2] += allTurns[allTurns.length - 1].getSecondPin();
+            }
+        } else if (isSpare(allTurns[allTurns.length - 2])) {
+            arr[allTurns.length - 2] = 10 + allTurns[allTurns.length - 1].getFirstPin();
+        } else {
+            arr[allTurns.length - 2] =
+                    allTurns[allTurns.length - 2].getFirstPin() + allTurns[allTurns.length - 2].getSecondPin();
+        }
+
+        if (!isFinish(allTurns[allTurns.length - 1])) {
+            arr[allTurns.length - 1] = allTurns[allTurns.length - 1].getFirstPin();
+        } else if (isStrike(allTurns[allTurns.length - 1])) {
+            arr[allTurns.length - 1] = 10;
+        } else {
+            arr[allTurns.length - 1] =
+                    allTurns[allTurns.length - 1].getFirstPin() + allTurns[allTurns.length - 1].getSecondPin();
+        }
+        return arr;
     }
 
     @Override
     public Boolean isValid(BowlingTurn turn) {
-        return null;
+        if (turn.getSecondPin() == null) {
+            Integer first = turn.getFirstPin();
+            return (first > 0 && first <= MAX_PIN);
+        } else {
+            Integer first = turn.getFirstPin();
+            Integer second = turn.getSecondPin();
+            return (first > 0 && first <= MAX_PIN && second > 0 && second <= MAX_PIN && first + second <= MAX_PIN);
+        }
     }
 
     @Override
     public BowlingTurn[] addScores(BowlingTurn[] existingTurns, Integer... pins) {
-        return new BowlingTurn[0];
+        if (pins.length == 0) {
+            return existingTurns;
+        }
+        if (existingTurns.length == 0) {
+            BowlingTurn newTurn;
+            if (pins.length == 1) {
+                newTurn = new BowlingTurnImpl(pins[0]);
+            } else {
+                newTurn = new BowlingTurnImpl(pins[0], pins[1]);
+            }
+            if (isValid(newTurn)) {
+                List<BowlingTurn> existingTurnsList = Arrays.asList(existingTurns);
+                existingTurnsList.add(newTurn);
+                existingTurns = existingTurnsList.toArray(new BowlingTurn[0]);
+                calcScores(existingTurns);
+                return existingTurns;
+            }
+        } else {
+            BowlingTurn lastTurn = existingTurns[existingTurns.length - 1];
+            if (isFinish(lastTurn)) {
+                BowlingTurn newTurn;
+                if (pins.length == 1) {
+                    newTurn = new BowlingTurnImpl(pins[0]);
+                } else {
+                    newTurn = new BowlingTurnImpl(pins[0], pins[1]);
+                }
+                if (isValid(newTurn)) {
+                    List<BowlingTurn> existingTurnsList = Arrays.asList(existingTurns);
+                    existingTurnsList.add(newTurn);
+                    existingTurns = existingTurnsList.toArray(new BowlingTurn[0]);
+                    calcScores(existingTurns);
+                    return existingTurns;
+                }
+            } else {
+                BowlingTurn newTurn = new BowlingTurnImpl(lastTurn.getFirstPin(), pins[0]);
+                if (isValid(newTurn)) {
+                    List<BowlingTurn> existingTurnsList = Arrays.asList(existingTurns);
+                    existingTurnsList.add(newTurn);
+                    existingTurns = existingTurnsList.toArray(new BowlingTurn[0]);
+                    calcScores(existingTurns);
+                    return existingTurns;
+                }
+            }
+        }
+        return existingTurns;
     }
 
     @Override

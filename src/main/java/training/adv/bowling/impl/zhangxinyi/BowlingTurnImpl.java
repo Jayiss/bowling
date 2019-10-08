@@ -7,6 +7,7 @@ public class BowlingTurnImpl implements BowlingTurn {
     private Integer firstPin = null;
     private Integer secondPin = null;
 
+    // Stored Turn[] should be either legal or not finished.
     public BowlingTurnImpl(Integer... pins) {
         if (pins.length == 1) {
             firstPin = pins[0];
