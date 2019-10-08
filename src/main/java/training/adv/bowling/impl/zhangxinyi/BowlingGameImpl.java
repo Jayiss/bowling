@@ -5,7 +5,6 @@ import training.adv.bowling.impl.AbstractGame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> implements BowlingGame {
@@ -48,6 +47,12 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
                 scores = Arrays.asList(rule.calcScores(turnsArray));
             }
         }
+        int sum = 0;
+        for (int num : scores) {
+            sum += num;
+        }
+        totalScore = sum;
+        System.out.println(scores.toString());
         return getScores();
     }
 

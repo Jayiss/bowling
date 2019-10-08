@@ -4,13 +4,14 @@ import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
 
 public class BowlingTurnImpl implements BowlingTurn {
-    private Integer firstPin = null;
-    private Integer secondPin = null;
+    private Integer firstPin;
+    private Integer secondPin;
 
     // Stored Turn[] should be either legal or not finished.
-    public BowlingTurnImpl(Integer... pins) {
+    BowlingTurnImpl(Integer... pins) {
         if (pins.length == 1) {
             firstPin = pins[0];
+            secondPin = null;
         } else if (pins.length == 2) {
             firstPin = pins[0];
             secondPin = pins[1];
