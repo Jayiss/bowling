@@ -3,7 +3,6 @@ package training.adv.bowling.impl.zhangxinyi;
 import training.adv.bowling.api.BowlingRule;
 import training.adv.bowling.api.BowlingTurn;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BowlingRuleImpl implements BowlingRule {
@@ -12,11 +11,21 @@ public class BowlingRuleImpl implements BowlingRule {
 
     @Override
     // According to turns already exist and incoming pins, check if accept new pins.
-    // Case 9 not perfect.
     public Boolean isNewPinsAllowed(BowlingTurn[] existingTurns, Integer[] newPins) {
         int existingTurnsNum = existingTurns.length;
         int potentialTurnsNum = 0;
         int index = 0;
+        if (existingTurnsNum >= 1) {
+            BowlingTurn lastTurn = existingTurns[existingTurnsNum - 1];
+            if (!isFinish(lastTurn) && existingTurnsNum < MAX_TURN) {
+                BowlingTurn temp = new BowlingTurnImpl(lastTurn.getFirstPin(), newPins[0]);
+                if (isValid(temp)) {
+                    index += 1;
+                } else {
+                    return false;
+                }
+            }
+        }
         while (index < newPins.length) {
             if (newPins[index] == MAX_PIN || index == newPins.length - 1
                     || existingTurnsNum + potentialTurnsNum >= MAX_PIN) {
@@ -152,7 +161,7 @@ public class BowlingRuleImpl implements BowlingRule {
         int index = 0;
         if (existingTurnsNum >= 1) {
             BowlingTurn lastTurn = existingTurns[existingTurnsNum - 1];
-            if (!isFinish(lastTurn)) {
+            if (!isFinish(lastTurn) && existingTurnsNum <= MAX_TURN) {
                 existingTurns[existingTurnsNum - 1] = new BowlingTurnImpl(lastTurn.getFirstPin(), pins[0]);
                 index += 1;
             }
@@ -171,7 +180,7 @@ public class BowlingRuleImpl implements BowlingRule {
                 index += 2;
             }
         }
-        System.out.println(Arrays.toString(existingTurns));
+
         return existingTurns;
     }
 
