@@ -12,7 +12,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
     private ArrayList<BowlingTurn> turns = new ArrayList<>();
     private BowlingRule rule = new BowlingRuleImpl();
 
-    public BowlingGameImpl(BowlingRule rule) {
+    BowlingGameImpl(BowlingRule rule) {
         super(rule);
     }
 
@@ -27,29 +27,31 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
 
     @Override
     public Integer[] getScores() {
-        return scores.toArray(new Integer[scores.size()]);
+        return scores.toArray(new Integer[0]);
     }
 
     @Override
     public BowlingTurn[] getTurns() {
-        return turns.toArray(new BowlingTurn[turns.size()]);
+        return turns.toArray(new BowlingTurn[0]);
     }
 
     @Override
     public Integer[] addScores(Integer... pins) {
-        if (rule.isNewPinsAllowed(turns.toArray(new BowlingTurn[turns.size()]), pins)) {
+        if (rule.isNewPinsAllowed(turns.toArray(new BowlingTurn[0]), pins)) {
 
             //update turns
-            BowlingTurn[] updatedTurns = rule.addScores(turns.toArray(new BowlingTurnImpl[turns.size()]), pins);
-            this.turns = new ArrayList<>();
-            this.turns.addAll(Arrays.asList(updatedTurns));
+            BowlingTurn[] updatedTurns = rule.addScores(turns.toArray(new BowlingTurn[0]), pins);
+            if (null != updatedTurns) {
+                this.turns = new ArrayList<>();
+                this.turns.addAll(Arrays.asList(updatedTurns));
+            }
             //update scores
-            Integer[] updatedScores = rule.calcScores(this.turns.toArray(new BowlingTurnImpl[turns.size()]));
+            Integer[] updatedScores = rule.calcScores(this.turns.toArray(new BowlingTurn[0]));
             this.scores = new ArrayList<>();
             this.scores.addAll(Arrays.asList(updatedScores));
         }
 
-        return scores.toArray(new Integer[scores.size()]);
+            return scores.toArray(new Integer[0]);
     }
 
     @Override

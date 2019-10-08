@@ -4,8 +4,8 @@ import training.adv.bowling.api.BowlingRule;
 import training.adv.bowling.api.BowlingTurn;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 public class BowlingRuleImpl implements BowlingRule {
     @Override
@@ -22,42 +22,30 @@ public class BowlingRuleImpl implements BowlingRule {
         BowlingTurn lastExistingTurn = existingTurns[existingTurns.length - 1];
 
         //check if every digit of the pins input is in the range of 0 - MaxPin
-        for (int i = 0; i < newPins.length; i++) {
+        for (Integer newPin : newPins) {
 //            if (!isValid(new BowlingTurnImpl(lastExistingTurn.getFirstPin(), newPins[0])))
 //                return false;
-            if (newPins[i] < 0 || newPins[i] > getMaxPin())
+            if (newPin < 0 || newPin > getMaxPin())
                 return false;
         }
 
         //check if add scores successful
-        if (addScores(existingTurns, newPins) == null)
-            return false;
-
-        return true;
+        return addScores(existingTurns, newPins) != null;
     }
 
     @Override
     public Boolean isStrike(BowlingTurn turn) {
-        if (turn.getSecondPin() == null && (turn.getFirstPin()) == getMaxPin())
-            return true;
-        else
-            return false;
+        return turn.getSecondPin() == null && Objects.equals(turn.getFirstPin(), getMaxPin());
     }
 
     @Override
     public Boolean isSpare(BowlingTurn turn) {
-        if (turn.getFirstPin() != null && turn.getSecondPin() != null && (turn.getFirstPin() + turn.getSecondPin()) == getMaxPin())
-            return true;
-        else
-            return false;
+        return turn.getFirstPin() != null && turn.getSecondPin() != null && (turn.getFirstPin() + turn.getSecondPin()) == getMaxPin();
     }
 
     @Override
     public Boolean isMiss(BowlingTurn turn) {
-        if (turn.getFirstPin() != null && turn.getSecondPin() != null && (turn.getFirstPin() + turn.getSecondPin()) < getMaxPin())
-            return true;
-        else
-            return false;
+        return turn.getFirstPin() != null && turn.getSecondPin() != null && (turn.getFirstPin() + turn.getSecondPin()) < getMaxPin();
     }
 
     @Override
@@ -121,7 +109,7 @@ public class BowlingRuleImpl implements BowlingRule {
             }
             scores.add(currentScore);
         }
-        return scores.toArray(new Integer[scores.size()]);
+        return scores.toArray(new Integer[0]);
     }
 
     @Override
@@ -136,10 +124,7 @@ public class BowlingRuleImpl implements BowlingRule {
             return true;
         else if (turn.getSecondPin() > 10 || turn.getSecondPin() < 0)
             return false;
-        else if (turn.getSecondPin() != null && (turn.getFirstPin() + turn.getSecondPin() > 10))
-            return false;
-        else
-            return true;
+        else return turn.getSecondPin() == null || (turn.getFirstPin() + turn.getSecondPin() <= 10);
     }
 
     @Override
@@ -151,9 +136,7 @@ public class BowlingRuleImpl implements BowlingRule {
             lastExistingTurn = existingTurns[existingTurns.length - 1];
 
         ArrayList<BowlingTurn> tempTurns = new ArrayList<>();
-        for (int i = 0; i < existingTurns.length; i++) {
-            tempTurns.add(existingTurns[i]);
-        }
+        Collections.addAll(tempTurns, existingTurns);
         /*first situation: last turn of the existingTurns is not finished
          * second situation: last turn of the existingTurns is finished*/
         boolean isLastExistingTurnFinished = isExistingTurnsEmpty || isFinish(lastExistingTurn);
@@ -195,11 +178,11 @@ public class BowlingRuleImpl implements BowlingRule {
                 tempTurns.add(tempTurn);
 
             //if game finished
-            if (i + 1 < pins.length && isGameFinished(tempTurns.toArray(new BowlingTurnImpl[tempTurns.size()])))
+            if (i + 1 < pins.length && isGameFinished(tempTurns.toArray(new BowlingTurn[0])))
                 return null;
         }
 
-        return tempTurns.toArray(new BowlingTurnImpl[tempTurns.size()]);
+        return tempTurns.toArray(new BowlingTurn[0]);
     }
 
     @Override
