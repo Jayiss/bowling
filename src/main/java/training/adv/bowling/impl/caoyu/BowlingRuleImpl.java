@@ -165,7 +165,7 @@ public class BowlingRuleImpl implements BowlingRule {
             } else if (isFinish(tempTurn)) {
                 tempTurns.add(tempTurn);
                 continue;
-            } else if (!tempTurns.isEmpty()&&!isFinish(tempTurns.get(tempTurns.size() - 1))) {
+            } else if (!tempTurns.isEmpty() && !isFinish(tempTurns.get(tempTurns.size() - 1))) {
                 if (isValid(new BowlingTurnImpl(tempTurns.get(tempTurns.size() - 1).getFirstPin(),
                         pins[i]))) {
                     int firstPinOfLastTurn = tempTurns.get(tempTurns.size() - 1).getFirstPin();
