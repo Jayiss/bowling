@@ -1,9 +1,11 @@
 package training.adv.bowling.impl.caoyu;
 
-import training.adv.bowling.api.*;
+import training.adv.bowling.api.BowlingGame;
+import training.adv.bowling.api.BowlingRule;
+import training.adv.bowling.api.BowlingTurn;
+import training.adv.bowling.api.GameEntity;
 import training.adv.bowling.impl.AbstractGame;
 
-import javax.imageio.plugins.tiff.BaselineTIFFTagSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -39,19 +41,22 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
     public Integer[] addScores(Integer... pins) {
         if (rule.isNewPinsAllowed(turns.toArray(new BowlingTurn[0]), pins)) {
 
-            //update turns
+            //add and update turns
             BowlingTurn[] updatedTurns = rule.addScores(turns.toArray(new BowlingTurn[0]), pins);
             if (null != updatedTurns) {
                 this.turns = new ArrayList<>();
                 this.turns.addAll(Arrays.asList(updatedTurns));
             }
-            //update scores
+
+            //add and update scores
             Integer[] updatedScores = rule.calcScores(this.turns.toArray(new BowlingTurn[0]));
-            this.scores = new ArrayList<>();
-            this.scores.addAll(Arrays.asList(updatedScores));
+            if (null != updatedTurns) {
+                this.scores = new ArrayList<>();
+                this.scores.addAll(Arrays.asList(updatedScores));
+            }
         }
 
-            return scores.toArray(new Integer[0]);
+        return scores.toArray(new Integer[0]);
     }
 
     @Override

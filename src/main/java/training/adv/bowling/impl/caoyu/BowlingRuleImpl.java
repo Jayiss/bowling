@@ -18,19 +18,21 @@ public class BowlingRuleImpl implements BowlingRule {
         if (existingTurns.length == 0)
             return true;
 
-
-        BowlingTurn lastExistingTurn = existingTurns[existingTurns.length - 1];
-
         //check if every digit of the pins input is in the range of 0 - MaxPin
+        if (!isNewPinsInRange(newPins)) {
+            return false;
+        }
+
+        //check if addScores can be successfully performed
+        return addScores(existingTurns, newPins) != null;
+    }
+
+    private boolean isNewPinsInRange(Integer[] newPins) {
         for (Integer newPin : newPins) {
-//            if (!isValid(new BowlingTurnImpl(lastExistingTurn.getFirstPin(), newPins[0])))
-//                return false;
             if (newPin < 0 || newPin > getMaxPin())
                 return false;
         }
-
-        //check if add scores successful
-        return addScores(existingTurns, newPins) != null;
+        return true;
     }
 
     @Override
@@ -66,8 +68,7 @@ public class BowlingRuleImpl implements BowlingRule {
             boolean isStrike = isStrike(allTurns[getMaxTurn() - 1]);
             boolean isSpare = isSpare(allTurns[getMaxTurn() - 1]);
             boolean strikeFinished = isStrike && allTurns[getMaxTurn()].getFirstPin() != null && allTurns[getMaxTurn()].getSecondPin() != null;
-            boolean spareFinished =
-                    isSpare && allTurns[getMaxTurn()].getFirstPin() != null && allTurns[getMaxTurn()].getSecondPin() == null;
+            boolean spareFinished = isSpare && allTurns[getMaxTurn()].getFirstPin() != null && allTurns[getMaxTurn()].getSecondPin() == null;
             return strikeFinished || spareFinished;
         } else if (allTurns.length == getMaxTurn() + 2) {
             boolean isStrike = isStrike((allTurns[getMaxTurn() - 1]));
@@ -81,40 +82,53 @@ public class BowlingRuleImpl implements BowlingRule {
     public Integer[] calcScores(BowlingTurn[] allTurns) {
         ArrayList<Integer> scores = new ArrayList<>();
 
-        for (int i = 0; i < allTurns.length; i++) {
+        for (int i = 0; i < allTurns.length; i++) {//for each counted turn (turn id less than MAX TURN)
             int currentScore = 0;
-            if (isMiss(allTurns[i]))
-                currentScore = allTurns[i].getFirstPin() + allTurns[i].getSecondPin();
-            else if (isSpare(allTurns[i])) {
-                currentScore = getMaxPin();
-                if (allTurns.length > i + 1 && allTurns[i + 1] != null && allTurns[i + 1].getFirstPin() != null)
-                    currentScore += allTurns[i + 1].getFirstPin();
-            } else if (isStrike(allTurns[i])) {
-                currentScore = getMaxPin();
-
-                int bonusScoreAdded = 0;
-                if (allTurns.length > i + 1 && allTurns[i + 1] != null && allTurns[i + 1].getFirstPin() != null) {
-                    currentScore += allTurns[i + 1].getFirstPin();
-                    bonusScoreAdded++;
-                }
-                if (allTurns.length > i + 1 && allTurns[i + 1] != null && allTurns[i + 1].getFirstPin() != null && allTurns[i + 1].getSecondPin() != null) {
-                    currentScore += allTurns[i + 1].getSecondPin();
-                    bonusScoreAdded++;
-                }
-                if (allTurns.length > i + 2 && allTurns[i + 2] != null && allTurns[i + 2].getFirstPin() != null && bonusScoreAdded < 2)
-                    currentScore += allTurns[i + 2].getFirstPin();
-
-            } else {
+            if (isMiss(allTurns[i]))//miss
+                currentScore = calcMissTurnScore(allTurns[i]);
+            else if (isSpare(allTurns[i]))//spare
+                currentScore = calcSpareTurnScore(allTurns, i);
+            else if (isStrike(allTurns[i]))//strike
+                currentScore = calcStrikeTurnScore(allTurns, i);
+            else//unfinished
                 currentScore += allTurns[i].getFirstPin();
-            }
+
             scores.add(currentScore);
         }
         return scores.toArray(new Integer[0]);
     }
 
+    private int calcStrikeTurnScore(BowlingTurn[] allTurns, int i) {
+        int currentScore = getMaxPin();
+
+        int bonusScoreAdded = 0;
+        if (allTurns.length > i + 1 && allTurns[i + 1] != null && allTurns[i + 1].getFirstPin() != null) {
+            currentScore += allTurns[i + 1].getFirstPin();
+            bonusScoreAdded++;
+        }
+        if (allTurns.length > i + 1 && allTurns[i + 1] != null && allTurns[i + 1].getFirstPin() != null && allTurns[i + 1].getSecondPin() != null) {
+            currentScore += allTurns[i + 1].getSecondPin();
+            bonusScoreAdded++;
+        }
+        if (allTurns.length > i + 2 && allTurns[i + 2] != null && allTurns[i + 2].getFirstPin() != null && bonusScoreAdded < 2)
+            currentScore += allTurns[i + 2].getFirstPin();
+
+        return currentScore;
+    }
+
+    private int calcSpareTurnScore(BowlingTurn[] allTurns, int i) {
+        int currentScore = getMaxPin();
+        if (allTurns.length > i + 1 && allTurns[i + 1] != null && allTurns[i + 1].getFirstPin() != null)
+            currentScore += allTurns[i + 1].getFirstPin();
+        return currentScore;
+    }
+
+    private int calcMissTurnScore(BowlingTurn missTurn) {
+        return missTurn.getFirstPin() + missTurn.getSecondPin();
+    }
+
     @Override
     public Boolean isValid(BowlingTurn turn) {
-
         //each turn should contain one or two pin records
         if (turn == null || turn.getFirstPin() == null)
             return false;
@@ -129,32 +143,39 @@ public class BowlingRuleImpl implements BowlingRule {
 
     @Override
     public BowlingTurn[] addScores(BowlingTurn[] existingTurns, Integer... pins) {
+        //local variables
+        ArrayList<BowlingTurn> tempTurns = new ArrayList<>();//temporary variable to store the turns
+        Collections.addAll(tempTurns, existingTurns);
 
-        boolean isExistingTurnsEmpty = (existingTurns.length == 0);
         BowlingTurn lastExistingTurn = null;
-        if (!isExistingTurnsEmpty)
+        if (0 != existingTurns.length)
             lastExistingTurn = existingTurns[existingTurns.length - 1];
 
-        ArrayList<BowlingTurn> tempTurns = new ArrayList<>();
-        Collections.addAll(tempTurns, existingTurns);
-        /*first situation: last turn of the existingTurns is not finished
-         * second situation: last turn of the existingTurns is finished*/
-        boolean isLastExistingTurnFinished = isExistingTurnsEmpty || isFinish(lastExistingTurn);
-        //if the last turn is not finished,make sure the first new pin input is valid
-        if (!isLastExistingTurnFinished) {
-            if ((lastExistingTurn.getFirstPin() + pins[0]) > 10) {
-                return null;
-            } else {
-                tempTurns.remove(tempTurns.size() - 1);
-                tempTurns.add(new BowlingTurnImpl(lastExistingTurn.getFirstPin(), pins[0]));
-            }
+        boolean isFirstNewPinAddable = isNewPinsHeadAddable(existingTurns, pins);
+        boolean isFirstNewPinAdded = false;
 
+        //check first new pin addable
+        if (!isFirstNewPinAddable)
+            return null;
+        else if (0 != existingTurns.length && isLastExistingTurnCompletionNeeded(existingTurns, pins)) {
+            tempTurns.remove(tempTurns.size() - 1);
+            tempTurns.add(new BowlingTurnImpl(lastExistingTurn.getFirstPin(), pins[0]));
+            isFirstNewPinAdded = true;
         }
 
         //generate new turns with the new pin input, se if all the generated turns is legal
-        BowlingTurn tempTurn = new BowlingTurnImpl();
+        tempTurns = generateNewTurns(tempTurns, isFirstNewPinAdded, pins);
 
-        for (int i = isLastExistingTurnFinished ? 0 : 1; i < pins.length; i++) {
+
+        if (null == tempTurns)
+            return null;
+        else
+            return tempTurns.toArray(new BowlingTurn[0]);
+    }
+
+    private ArrayList<BowlingTurn> generateNewTurns(ArrayList<BowlingTurn> tempTurns, boolean isFirstNewPinAdded, Integer[] pins) {
+        BowlingTurn tempTurn = new BowlingTurnImpl();
+        for (int i = isFirstNewPinAdded ? 1 : 0; i < pins.length; i++) {
             if (isFinish(tempTurn) || tempTurn.getFirstPin() == null) {
                 tempTurn = new BowlingTurnImpl(pins[i]);
             }
@@ -181,8 +202,29 @@ public class BowlingRuleImpl implements BowlingRule {
             if (i + 1 < pins.length && isGameFinished(tempTurns.toArray(new BowlingTurn[0])))
                 return null;
         }
+        return tempTurns;
+    }
 
-        return tempTurns.toArray(new BowlingTurn[0]);
+    private boolean isLastExistingTurnCompletionNeeded(BowlingTurn[] existingTurns, Integer[] pins) {
+        BowlingTurn lastExistingTurn = null;
+        if (0 < existingTurns.length)
+            lastExistingTurn = existingTurns[existingTurns.length - 1];
+        return null != lastExistingTurn && !isStrike(lastExistingTurn) & null != lastExistingTurn.getFirstPin() && null == lastExistingTurn.getSecondPin();
+    }
+
+    private boolean isNewPinsHeadAddable(BowlingTurn[] existingTurns, Integer[] pins) {
+
+        boolean isExistingTurnsEmpty = (existingTurns.length == 0);
+
+        BowlingTurn lastExistingTurn = null;
+        if (!isExistingTurnsEmpty)
+            lastExistingTurn = existingTurns[existingTurns.length - 1];
+
+        /*first situation: last turn of the existingTurns is not finished
+         * second situation: last turn of the existingTurns is finished*/
+        boolean isStartingWithNewTurn = isExistingTurnsEmpty || isFinish(lastExistingTurn);
+        //if the last turn is not finished,make sure the first new pin input is valid
+        return isStartingWithNewTurn || (lastExistingTurn.getFirstPin() + pins[0]) <= 10;
     }
 
     @Override
