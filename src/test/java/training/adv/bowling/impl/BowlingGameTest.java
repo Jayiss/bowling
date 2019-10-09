@@ -9,10 +9,11 @@ import org.junit.Test;
 
 import training.adv.bowling.api.BowlingGame;
 import training.adv.bowling.api.BowlingGameFactory;
+import training.adv.bowling.impl.ChenYong.BowlingGameFactoryImpl;
 
 public class BowlingGameTest {
 	
-	private BowlingGameFactory factory = null;// new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory= new BowlingGameFactoryImpl();
 
 	@Test
 	public void testNoPins() {
