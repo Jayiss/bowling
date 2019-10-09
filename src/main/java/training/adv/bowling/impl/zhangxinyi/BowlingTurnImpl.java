@@ -4,33 +4,31 @@ import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
 
 public class BowlingTurnImpl implements BowlingTurn {
-    private Integer firstPin;
-    private Integer secondPin;
+    private BowlingTurnEntity turn = new BowlingTurnEntityImpl();
 
     // Stored Turn[] should be either legal or not finished.
     BowlingTurnImpl(Integer... pins) {
         if (pins.length == 1) {
-            firstPin = pins[0];
-            secondPin = null;
+            getEntity().setFirstPin(pins[0]);
+            getEntity().setSecondPin(null);
         } else if (pins.length == 2) {
-            firstPin = pins[0];
-            secondPin = pins[1];
+            getEntity().setFirstPin(pins[0]);
+            getEntity().setSecondPin(pins[0]);
         }
     }
 
     @Override
     public Integer getFirstPin() {
-        return firstPin;
+        return getEntity().getFirstPin();
     }
 
     @Override
     public Integer getSecondPin() {
-        return secondPin;
+        return getEntity().getSecondPin();
     }
 
     @Override
-    // Need to be implemented.
     public BowlingTurnEntity getEntity() {
-        return null;
+        return turn;
     }
 }
