@@ -4,32 +4,31 @@ import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.TurnKey;
 
 public class BowlingTurnEntityImpl implements BowlingTurnEntity {
-    private int firstpin;
-    private int secondpin;
+    private int firstPin;
+    private int secondPin;
     private TurnKey turnKey;
-
 
 
     @Override
     public Integer getFirstPin() {
 
-        return firstpin;
+        return firstPin;
     }
 
     @Override
     public Integer getSecondPin() {
 
-        return secondpin;
+        return secondPin;
     }
 
     @Override
     public void setFirstPin(Integer pin) {
-        firstpin=pin;
+        firstPin = pin;
     }
 
     @Override
     public void setSecondPin(Integer pin) {
-        secondpin=pin;
+        secondPin = pin;
     }
 
     @Override
@@ -39,8 +38,7 @@ public class BowlingTurnEntityImpl implements BowlingTurnEntity {
 
     @Override
     public void setId(TurnKey id) {
-
-        turnKey=id;
+        turnKey = id;
     }
 
 }

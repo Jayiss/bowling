@@ -5,11 +5,11 @@ import training.adv.bowling.api.TurnKey;
 public class TurnKeyImpl implements TurnKey {
 
     private int id;
-    private int foreignid;
+    private int foreignId;
 
     public TurnKeyImpl(int id,int foreignid){
         this.id=id;
-        this.foreignid=foreignid;
+        this.foreignId =foreignid;
 
     }
 
@@ -21,6 +21,6 @@ public class TurnKeyImpl implements TurnKey {
     @Override
     public Integer getForeignId() {
 
-        return foreignid;
+        return foreignId;
     }
 }

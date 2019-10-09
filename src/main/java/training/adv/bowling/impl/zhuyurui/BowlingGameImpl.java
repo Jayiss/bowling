@@ -1,7 +1,6 @@
 package training.adv.bowling.impl.zhuyurui;
 
 import training.adv.bowling.api.*;
-import training.adv.bowling.impl.AbstractGame;
 
 public class BowlingGameImpl  implements BowlingGame {
 
@@ -14,8 +13,8 @@ public class BowlingGameImpl  implements BowlingGame {
     @Override
     public Integer getTotalScore() {
         int total=0;
-        for(int i=0;i<scores.length;i++){
-            total+=scores[i];
+        for (Integer score : scores) {
+            total += score;
         }
         return total;
     }
@@ -34,8 +33,7 @@ public class BowlingGameImpl  implements BowlingGame {
     @Override
     public Integer[] addScores(Integer... pins) {
 
-        BowlingTurn[] latest=bowlingRule.addScores(bowlingTurns,pins);
-        bowlingTurns=latest;
+        bowlingTurns= bowlingRule.addScores(bowlingTurns,pins);
         scores=bowlingRule.calcScores(bowlingTurns);
         return scores;
 

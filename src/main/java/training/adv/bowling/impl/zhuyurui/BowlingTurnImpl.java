@@ -2,41 +2,40 @@ package training.adv.bowling.impl.zhuyurui;
 
 import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
-import training.adv.bowling.api.TurnEntity;
-import training.adv.bowling.api.TurnKey;
 
 public class BowlingTurnImpl implements BowlingTurn {
 
-    private Integer firstpin;
-    private Integer secondpin;
+    private Integer firstPin;
+    private Integer secondPin;
 
-    public BowlingTurnImpl(Integer firstpin){
-        this.firstpin=firstpin;
-        this.secondpin=null;
+
+
+    public BowlingTurnImpl(Integer firstPin, Integer secondPin){
+        this.firstPin = firstPin;
+        this.secondPin = secondPin;
     }
 
-    public BowlingTurnImpl(int firstpin,int secondpin){
-        this.firstpin=firstpin;
-        this.secondpin=secondpin;
+    public BowlingTurnImpl(Integer firstPin){
+        this(firstPin,null);
     }
 
     @Override
     public Integer getFirstPin() {
 
-        return firstpin;
+        return firstPin;
     }
 
     @Override
     public Integer getSecondPin() {
 
-        return secondpin;
+        return secondPin;
     }
 
     @Override
     public BowlingTurnEntity getEntity() {
         BowlingTurnEntity bowlingTurnEntity=new BowlingTurnEntityImpl();
-        bowlingTurnEntity.setFirstPin(firstpin);
-        bowlingTurnEntity.setSecondPin(secondpin);
+        bowlingTurnEntity.setFirstPin(firstPin);
+        bowlingTurnEntity.setSecondPin(secondPin);
         return bowlingTurnEntity;
     }
 }
