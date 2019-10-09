@@ -14,18 +14,21 @@ import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.GameEntity;
 import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.impl.zhangxinyi.BowlingGameFactoryImpl;
 
 
 public class DataAccessTest {
 
 	private BowlingService bowlingService = new BowlingServiceImpl();
-	private BowlingGameFactory factory = null; // new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory = new BowlingGameFactoryImpl();
 
 	@Before
+	// Can add extra logic here.
 	public void before() {
 	}
 
 	@After
+	// Can add extra logic here.
 	public void after() {
 
 	}
