@@ -3,8 +3,6 @@ package training.adv.bowling.impl.zhangxinyi;
 import training.adv.bowling.api.BowlingRule;
 import training.adv.bowling.api.BowlingTurn;
 
-import java.util.Arrays;
-
 public class BowlingRuleImpl implements BowlingRule {
     private static final int MAX_PIN = 10;
     private static final int MAX_TURN = 10;
@@ -14,13 +12,20 @@ public class BowlingRuleImpl implements BowlingRule {
     public Boolean isNewPinsAllowed(BowlingTurn[] existingTurns, Integer[] newPins) {
         int existingTurnsNum = existingTurns.length;
         int potentialTurnsNum = 0;
+        BowlingTurn lastNormalTurn = null;
+        if (existingTurnsNum >= MAX_TURN) {
+            lastNormalTurn = existingTurns[MAX_TURN - 1];
+        }
         int index = 0;
         if (existingTurnsNum >= 1) {
             BowlingTurn lastTurn = existingTurns[existingTurnsNum - 1];
-            if (!isFinish(lastTurn) && existingTurnsNum < MAX_TURN) {
+            if (!isFinish(lastTurn) && existingTurnsNum <= MAX_TURN) {
                 BowlingTurn temp = new BowlingTurnImpl(lastTurn.getFirstPin(), newPins[0]);
                 if (isValid(temp)) {
                     index += 1;
+                    if (existingTurnsNum == MAX_TURN) {
+                        lastNormalTurn = temp;
+                    }
                 } else {
                     return false;
                 }
@@ -32,6 +37,9 @@ public class BowlingRuleImpl implements BowlingRule {
                 BowlingTurn temp = new BowlingTurnImpl(newPins[index]);
                 if (isValid(temp)) {
                     potentialTurnsNum += 1;
+                    if (existingTurnsNum + potentialTurnsNum == MAX_TURN) {
+                        lastNormalTurn = temp;
+                    }
                     index += 1;
                 } else {
                     return false;
@@ -40,13 +48,22 @@ public class BowlingRuleImpl implements BowlingRule {
                 BowlingTurn temp = new BowlingTurnImpl(newPins[index], newPins[index + 1]);
                 if (isValid(temp)) {
                     potentialTurnsNum += 1;
+                    if (existingTurnsNum + potentialTurnsNum == MAX_TURN) {
+                        lastNormalTurn = temp;
+                    }
                     index += 2;
                 } else {
                     return false;
                 }
             }
         }
-        return existingTurnsNum + potentialTurnsNum <= MAX_TURN + 2;
+        if (lastNormalTurn == null || isMiss(lastNormalTurn)) {
+            return existingTurnsNum + potentialTurnsNum <= MAX_TURN;
+        } else if (isSpare(lastNormalTurn)) {
+            return existingTurnsNum + potentialTurnsNum <= MAX_TURN + 1;
+        } else {
+            return existingTurnsNum + potentialTurnsNum <= MAX_TURN + 2;
+        }
     }
 
     @Override
