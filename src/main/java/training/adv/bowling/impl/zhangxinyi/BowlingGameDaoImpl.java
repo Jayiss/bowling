@@ -7,6 +7,10 @@ import java.io.Serializable;
 import java.sql.Connection;
 
 public class BowlingGameDaoImpl extends AbstractDao<GameEntity, BowlingGame, Integer> implements BowlingGameDao {
+    
+    public BowlingGameDaoImpl(Connection connection) {
+        super();
+    }
 
     @Override
     protected void doSave(GameEntity entity) {

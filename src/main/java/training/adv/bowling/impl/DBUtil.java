@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class DBUtil {
 	
-	private static final String url = "";
-	private static final String user = "";
-	private static final String pwd = "";
+	private static final String url = "jdbc:h2:file:C:/CitiIntern/Bowling";
+	private static final String user = "admin";
+	private static final String pwd = "admin";
 	
 	public static Connection getConnection() {
 		Connection connection = null;

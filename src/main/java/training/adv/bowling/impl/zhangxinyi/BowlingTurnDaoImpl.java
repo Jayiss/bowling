@@ -8,6 +8,10 @@ import java.util.List;
 
 public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnDao {
 
+    public BowlingTurnDaoImpl(Connection connection) {
+        super();
+    }
+
     @Override
     // According to given foreignID, get a list consisted of all the turn keys.
     protected List<TurnKey> loadAllKey(int foreignId) {
