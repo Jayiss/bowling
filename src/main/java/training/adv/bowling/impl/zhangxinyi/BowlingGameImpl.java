@@ -6,55 +6,46 @@ import training.adv.bowling.impl.AbstractGame;
 import java.util.*;
 
 public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> implements BowlingGame {
-
-    private Integer totalScore;
-    private List<Integer> scores;
-    private List<BowlingTurn> turns;
-    private BowlingRule rule;
+    private GameEntity game = new BowlingGameEntityImpl();
 
     BowlingGameImpl(BowlingRule rule) {
         super(rule);
-        this.rule = rule;
-        totalScore = 0;
-        scores = new ArrayList<Integer>();
-        turns = new ArrayList<BowlingTurn>();
+        BowlingGameEntityImpl entity = (BowlingGameEntityImpl)getEntity();
+        entity.setTotalScore(0);
+        entity.setScores(new ArrayList<Integer>());
+        entity.setTurns(new ArrayList<BowlingTurn>());
     }
 
     @Override
     public Integer getTotalScore() {
-        return totalScore;
+        return ((BowlingGameEntityImpl)getEntity()).getTotalScore();
     }
 
     @Override
     public Integer[] getScores() {
-        return scores.toArray(new Integer[0]);
+        return ((BowlingGameEntityImpl)getEntity()).getScores().toArray(new Integer[0]);
     }
 
     @Override
     public BowlingTurn[] getTurns() {
-        return turns.toArray(new BowlingTurn[0]);
+        return ((BowlingGameEntityImpl)getEntity()).getTurns().toArray(new BowlingTurn[0]);
     }
 
     @Override
     // Add a list of pins, first check if legal, then calculate.
     // Return the score array(also update the total score).
     public Integer[] addScores(Integer... pins) {
-        if (!rule.isGameFinished(turns.toArray(new BowlingTurn[0]))) {
-            if (rule.isNewPinsAllowed(turns.toArray(new BowlingTurn[0]), pins)) {
-                BowlingTurn[] turnsArray = rule.addScores(turns.toArray(new BowlingTurn[0]), pins);
-                turns = Arrays.asList(turnsArray);
-                Integer[] scoresArray = rule.calcScores(turns.toArray(new BowlingTurn[0]));
-                scores = Arrays.asList(scoresArray);
-                totalScore = updateTotalScore(scores.toArray(new Integer[0]));
+        BowlingGameEntityImpl entity = (BowlingGameEntityImpl)getEntity();
+        if (!rule.isGameFinished(entity.getTurns().toArray(new BowlingTurn[0]))) {
+            if (rule.isNewPinsAllowed(entity.getTurns().toArray(new BowlingTurn[0]), pins)) {
+                BowlingTurn[] turnsArray = rule.addScores(entity.getTurns().toArray(new BowlingTurn[0]), pins);
+                entity.setTurns(Arrays.asList(turnsArray));
+                Integer[] scoresArray = rule.calcScores(entity.getTurns().toArray(new BowlingTurn[0]));
+                entity.setScores(Arrays.asList(scoresArray));
+                entity.setTotalScore(updateTotalScore(entity.getScores().toArray(new Integer[0])));
             }
         }
-        return scores.toArray(new Integer[0]);
-    }
-
-    @Override
-    // Need to be implemented.
-    public GameEntity getEntity() {
-        return null;
+        return entity.getScores().toArray(new Integer[0]);
     }
 
     private Integer updateTotalScore(Integer[] scores) {
@@ -63,5 +54,10 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
             sum += score;
         }
         return sum;
+    }
+
+    @Override
+    public GameEntity getEntity() {
+        return game;
     }
 }
