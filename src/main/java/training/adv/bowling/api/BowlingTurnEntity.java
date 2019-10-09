@@ -6,4 +6,5 @@ public interface BowlingTurnEntity extends TurnEntity {
 	
 	void setFirstPin(Integer pin);
 	void setSecondPin(Integer pin);
+
 }

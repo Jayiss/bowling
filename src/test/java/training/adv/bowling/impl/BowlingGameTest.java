@@ -9,10 +9,11 @@ import org.junit.Test;
 
 import training.adv.bowling.api.BowlingGame;
 import training.adv.bowling.api.BowlingGameFactory;
+import training.adv.bowling.impl.why.BowlingGameFactoryImpl;
 
 public class BowlingGameTest {
 	
-	private BowlingGameFactory factory = null;// new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory =  new BowlingGameFactoryImpl();
 
 	@Test
 	public void testNoPins() {
@@ -57,7 +58,7 @@ public class BowlingGameTest {
 		game.addScores(10, 10, 10, 10, 10, 10, 10, 10, 10);
 		assertEquals(Integer.valueOf(300), game.getTotalScore());
 	}
-	
+
 	@Test
 	public void testGreaterThanMaxPins() {
 		BowlingGame game = factory.getGame();
