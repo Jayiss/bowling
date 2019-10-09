@@ -1,40 +1,47 @@
 package training.adv.bowling.impl.zhangxinyi;
 
 import training.adv.bowling.api.BowlingTurn;
+import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.GameEntity;
 import training.adv.bowling.api.TurnEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BowlingGameEntityImpl implements GameEntity {
+    private Integer id;
     private Integer totalScore;
     private List<Integer> scores;
     private List<BowlingTurn> turns;
 
-
     @Override
     public void setTurnEntities(TurnEntity[] turns) {
-
+        BowlingTurnEntity[] bTurns = (BowlingTurnEntity[])turns;
+        int len = bTurns.length;
+        this.turns = new ArrayList<>(len);
+        for (int i = 0; i < len; i++) {
+            this.turns.add(new BowlingTurnImpl(bTurns[i].getFirstPin(), bTurns[i].getSecondPin()));
+        }
     }
 
     @Override
     public TurnEntity[] getTurnEntities() {
-        return new TurnEntity[0];
+        return (TurnEntity[]) turns.toArray(new BowlingTurn[0]);
     }
 
     @Override
     public Integer getMaxTurn() {
-        return null;
+        return new BowlingRuleImpl().getMaxTurn();
     }
 
     @Override
     public Integer getId() {
-        return null;
+        return id;
     }
 
     @Override
     public void setId(Integer id) {
-
+        this.id = id;
     }
 
     public Integer getTotalScore() {

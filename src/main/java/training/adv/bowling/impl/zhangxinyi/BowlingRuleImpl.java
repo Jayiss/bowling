@@ -197,7 +197,6 @@ public class BowlingRuleImpl implements BowlingRule {
                 index += 2;
             }
         }
-
         return existingTurns;
     }
 
