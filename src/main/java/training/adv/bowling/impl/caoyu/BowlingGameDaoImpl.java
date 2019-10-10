@@ -3,10 +3,13 @@ package training.adv.bowling.impl.caoyu;
 import training.adv.bowling.api.BowlingGame;
 import training.adv.bowling.api.BowlingGameDao;
 import training.adv.bowling.api.BowlingGameEntity;
+import training.adv.bowling.api.BowlingRule;
 import training.adv.bowling.impl.AbstractDao;
+import training.adv.bowling.impl.DBUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
@@ -41,12 +44,30 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
 
     @Override
     protected BowlingGameEntity doLoad(Integer id) {
-        return null;
+        BowlingGameEntity result = null;
+        try {
+            var queryStatement = DBUtil.getConnection().prepareStatement("select * from games where " +
+                    "game_id = ?;");
+            queryStatement.setInt(1, id);
+            ResultSet rs = queryStatement.executeQuery();
+
+            BowlingRule rule;
+            if (rs.next()) {
+                rule = new BowlingRuleImpl(rs.getInt("MAX_TURN"), rs.getInt("MAX_PIN"));
+                result = new BowlingGameImpl(rule, rs.getInt("GAME_ID"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override
     protected BowlingGame doBuildDomain(BowlingGameEntity entity) {
-        return null;
+        BowlingRuleImpl rule = new BowlingRuleImpl(entity.getMaxTurn(), entity.getMaxPin());
+        BowlingGameImpl domain = new BowlingGameImpl(rule);
+        domain.setId(entity.getId());
+        return domain;
     }
 
     @Override

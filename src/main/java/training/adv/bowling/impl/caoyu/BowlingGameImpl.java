@@ -24,11 +24,6 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
         this.maxPin = rule.getMaxPin();
     }
 
-    //TODO
-    BowlingGameImpl(BowlingRule rule, GameEntity gameEntity) {
-        super(rule);
-    }
-
     public BowlingGameImpl(BowlingRule rule, int gameId) {
         super(rule);
         this.maxTurn = rule.getMaxTurn();
