@@ -1,5 +1,6 @@
 package training.adv.bowling.impl;
 
+import training.adv.bowling.api.BowlingRule;
 import training.adv.bowling.api.Game;
 import training.adv.bowling.api.GameRule;
 import training.adv.bowling.api.Turn;

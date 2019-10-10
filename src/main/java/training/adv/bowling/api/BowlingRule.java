@@ -9,5 +9,6 @@ public interface BowlingRule extends GameRule<BowlingTurn> {
 	
 	Boolean isFinish(BowlingTurn turn);
 	
-	Integer getMaxPin();
+	Integer getMAXPIN();
+	Integer getMAXTURN();
 }
