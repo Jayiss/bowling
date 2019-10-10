@@ -67,64 +67,68 @@ public class BowlingRuleImpl implements BowlingRule {
     public Integer[] calcScores(BowlingTurn[] allTurns) {
         Integer[] scores = new Integer[MAX_TURN];
         int index = 0;
-        for(;index<MAX_TURN;index++){
-            if(isFinish(allTurns[index])){
-                if(isStrike(allTurns[index])){
-                    if(isFinish(allTurns[index+1])){
-                        if(isStrike(allTurns[index+1])){
-                            scores[index] = MAX_PINS+MAX_PINS+(allTurns[index+2].getFirstPin()==null?0:allTurns[index+2].getFirstPin());
-                        }else {
-                            scores[index]  = MAX_PINS+allTurns[index+1].getFirstPin()+allTurns[index+1].getSecondPin();
-                        }
-                    }else{
-                        scores[index] = MAX_PINS+(allTurns[index+1].getFirstPin()==null?0:allTurns[index+1].getFirstPin());
-                    }
-                }
-                if (isSpare(allTurns[index])){
-                    //next fitst pin
-                    Integer nextFistPin = allTurns[index+1].getFirstPin();
-                    scores[index] = MAX_PINS + (nextFistPin==null?0:nextFistPin);
-                }
-                if(isMiss(allTurns[index])){
-                    scores[index] = allTurns[index].getFirstPin()+allTurns[index].getSecondPin();
-                }
-            }else{
-                //没有完成：
-                if(allTurns[index].getFirstPin()!=null){
-                    scores[index] = allTurns[index].getFirstPin();
-                }else {
-                    scores[index] = 0;
-                }
+        //之前的方法：
+//        for(;index<MAX_TURN;index++){
+//            if(isFinish(allTurns[index])){
+//                if(isStrike(allTurns[index])){
+//                    if(isFinish(allTurns[index+1])){
+//                        if(isStrike(allTurns[index+1])){
+//                            scores[index] = MAX_PINS+MAX_PINS+(allTurns[index+2].getFirstPin()==null?0:allTurns[index+2].getFirstPin());
+//                        }else {
+//                            scores[index]  = MAX_PINS+allTurns[index+1].getFirstPin()+allTurns[index+1].getSecondPin();
+//                        }
+//                    }else{
+//                        scores[index] = MAX_PINS+(allTurns[index+1].getFirstPin()==null?0:allTurns[index+1].getFirstPin());
+//                    }
+//                }
+//                if (isSpare(allTurns[index])){
+//                    //next fitst pin
+//                    Integer nextFistPin = allTurns[index+1].getFirstPin();
+//                    scores[index] = MAX_PINS + (nextFistPin==null?0:nextFistPin);
+//                }
+//                if(isMiss(allTurns[index])){
+//                    scores[index] = allTurns[index].getFirstPin()+allTurns[index].getSecondPin();
+//                }
+//            }else{
+//                //没有完成：
+//                if(allTurns[index].getFirstPin()!=null){
+//                    scores[index] = allTurns[index].getFirstPin();
+//                }else {
+//                    scores[index] = 0;
+//                }
+//            }
+//        }
+
+        //已完成：当前的方法：
+        //截取数组：
+        for(;index<allTurns.length-1;index++){
+            if(!isFinish(allTurns[index])){
+                break;
             }
         }
-        //还未完成的版本；
-        //截取数组：
-//        for(;index<allTurns.length;index++){
-//            if(!isFinish(allTurns[index]){
-//                break;
-//            }
-//        }
-        //当前的index是没有完成的那个，保证index前的都是finished；
-//        for(int i = 0;i<index;i++){
-//            if(isStrike(allTurns[i])){
-//               if(i+1==index){
-//                   scores[i] = MAX_PINS + allTurns[index].getFirstPin();
-//               }else if(isStrike(allTurns[i+1])){
-//                   scores[i] = MAX_PINS + MAX_PINS + allTurns[i+2].getFirstPin();
-//               }else {
-//                   scores[i] = MAX_PINS + allTurns[i+1].getFirstPin() +allTurns[i+1].getSecondPin();
-//               }
-//            }
-//            if(isSpare(allTurns[i])){
-//                scores[i] = allTurns[i+1].getFirstPin() + MAX_PINS;
-//            }
-//            if(isMiss(allTurns[i])){
-//                scores[i] = allTurns[i].getFirstPin()+allTurns[i].getSecondPin();
-//            }
-//        }
-//        if(allTurns[index].getFirstPin()!=null){
-//            scores[index] = allTurns[index].getFirstPin();
-//        }
+        System.out.println(index);
+//        当前的index是没有完成的那个，保证index前的都是finished；
+        for(int i = 0;i<index&&i<MAX_TURN;i++){
+            if(isStrike(allTurns[i])){
+                System.out.println(i);
+               if(i+1==index){
+                   scores[i] = MAX_PINS + (allTurns[index].getFirstPin()==null?0:allTurns[i+1].getFirstPin());
+               }else if(isStrike(allTurns[i+1])){
+                   scores[i] = MAX_PINS + MAX_PINS + (allTurns[i+2].getFirstPin()==null?0:allTurns[i+2].getFirstPin());
+               }else {
+                   scores[i] = MAX_PINS + allTurns[i+1].getFirstPin() +allTurns[i+1].getSecondPin();
+               }
+            }
+            if(isSpare(allTurns[i])){
+                scores[i] = (allTurns[i+1].getFirstPin()==null?0:allTurns[i+1].getFirstPin())+ MAX_PINS;
+            }
+            if(isMiss(allTurns[i])){
+                scores[i] = allTurns[i].getFirstPin()+allTurns[i].getSecondPin();
+            }
+        }
+        if(allTurns[index].getFirstPin()!=null&&index<MAX_TURN){
+            scores[index] = allTurns[index].getFirstPin();
+        }
         return scores;
     }
 
@@ -197,6 +201,7 @@ public class BowlingRuleImpl implements BowlingRule {
             }
 
         }
+
         return existingTurns;
     }
 

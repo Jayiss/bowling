@@ -5,7 +5,7 @@ import training.adv.bowling.api.TurnKey;
 public class BowlingTurnKeyInfo implements TurnKey {
     Integer id;
     Integer foreignId;
-    BowlingTurnKeyInfo(int id,Integer foreignId)
+    public BowlingTurnKeyInfo(int id,Integer foreignId)
     {
         this.id = id;
         this.foreignId = foreignId;

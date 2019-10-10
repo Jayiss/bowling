@@ -18,6 +18,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
         }
         this.gameEntity = new BowlingGameInfo(id,rule.getMaxTurn(),rule.getMaxPin());
     }
+
     public BowlingGameImpl(BowlingRule rule, BowlingTurn[] bowlingTurn, BowlingGameEntity gameEntity){
         super(rule);
         this.bowlingTurns = bowlingTurn;
@@ -32,7 +33,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 //            sum+=score;
 //        }
         for (int i=0;i<gameEntity.getMaxTurn();i++){
-            sum += scores[i];
+            sum += scores[i]==null?0:scores[i];
         }
         return sum;
     }
