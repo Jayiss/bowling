@@ -45,7 +45,8 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
         TurnEntity[] turnEntities = entity.getTurnEntities();
         BowlingTurnDaoImpl turnDao = new BowlingTurnDaoImpl(conn);
         for (TurnEntity en : turnEntities) {
-            ((BowlingTurnEntityImpl)en).setForeignId(BowlingGameEntityImpl.uniqueId);
+            BowlingTurnEntityImpl.uniqueId += 1;
+            ((BowlingTurnEntityImpl)en).setId(new BowlingTurnKeyImpl(BowlingTurnEntityImpl.uniqueId,BowlingGameEntityImpl.uniqueId));
         }
     }
 
