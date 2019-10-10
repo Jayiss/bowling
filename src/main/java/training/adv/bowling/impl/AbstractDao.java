@@ -6,8 +6,7 @@ import java.sql.SQLException;
 import training.adv.bowling.api.Entity;
 import training.adv.bowling.api.Persistable;
 
-public abstract class AbstractDao<E extends Entity<K>, 
-		D extends Persistable<E>, K extends Serializable> {
+public abstract class AbstractDao<E extends Entity<K>, D extends Persistable<E>, K extends Serializable> {
 
 	public void save(D domain){
 		this.doSave(domain.getEntity());
