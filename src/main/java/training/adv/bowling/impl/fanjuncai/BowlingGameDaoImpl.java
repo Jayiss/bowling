@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGame,Integer> implements BowlingGameDao {
     @Override
@@ -45,35 +46,61 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
 
     @Override
     public BowlingGameEntity doLoad(Integer id) {
-        if(id !=null){
+        if (id != null) {
             BowlingGameEntityImpl gameEntity = new BowlingGameEntityImpl();
             Connection connection = DBUtil.getConnection();
             String sql = "SELECT * FROM BOWLINGGAME WHERE ID = ?";
             try {
                 PreparedStatement psmt = connection.prepareStatement(sql);
-                psmt.setInt(1,id);
+                psmt.setInt(1, id);
                 ResultSet rs = psmt.executeQuery();
-                while(rs.next()){
+                if (rs.next()) {
                     gameEntity.setId(rs.getInt("ID"));
                     gameEntity.setMaxTurn(rs.getInt("MAXTURN"));
-                }
-                return gameEntity;
+                    connection.commit();
+                    psmt.close();
+                    connection.close();
+                    return gameEntity;
+                } else
+                    return null;
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
+        } else
             return null;
-        }
-        else
-            return null;
+        return null;
     }
+
     public BowlingGameImpl load(Integer id){
+
         BowlingGameEntity bowlingGameEntity = new BowlingGameEntityImpl();
         BowlingGameImpl bowlingGame = new BowlingGameImpl(new BowlingRuleImpl());
         BowlingGameDaoImpl bowlingGameDao = new BowlingGameDaoImpl();
         bowlingGameEntity = bowlingGameDao.doLoad(id);
 
         bowlingGame.setId(bowlingGameEntity.getId());
-
+        BowlingTurnDaoImpl bowlingTurnDao = new BowlingTurnDaoImpl();
+        //bowlingGame.setExistingTurns(bowlingTurnDao.batchLoad(id).toArray(new BowlingTurn[0]));
+        List<BowlingTurnEntity> bowlingTurnEntities = bowlingTurnDao.batchLoad(id);
+        ArrayList<BowlingTurn> bowlingTurns = new ArrayList<>();
+        for(BowlingTurnEntity bowlingTurnEntity:bowlingTurnEntities){
+            BowlingTurnImpl bowlingTurn = new BowlingTurnImpl();
+            bowlingTurn.setFirstPin(bowlingTurnEntity.getFirstPin());
+            if(bowlingTurnEntity.getSecondPin()==null){
+                bowlingTurn.setNumOfPins(1);
+                bowlingTurn.setSecondPin(bowlingTurnEntity.getSecondPin());
+            }
+            else
+                bowlingTurn.setNumOfPins(2);
+            bowlingTurn.setId(bowlingTurnEntity.getId().getId());
+            bowlingTurn.setGameId(bowlingTurnEntity.getId().getForeignId());
+            bowlingTurns.add(bowlingTurn);
+        }
+        bowlingGame.setExistingTurns(bowlingTurns.toArray(new BowlingTurn[0]));
+        BowlingRuleImpl bowlingRule = new BowlingRuleImpl();
+        bowlingGame.setScores(bowlingRule.calcScores(bowlingGame.getTurns()));
         return bowlingGame;
     }
 
@@ -103,13 +130,7 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
                 PreparedStatement pstm = connection.prepareStatement(sql);
                 pstm.setInt(1, key);
                 pstm.executeUpdate();
-
-                sql = "DELETE FROM BOWLINGTURN WHERE BOWLINGGAMEID = ?";
-                pstm = connection.prepareStatement(sql);
-                pstm.setInt(1, key);
-                pstm.executeUpdate();
-
-                connection.close();
+                connection.commit();
                 pstm.close();
                 connection.close();
                 return true;

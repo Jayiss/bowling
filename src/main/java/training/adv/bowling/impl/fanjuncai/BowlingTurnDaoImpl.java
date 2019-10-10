@@ -27,7 +27,7 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
             while(rs.next()){
                 TurnKeyImpl turnKeyImpl = new TurnKeyImpl();
                 turnKeyImpl.setId(rs.getInt("ID"));
-                turnKeyImpl.setId(rs.getInt("BOWLINGGAMEID"));
+                turnKeyImpl.setForeignId(rs.getInt("BOWLINGGAMEID"));
                 TurnKeys.add(turnKeyImpl);
             }
 
@@ -122,16 +122,15 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
         else
             return null;
     }
-
+    /*
     public List<BowlingTurnEntity> batchLoad(Integer id){
         ArrayList<BowlingTurnEntity> bowlingTurnEntityArrayList = new ArrayList<>();
         List<TurnKey> turnKeys = loadAllKey(id);
         for(TurnKey turnKey:turnKeys)
             bowlingTurnEntityArrayList.add(doLoad(turnKey));
         return bowlingTurnEntityArrayList;
-
     }
-
+*/
     @Override
     protected BowlingTurn doBuildDomain(BowlingTurnEntity entity) {
         if(entity !=null){
@@ -154,33 +153,17 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
 
     @Override
     public boolean remove(TurnKey key){
-        if(key !=null){
-            Connection connection = DBUtil.getConnection();
-            String str = "SELECT * FROM BOWLINGTURN WHERE ID = ? AND BOWLINGGAMEID = ?";
-            PreparedStatement pstm = null;
+        if(key !=null && key.getForeignId()!=null&&key.getId()!=null){
             try {
-                pstm = connection.prepareStatement(str);
+                String sql = "DELETE FROM BOWLINGTURN WHERE ID = ? AND BOWLINGGAMEID = ?";
+                Connection connection = DBUtil.getConnection();
+                PreparedStatement pstm = connection.prepareStatement(sql);
                 pstm.setInt(1,key.getId());
                 pstm.setInt(2,key.getForeignId());
-                ResultSet rs = pstm.executeQuery();
-                if(rs.next()){
-                    String sql = "DELETE FROM BOWLINGTURN WHERE ID = ? AND BOWLINGGAMEID = ?";
-                    PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                    pstm.setInt(1,key.getId());
-                    pstm.setInt(2,key.getForeignId());
-                    preparedStatement.execute();
-                    preparedStatement.close();
-                    connection.commit();
-                    pstm.close();
-                    connection.close();
-
-                }
-                else{
-                    connection.commit();
-                    pstm.close();
-                    connection.close();
-                    return false;
-                }
+                pstm.executeUpdate();
+                connection.commit();
+                pstm.close();
+                connection.close();
 
             } catch (SQLException e) {
                 e.printStackTrace();
