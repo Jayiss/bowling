@@ -3,6 +3,7 @@ package training.adv.bowling.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,39 +13,45 @@ import training.adv.bowling.impl.why.BowlingGameEntityImpl;
 import training.adv.bowling.impl.why.BowlingGameFactoryImpl;
 import training.adv.bowling.impl.why.BowlingTurnEntityImpl;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.*;
+import java.io.File;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 
 public class DataAccessTest {
 	
 	private BowlingService bowlingService = new BowlingServiceImpl();
-	private BowlingGameFactory factory =  new BowlingGameFactoryImpl();
-	static {
-		String sql1="create table game(id int,primary key(id))";
-		String sql2="create table turns(id int,gameId int,first int not null,second int," +
-				" primary key(id,gameId), foreign key(gameId) references game(id)" +
-				" )";
-		try (Connection con=DBUtil.getConnection()){
-			Statement statement=con.createStatement();
-			statement.execute(sql1);
-			statement.execute(sql2);
-			con.commit();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		BowlingGame game = new BowlingGameFactoryImpl().getGame();
-		game.addScores(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-		new BowlingServiceImpl().save(game);
-	}
+	private BowlingGameFactory factory = new BowlingGameFactoryImpl();
+
 	@Before
 	public void before() {
+		String path = ClassLoader.getSystemResource("script/setup.sql").getPath();
+//		System.out.println(ClassLoader.getSystemResource("").getPath());
+		System.out.println(path);
+		try (Connection conn = DBUtil.getConnection();
+				FileReader fr = new FileReader(new File(path))) {
+			RunScript.execute(conn, fr);
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 	
 	@After
 	public void after() {
+		String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
+		System.out.println(path);
+		try (Connection conn = DBUtil.getConnection();
+			 FileReader fr = new FileReader(new File(path))) {
+			RunScript.execute(conn, fr);
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 	

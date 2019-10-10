@@ -19,7 +19,7 @@ public class App {
 //		game.addScores(4, 5, 6); // TODO: play your game here
 		// blah blah
 		// System.out.println(game.getTotalScore());
-		Connection con=DBUtil.getConnection();
+
 	}
 
 	public static void test(Integer i){
