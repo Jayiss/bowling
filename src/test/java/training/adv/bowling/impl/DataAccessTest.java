@@ -6,26 +6,24 @@ import static org.junit.Assert.assertNull;
 import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingGameFactory;
-import training.adv.bowling.api.BowlingService;
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.BowlingTurnEntity;
-import training.adv.bowling.api.GameEntity;
-import training.adv.bowling.api.TurnKey;
+import org.junit.runners.MethodSorters;
+import training.adv.bowling.api.*;
+import training.adv.bowling.impl.caokeke.*;
 
+import java.io.File;
+import java.io.FileReader;
+import java.sql.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.sql.Connection;
-
 
 public class DataAccessTest {
 	
 	private BowlingService bowlingService = new BowlingServiceImpl();
-	private BowlingGameFactory factory = null; // new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory = new BowlingGameFactoryImpl();
 	
 	@Before
 	public void before() {
@@ -34,6 +32,7 @@ public class DataAccessTest {
 		try (Connection conn = DBUtil.getConnection();
 				FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -46,13 +45,14 @@ public class DataAccessTest {
 		try (Connection conn = DBUtil.getConnection();
 			 FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@Test
-	public void testSave() {
+	public void testASave() {
 		BowlingGame game = factory.getGame();
 		game.addScores(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 		bowlingService.save(game);
@@ -71,10 +71,9 @@ public class DataAccessTest {
 	
 	//Prepared data in db.
 	@Test
-	public void testLoad() {
+	public void testBLoad() {
 		BowlingGame game = bowlingService.load(1001);
 		GameEntity entity = game.getEntity();
-		
 		assertEquals(Integer.valueOf(1001), entity.getId());
 		assertEquals(Integer.valueOf(10), entity.getMaxTurn());
 		assertEquals(12, game.getTurns().length);
@@ -83,7 +82,7 @@ public class DataAccessTest {
 	
 	//Prepared data in db.
 	@Test
-	public void testRemove() {
+	public void testCRemove() {
 		GameEntity before = query(1001);
 		assertEquals(Integer.valueOf(1001), before.getId());
 		
@@ -95,13 +94,30 @@ public class DataAccessTest {
 	
 	
 	private GameEntity query(Integer id) {
-		//TODO
-		return null;
+		BowlingGame bg=bowlingService.load(id);
+		if(bg==null)return null;
+		return bg.getEntity();
 	}
 	
 	private BowlingTurnEntity query(TurnKey key) {
-		//TODO
-		return null;
+		Connection connection=DBUtil.getConnection();
+		BowlingTurnEntity res=null;
+		Statement st = null;
+		try{
+			st = connection.createStatement();
+			String sql = "SELECT * FROM turns WHERE id="+key.getId()+
+					" AND foreignId="+key.getForeignId();
+			ResultSet rs=st.executeQuery(sql);
+			while(rs.next())
+				res=new BowlingTurnEntityImpl(
+								rs.getInt("firstPin"),
+								rs.getInt("secondPin"),
+								rs.getInt("id"),
+								rs.getInt("foreignId"));
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return res;
 	}
 	
 }
