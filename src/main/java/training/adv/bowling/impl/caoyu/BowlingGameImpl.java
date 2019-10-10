@@ -1,20 +1,23 @@
 package training.adv.bowling.impl.caoyu;
 
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingRule;
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.GameEntity;
+import training.adv.bowling.api.*;
 import training.adv.bowling.impl.AbstractGame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> implements BowlingGame {
-    private ArrayList<Integer> scores = new ArrayList<>();
+    private GameEntity gameEntity;
     private ArrayList<BowlingTurn> turns = new ArrayList<>();
-    private BowlingRule rule = new BowlingRuleImpl();
+    private ArrayList<Integer> scores = new ArrayList<>();
 
     BowlingGameImpl(BowlingRule rule) {
+        super(rule);
+        this.gameEntity = new GameEntityImpl(UidUtil.getNewGameId(), new TurnEntity[0], rule.getMaxTurn());
+    }
+
+    //TODO
+    BowlingGameImpl(BowlingRule rule, GameEntity gameEntity) {
         super(rule);
     }
 
@@ -54,13 +57,37 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
                 this.scores = new ArrayList<>();
                 this.scores.addAll(Arrays.asList(updatedScores));
             }
+
+            //update gameEntity
+            updateGameEntity();
+        }
+        return scores.toArray(new Integer[0]);
+    }
+
+    //update gameEntity
+    private void updateGameEntity() {
+        //empty turnEntities
+        TurnEntity[] turnEntities = new BowlingTurnEntityImpl[turns.size()];
+
+        for (int i = 0; i < turns.size(); i++) {
+
+            //construct new turn entity
+            BowlingTurn currentTurn = turns.get(i);
+            BowlingTurnEntity currentTurnEntity = new BowlingTurnEntityImpl();
+            TurnKey currentTurnKey = new BowlingTurnKeyImpl(this.gameEntity.getId());
+            currentTurnEntity.setId(currentTurnKey);
+            currentTurnEntity.setFirstPin(currentTurn.getFirstPin());
+            currentTurnEntity.setSecondPin(currentTurn.getSecondPin());
+
+            //add new
+            turnEntities[i] = currentTurnEntity;
         }
 
-        return scores.toArray(new Integer[0]);
+        gameEntity.setTurnEntities(turnEntities);
     }
 
     @Override
     public GameEntity getEntity() {
-        return null;
+        return gameEntity;
     }
 }

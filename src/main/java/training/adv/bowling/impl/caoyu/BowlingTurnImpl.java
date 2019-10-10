@@ -4,16 +4,16 @@ import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
 
 public class BowlingTurnImpl implements BowlingTurn {
-    private Integer firstPin,secondPin;
+    private BowlingTurnEntity bowlingTurnEntity = new BowlingTurnEntityImpl();
 
     //constructors
     public BowlingTurnImpl(Integer firstPin, Integer secondPin) {
-        this.firstPin = firstPin;
-        this.secondPin = secondPin;
+        bowlingTurnEntity.setFirstPin(firstPin);
+        bowlingTurnEntity.setSecondPin(secondPin);
     }
 
     public BowlingTurnImpl(Integer firstPin) {
-        this.firstPin = firstPin;
+        bowlingTurnEntity.setFirstPin(firstPin);
     }
 
     public BowlingTurnImpl() {
@@ -22,12 +22,12 @@ public class BowlingTurnImpl implements BowlingTurn {
     //inherited methods
     @Override
     public Integer getFirstPin() {
-        return firstPin;
+        return bowlingTurnEntity.getFirstPin();
     }
 
     @Override
     public Integer getSecondPin() {
-        return secondPin;
+        return bowlingTurnEntity.getSecondPin();
     }
 
     @Override
