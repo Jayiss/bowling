@@ -1,4 +1,4 @@
-package impl;
+package training.adv.bowling.impl;
 
 import org.junit.Test;
 import training.adv.bowling.api.BowlingGame;

@@ -55,13 +55,12 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
             statement.setInt(1,id);
             ResultSet resultSet = statement.executeQuery();
             resultSet.next();
-//            int score = resultSet.getInt(2);
-            int maxTunrn = resultSet.getInt(3);
+            int maxTurn = resultSet.getInt(3);
             int maxPins = resultSet.getInt(4);
             List<BowlingTurnEntity> turns = new BowlingTurnDaoImpl(connection).batchLoad(id);
-            gameEntity = new BowlingGameInfo(id,maxTunrn,maxPins);
+            gameEntity = new BowlingGameInfo(id,maxTurn,maxPins);
             //give 0 test
-            gameEntity.setTurnEntities(turns.toArray(new BowlingTurnEntity[maxTunrn+2]));
+            gameEntity.setTurnEntities(turns.toArray(new BowlingTurnEntity[maxTurn+2]));
             return  gameEntity;
 
         } catch (SQLException e) {
