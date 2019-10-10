@@ -2,7 +2,7 @@ package training.adv.bowling.impl.zhuyurui;
 
 public class IDUtils {
 
-    private static int r = 1001;
+    private static int r = 1002;
 
     public static int createID() {
 
