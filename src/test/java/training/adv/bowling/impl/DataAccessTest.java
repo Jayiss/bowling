@@ -9,23 +9,33 @@ import org.junit.Before;
 import org.junit.Test;
 
 import training.adv.bowling.api.BowlingGame;
+import training.adv.bowling.api.BowlingGameEntity;
 import training.adv.bowling.api.BowlingGameFactory;
 import training.adv.bowling.api.BowlingService;
 import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.GameEntity;
 import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.impl.wangbingchao.BowlingGameFactoryImpl;
+import training.adv.bowling.impl.wangbingchao.BowlingTurnEntityImpl;
+import training.adv.bowling.impl.wangbingchao.BowlingTurnImpl;
+import training.adv.bowling.impl.wangbingchao.GameEntityImpl;
+import training.adv.bowling.impl.wangbingchao.TurnKeyImpl;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 public class DataAccessTest {
 	
 	private BowlingService bowlingService = new BowlingServiceImpl();
-	private BowlingGameFactory factory = null; // new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory = new BowlingGameFactoryImpl();
 	
 	@Before
 	public void before() {
@@ -34,6 +44,7 @@ public class DataAccessTest {
 		try (Connection conn = DBUtil.getConnection();
 				FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -46,6 +57,7 @@ public class DataAccessTest {
 		try (Connection conn = DBUtil.getConnection();
 			 FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -96,11 +108,65 @@ public class DataAccessTest {
 	
 	private GameEntity query(Integer id) {
 		//TODO
+//		GameEntity game = new GameEntityImpl();
+		try (Connection connection = DBUtil.getConnection()) {
+			String sql = "SELECT * FROM GAME WHERE ID = ?";
+			
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next()) {
+				BowlingGameEntity entity = new GameEntityImpl(resultSet.getInt("ID"), resultSet.getInt("MAX_TURN"),resultSet.getInt("MAX_PIN"));
+//				entity.setId(resultSet.getInt("ID"));
+//				entity.setId(resultS);
+				BowlingTurnEntity[] list = entity.getTurnEntities();
+				ArrayList<BowlingTurnEntity> bowlingTurns= new ArrayList<BowlingTurnEntity>();
+				for(BowlingTurnEntity turn: list) {
+					
+					BowlingTurn bowlingTurn = new BowlingTurnImpl();
+					bowlingTurn.getEntity().setId(turn.getId());
+					bowlingTurn.getEntity().setFirstPin(turn.getFirstPin());
+					bowlingTurn.getEntity().setSecondPin(turn.getSecondPin());
+					
+				}
+				return entity;
+			}
+		}catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 	
 	private BowlingTurnEntity query(TurnKey key) {
-		//TODO
+		try (Connection connection = DBUtil.getConnection()) {
+			String sql = "SELECT * FROM TURN WHERE ID = ? AND FOREIGN_ID=?";
+			
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+			
+			preparedStatement.setInt(1, key.getId());
+			preparedStatement.setInt(2, key.getForeignId());
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next()) {
+				BowlingTurnEntity turnEntity = new BowlingTurnEntityImpl();
+//				entity.setId(resultSet.getInt("ID"));
+//				entity.setId(resultS);
+				TurnKey turnKey = new TurnKeyImpl(resultSet.getInt("ID"),resultSet.getInt("FOREIGN_ID"));
+				turnEntity.setId(turnKey);
+				Object first = resultSet.getObject("FIRST_PIN");
+				turnEntity.setFirstPin(first==null ? null : Integer.parseInt(first.toString()));
+				Object second = resultSet.getObject("SECOND_PIN");
+				turnEntity.setSecondPin(second == null ?null: Integer.parseInt(second.toString()));
+			
+				return turnEntity;
+			}
+		}catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
