@@ -1,32 +1,41 @@
 package training.adv.bowling.impl.fanxu;
 
-import training.adv.bowling.api.GameEntity;
-import training.adv.bowling.api.TurnEntity;
+import training.adv.bowling.api.BowlingGameEntity;
+import training.adv.bowling.api.BowlingTurnEntity;
 
-public class BowlingGameInfo implements GameEntity {
-    private TurnEntity[] turns;
+public class BowlingGameInfo implements BowlingGameEntity {
+    private BowlingTurnEntity[] turns;
     private Integer id;
     private Integer MAX_TURN;
+    private Integer MAX_PIN;
     BowlingGameInfo(){
 
     }
-    BowlingGameInfo(int id,int maxTurn){
+    public BowlingGameInfo(int id,int maxTurn,int maxPin){
         this.id = id;
         this.MAX_TURN = maxTurn;
+        this.MAX_PIN = maxPin;
     }
+
+
     @Override
-    public void setTurnEntities(TurnEntity[] turns) {
+    public Integer getMaxPin() {
+        return MAX_PIN;
+    }
+
+    @Override
+    public void setTurnEntities(BowlingTurnEntity[] turns) {
         this.turns = turns;
     }
 
     @Override
-    public TurnEntity[] getTurnEntities() {
+    public BowlingTurnEntity[] getTurnEntities() {
         return turns;
     }
 
     @Override
     public Integer getMaxTurn() {
-        return MAX_TURN;
+        return  MAX_TURN;
     }
 
     @Override

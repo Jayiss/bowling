@@ -1,6 +1,5 @@
 package training.adv.bowling.impl.fanxu;
 
-import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.TurnKey;
 
@@ -8,10 +7,10 @@ public class BowlingTurnInfo implements BowlingTurnEntity {
     private Integer firstPin;
     private Integer secondPin;
     private TurnKey turnKey;
-    BowlingTurnInfo(){
+    public BowlingTurnInfo(){
 
     }
-    BowlingTurnInfo(Integer firstPin,Integer secondPin,TurnKey turnKey){
+    public BowlingTurnInfo(Integer firstPin, Integer secondPin, TurnKey turnKey){
         this.firstPin = firstPin;
         this.secondPin = secondPin;
         this.turnKey = turnKey;
@@ -28,12 +27,12 @@ public class BowlingTurnInfo implements BowlingTurnEntity {
 
     @Override
     public void setFirstPin(Integer pin) {
-        this.firstPin = firstPin;
+        this.firstPin = pin;
     }
 
     @Override
     public void setSecondPin(Integer pin) {
-        this.secondPin = secondPin;
+        this.secondPin = pin;
     }
 
     @Override

@@ -6,20 +6,22 @@ import training.adv.bowling.impl.AbstractGame;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> implements BowlingGame {
+public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, BowlingGameEntity> implements BowlingGame {
     private  BowlingTurn[] bowlingTurns;
-    private  GameEntity gameEntity;
-    public BowlingGameImpl(BowlingRule rule,Integer id) {
+    private BowlingGameEntity gameEntity;
+    public BowlingGameImpl(BowlingRule rule, Integer id) {
         super(rule);
         bowlingTurns = new BowlingTurnImpl[rule.getMaxTurn()+2];
         for(int i=0;i<bowlingTurns.length;i++){
-            bowlingTurns[i] = new BowlingTurnImpl(null,null);
+            TurnKey turnKey = new BowlingTurnKeyInfo(i+1,id);
+            bowlingTurns[i] = new BowlingTurnImpl(null,null,turnKey);
         }
-        this.gameEntity = new BowlingGameInfo(id,rule.getMaxTurn());
+        this.gameEntity = new BowlingGameInfo(id,rule.getMaxTurn(),rule.getMaxPin());
     }
-    public BowlingGameImpl(BowlingRule rule,BowlingTurn[] bowlingTurn){
+    public BowlingGameImpl(BowlingRule rule, BowlingTurn[] bowlingTurn, BowlingGameEntity gameEntity){
         super(rule);
         this.bowlingTurns = bowlingTurn;
+        this.gameEntity  = gameEntity;
     }
     //get the sum of all score
     @Override
@@ -42,6 +44,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
 
     @Override
     public BowlingTurn[] getTurns() {
+        //在这里截取：
         return bowlingTurns;
     }
 
@@ -52,7 +55,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
     }
 
     @Override
-    public GameEntity getEntity() {
+    public BowlingGameEntity getEntity() {
         List<BowlingTurnInfo> bowlingTurnInfoList = new ArrayList<>();
         int turnID = 1;
         for(BowlingTurn bowlingTurn:bowlingTurns){
@@ -60,7 +63,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
                 BowlingTurnInfo bowlingTurnInfo = new BowlingTurnInfo(bowlingTurn.getFirstPin(),bowlingTurn.getSecondPin(),turnKey);
                 bowlingTurnInfoList.add(bowlingTurnInfo);
         }
-        TurnEntity[] turnEntities = new BowlingTurnInfo[bowlingTurnInfoList.size()];
+        BowlingTurnEntity[] turnEntities = new BowlingTurnInfo[bowlingTurnInfoList.size()];
         turnEntities = bowlingTurnInfoList.toArray(turnEntities);
         gameEntity.setTurnEntities(turnEntities);
         return gameEntity;

@@ -6,7 +6,10 @@ import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.TurnKey;
 import training.adv.bowling.impl.AbstractBatchDao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,19 +48,20 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
             statement.setInt(4,entity.getSecondPin());
             statement.executeUpdate();
         }catch (SQLException sqlException){
-
+            sqlException.printStackTrace();
         }
     }
 
     @Override
     protected BowlingTurnEntity doLoad(TurnKey id) {
         BowlingTurnEntity bowlingTurnEntity = new BowlingTurnInfo();
-        String querySql = "select * from turn where  id = ? && foreign_id= ?";
+        String querySql = "select * from turn where  id = ? and foreign_id= ?";
         try {
             PreparedStatement statement = connection.prepareStatement(querySql);
             statement.setInt(1,id.getId());
             statement.setInt(2,id.getForeignId());
             ResultSet rs = statement.executeQuery();
+            rs.next();
             bowlingTurnEntity.setFirstPin(rs.getInt(3));
             bowlingTurnEntity.setSecondPin(rs.getInt(4));
             bowlingTurnEntity.setId(id);
@@ -72,13 +76,13 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
 
     @Override
     protected BowlingTurn doBuildDomain(BowlingTurnEntity entity) {
-        BowlingTurn bowlingTurn = new BowlingTurnImpl(entity.getFirstPin(),entity.getSecondPin());
+        BowlingTurn bowlingTurn = new BowlingTurnImpl(entity.getFirstPin(),entity.getSecondPin(),entity.getId());
         return bowlingTurn;
     }
 
     @Override
     public boolean remove(TurnKey key) {
-        String delStatement = "delete from turn where   id = ? && foreign_id = ?";
+        String delStatement = "delete from turn where id = ? and foreign_id = ?";
         boolean isRemoved = false;
         try {
             PreparedStatement statement = connection.prepareStatement(delStatement);

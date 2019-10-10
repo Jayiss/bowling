@@ -1,15 +1,14 @@
-package training.adv.bowling.impl;
+package impl;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import training.adv.bowling.api.BowlingGame;
+import training.adv.bowling.api.BowlingGameFactory;
+import training.adv.bowling.impl.fanxu.BowlingGameFactoryImpl;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
-
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingGameFactory;
-import training.adv.bowling.impl.fanxu.BowlingGameFactoryImpl;
+import static org.junit.Assert.assertEquals;
 
 public class BowlingGameTest {
 	

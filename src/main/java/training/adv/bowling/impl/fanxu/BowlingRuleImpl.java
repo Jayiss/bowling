@@ -2,8 +2,7 @@ package training.adv.bowling.impl.fanxu;
 
 import training.adv.bowling.api.BowlingRule;
 import training.adv.bowling.api.BowlingTurn;
-
-import java.util.Arrays;
+import training.adv.bowling.api.TurnKey;
 
 
 public class BowlingRuleImpl implements BowlingRule {
@@ -48,7 +47,7 @@ public class BowlingRuleImpl implements BowlingRule {
         return isGameFinished(allTurns,0);
     }
 
-    private boolean isGameFinished(BowlingTurn[] bowlingTurns,int index){
+    private boolean isGameFinished(BowlingTurn[] bowlingTurns, int index){
         //当index为11的时候，通过第十轮来判断，
         if(index==MAX_TURN+1){
             if(isStrike(bowlingTurns[MAX_TURN-1])&&isStrike(bowlingTurns[MAX_TURN])){
@@ -170,17 +169,18 @@ public class BowlingRuleImpl implements BowlingRule {
             }
             BowlingTurn newBowlingTurn;
             BowlingTurn nowBowlingTurn = existingTurns[index];
+            TurnKey turnKey = nowBowlingTurn.getEntity().getId();
             if(nowBowlingTurn.getFirstPin()!=null){
-                newBowlingTurn = new BowlingTurnImpl(nowBowlingTurn.getFirstPin(),i);
+                newBowlingTurn = new BowlingTurnImpl(nowBowlingTurn.getFirstPin(),i,turnKey);
                 index++;
                 indexIncFlag = true;
             }else {
                 if(i.equals(MAX_PINS)){
-                    newBowlingTurn  = new BowlingTurnImpl(i,0);
+                    newBowlingTurn  = new BowlingTurnImpl(i,0,turnKey);
                     index++;
                     indexIncFlag = true;
                 }else{
-                    newBowlingTurn = new BowlingTurnImpl(i,null);
+                    newBowlingTurn = new BowlingTurnImpl(i,null,turnKey);
                     indexIncFlag = false;
                 }
             }
@@ -192,7 +192,7 @@ public class BowlingRuleImpl implements BowlingRule {
             //当改变的index是maxturn的时候
             if(index==MAX_TURN){
                 if(!existingTurns[MAX_TURN-1].getFirstPin().equals(10)){
-                    existingTurns[MAX_TURN] =  new BowlingTurnImpl(existingTurns[MAX_TURN].getFirstPin(),0);
+                    existingTurns[MAX_TURN] =  new BowlingTurnImpl(existingTurns[MAX_TURN].getFirstPin(),0,turnKey);
                 }
             }
 
