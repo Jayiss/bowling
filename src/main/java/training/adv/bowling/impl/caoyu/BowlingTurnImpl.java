@@ -24,8 +24,7 @@ public class BowlingTurnImpl implements BowlingTurn, BowlingTurnEntity {
     //inherited methods
     @Override
     public BowlingTurnEntity getEntity() {
-        //to be implemented
-        return null;
+        return this;
     }
 
     @Override

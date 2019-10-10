@@ -10,7 +10,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
         BowlingGameEntity {
     int gameId;
     private Integer maxTurn, maxPin;
-    private BowlingTurnEntity[] bowlingTurnEntities;
+//    private BowlingTurn[] bowlingTurns;
 
     //    private BowlingGameEntity gameEntity;
     private ArrayList<BowlingTurn> turns = new ArrayList<>();
@@ -19,7 +19,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
     BowlingGameImpl(BowlingRule rule) {
         super(rule);
         this.gameId = UidUtil.getNewGameId();
-        this.bowlingTurnEntities = new BowlingTurnEntity[0];
+//        this.bowlingTurns = new BowlingTurnImpl[0];
         this.maxTurn = rule.getMaxTurn();
         this.maxPin = rule.getMaxPin();
     }
@@ -55,8 +55,13 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
             //add and update turns
             BowlingTurn[] updatedTurns = rule.addScores(turns.toArray(new BowlingTurn[0]), pins);
             if (null != updatedTurns) {
-                this.turns = new ArrayList<>();
-                this.turns.addAll(Arrays.asList(updatedTurns));
+                this.turns.clear();
+                for (BowlingTurn updatedTurn :
+                        updatedTurns) {
+                    BowlingTurnImpl turn = new BowlingTurnImpl(updatedTurn.getFirstPin(), updatedTurn.getSecondPin());
+                    turn.setId(new BowlingTurnKeyImpl(this.gameId));
+                    this.turns.add(turn);
+                }
             }
 
             //add and update scores
@@ -65,34 +70,10 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
                 this.scores = new ArrayList<>();
                 this.scores.addAll(Arrays.asList(updatedScores));
             }
-
-            //update gameEntity
-            updateGameEntity();
         }
         return scores.toArray(new Integer[0]);
     }
 
-    //update gameEntity
-    private void updateGameEntity() {
-        //empty turnEntities
-        BowlingTurnEntity[] turnEntities = new BowlingTurnImpl[turns.size()];
-
-        for (int i = 0; i < turns.size(); i++) {
-
-            //construct new turn entity
-            BowlingTurn currentTurn = turns.get(i);
-            BowlingTurnEntity currentTurnEntity = new BowlingTurnImpl();
-            TurnKey currentTurnKey = new BowlingTurnKeyImpl(this.gameId);
-            currentTurnEntity.setId(currentTurnKey);
-            currentTurnEntity.setFirstPin(currentTurn.getFirstPin());
-            currentTurnEntity.setSecondPin(currentTurn.getSecondPin());
-
-            //add new
-            turnEntities[i] = currentTurnEntity;
-        }
-
-        this.setTurnEntities(turnEntities);
-    }
 
     @Override
     public BowlingGameEntity getEntity() {
@@ -107,12 +88,30 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 
     @Override
     public void setTurnEntities(BowlingTurnEntity[] bowlingTurnEntities) {
-        this.bowlingTurnEntities = bowlingTurnEntities;
+//        this.turns.clear();//addAll(Arrays.asList(bowlingTurnEntities));
+//        for (int i = 0; i < bowlingTurnEntities.length; i++) {
+//            turns.add(bowlingTurnEntities[i])
+//        }
+        //empty turnEntities
+        this.turns.clear();
+
+        for (int i = 0; i < turns.size(); i++) {
+
+            //construct new turn entity
+            BowlingTurnImpl currentTurn = new BowlingTurnImpl();
+            TurnKey currentTurnKey = new BowlingTurnKeyImpl(this.gameId);
+            currentTurn.setId(currentTurnKey);
+            currentTurn.setFirstPin(currentTurn.getFirstPin());
+            currentTurn.setSecondPin(currentTurn.getSecondPin());
+
+            //add new
+            this.turns.add(currentTurn);
+        }
     }
 
     @Override
     public BowlingTurnEntity[] getTurnEntities() {
-        return bowlingTurnEntities;
+        return turns.toArray(BowlingTurnEntity[]::new);
     }
 
     @Override

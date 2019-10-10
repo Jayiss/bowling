@@ -25,14 +25,6 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
                     "GAME_ID = ?;");
             deleteExistingGame.setInt(1, entity.getId());
 
-            //game update
-//            PreparedStatement updateBowlingGameStatement = connection.prepareStatement("UPDATE PUBLIC.GAMES SET " +
-//                    "MAX_TURN = ?, MAX_PIN = ? WHERE GAME_ID = ?;");
-//            updateBowlingGameStatement.setInt(1, entity.getMaxTurn());
-//            updateBowlingGameStatement.setInt(2, entity.getMaxPin());
-//            updateBowlingGameStatement.setInt(3, entity.getId());
-//            int result = updateBowlingGameStatement.executeUpdate();
-
             //game insertion
             PreparedStatement insertBowlingGameStatement = connection.prepareStatement("INSERT INTO \"PUBLIC\"" +
                     ".\"GAMES\" " +
@@ -44,7 +36,6 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return;
     }
 

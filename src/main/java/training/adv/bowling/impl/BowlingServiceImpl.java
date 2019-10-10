@@ -20,28 +20,29 @@ public class BowlingServiceImpl implements BowlingService {
         String sql;
         try {
             Statement stmt = connection.createStatement();
-            sql = "drop table games;\n" +
+            sql = "\n" +
+                    "drop table if exists games;\n" +
                     "create table if not exists games\n" +
                     "(\n" +
-                    "\tgame_id int,\n" +
-                    "\tmax_turn int,\n" +
-                    "\tmax_pin int,\n" +
-                    "\tconstraint games_pk\n" +
-                    "\t\tprimary key (game_id)\n" +
+                    "    game_id  int,\n" +
+                    "    max_turn int,\n" +
+                    "    max_pin  int,\n" +
+                    "    constraint games_pk\n" +
+                    "        primary key (game_id)\n" +
                     ");\n" +
                     "\n" +
-                    "drop table turns;\n" +
+                    "drop table if exists turns;\n" +
                     "create table if not exists turns\n" +
                     "(\n" +
-                    "\tturn_id int,\n" +
-                    "\tgame_id int,\n" +
-                    "\tfirst_pin int,\n" +
-                    "\tsecond_pin int,\n" +
-                    "\tconstraint turns_pk\n" +
-                    "\t\tprimary key (turn_id),\n" +
-                    "\tconstraint turns_GAMES_GAME_ID_fk\n" +
-                    "\t\tforeign key (turn_id) references GAMES\n" +
-                    "\t\t\ton delete cascade\n" +
+                    "    turn_id    int,\n" +
+                    "    game_id    int,\n" +
+                    "    first_pin  int,\n" +
+                    "    second_pin int,\n" +
+                    "    constraint turns_pk\n" +
+                    "        primary key (turn_id),\n" +
+                    "    constraint turns_GAMES_GAME_ID_fk\n" +
+                    "        foreign key (game_id) references GAMES\n" +
+                    "            on delete cascade\n" +
                     ");";
             int result = stmt.executeUpdate(sql);
             commit();
