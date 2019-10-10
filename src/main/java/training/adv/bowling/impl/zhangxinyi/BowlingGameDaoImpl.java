@@ -16,14 +16,13 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
     public BowlingGameDaoImpl(Connection connection) {
         try {
             conn = connection;
-            conn.setAutoCommit(false);
             st = conn.createStatement();
 //            st.execute("CREATE TABLE game (\n" +
-//                    "  id int(11) NOT NULL AUTO_INCREMENT,\n" +
+//                    "  id int(11),\n" +
 //                    "  maxTurn int(11) NOT NULL DEFAULT '10',\n" +
 //                    "  PRIMARY KEY (id)\n" +
 //                    ")");
-            conn.commit();
+//            conn.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -42,6 +41,7 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        entity.setId(BowlingGameEntityImpl.uniqueId);
         TurnEntity[] turnEntities = entity.getTurnEntities();
         BowlingTurnDaoImpl turnDao = new BowlingTurnDaoImpl(conn);
         for (TurnEntity en : turnEntities) {

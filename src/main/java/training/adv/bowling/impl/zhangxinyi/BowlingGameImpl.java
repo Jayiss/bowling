@@ -5,10 +5,10 @@ import training.adv.bowling.impl.AbstractGame;
 
 import java.util.*;
 
-public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, BowlingGameEntity> implements BowlingGameEntity, BowlingGame {
+public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, BowlingGameEntity> implements BowlingGame {
     private BowlingGameEntity game = (BowlingGameEntity) new BowlingGameEntityImpl();
 
-    BowlingGameImpl(BowlingRule rule) {
+    public BowlingGameImpl(BowlingRule rule) {
         super(rule);
         BowlingGameEntityImpl entity = (BowlingGameEntityImpl) getEntity();
         entity.setTotalScore(0);
@@ -59,35 +59,5 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
     @Override
     public BowlingGameEntity getEntity() {
         return game;
-    }
-
-    @Override
-    public Integer getMaxPin() {
-        return rule.getMaxPin();
-    }
-
-    @Override
-    public Integer getId() {
-        return game.getId();
-    }
-
-    @Override
-    public void setId(Integer id) {
-        game.setId(id);
-    }
-
-    @Override
-    public void setTurnEntities(BowlingTurnEntity[] turns) {
-        game.setTurnEntities(turns);
-    }
-
-    @Override
-    public BowlingTurnEntity[] getTurnEntities() {
-        return game.getTurnEntities();
-    }
-
-    @Override
-    public Integer getMaxTurn() {
-        return game.getMaxTurn();
     }
 }

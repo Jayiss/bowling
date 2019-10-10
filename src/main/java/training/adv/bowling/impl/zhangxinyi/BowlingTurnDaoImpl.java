@@ -16,16 +16,15 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
     public BowlingTurnDaoImpl(Connection connection) {
         try {
             conn = connection;
-            conn.setAutoCommit(false);
             st = conn.createStatement();
-//            st.execute("CREATE TABLE `turn` (\n" +
-//                    "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
+//            st.execute("CREATE TABLE turn (\n" +
+//                    "  `id` int(11),\n" +
 //                    "  `firstPin` int(11),\n" +
 //                    "  `secondPin` int(11),\n" +
 //                    "  `foreignKey` int(11),\n" +
 //                    "  PRIMARY KEY (`id`)\n" +
 //                    ")");
-            conn.commit();
+//            conn.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,7 +47,7 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
                 second = entity.getSecondPin();
             }
             BowlingTurnEntityImpl.uniqueId += 1;
-            st.execute("INSERT INTO `turn` (id, firstPin, secondPin, foreignKey) VALUES ('"
+            st.execute("INSERT INTO turn (id, firstPin, secondPin, foreignKey) VALUES ('"
                     + BowlingTurnEntityImpl.uniqueId + "', '"
                     + entity.getFirstPin() + "', '" + second + "', '"
                     + ((BowlingTurnEntityImpl) entity).getForeignId() + "')");
