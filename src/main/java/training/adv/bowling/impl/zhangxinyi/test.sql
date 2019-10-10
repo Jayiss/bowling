@@ -12,10 +12,13 @@ CREATE TABLE turn (
   PRIMARY KEY (id)
 )
 
-INSERT INTO game (maxTurn) VALUES ('');
+INSERT INTO game (id, maxTurn) VALUES ('', '');
 
 DELETE FROM game WHERE id = ''
 
 INSERT INTO turn (firstPin, secondPin, foreignKey) VALUES ('', '', '')
 
 SELECT id IN game WHERE id = ''
+
+DELETE FROM game;
+DELETE FROM turn

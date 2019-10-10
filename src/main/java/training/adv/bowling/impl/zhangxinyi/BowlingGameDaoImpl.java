@@ -35,7 +35,8 @@ public class BowlingGameDaoImpl extends AbstractDao<GameEntity, BowlingGame, Int
     // Need to call Turn Dao's doSave
     protected void doSave(GameEntity entity) {
         try {
-            st.execute("INSERT INTO game (maxTurn) VALUES ('" +
+            BowlingGameEntityImpl.uniqueId += 1;
+            st.execute("INSERT INTO game (id, maxTurn) VALUES ('"+BowlingGameEntityImpl.uniqueId+"', '" +
                     new BowlingRuleImpl().getMaxTurn() + "');");
             conn.commit();
         } catch (SQLException e) {
@@ -44,7 +45,7 @@ public class BowlingGameDaoImpl extends AbstractDao<GameEntity, BowlingGame, Int
         TurnEntity[] turnEntities = entity.getTurnEntities();
         BowlingTurnDaoImpl turnDao = new BowlingTurnDaoImpl(conn);
         for (TurnEntity en : turnEntities) {
-            turnDao.doSave((BowlingTurnEntity) en);
+            ((BowlingTurnEntityImpl)en).setForeignId(BowlingGameEntityImpl.uniqueId);
         }
     }
 

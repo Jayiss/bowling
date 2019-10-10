@@ -47,8 +47,11 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
             } else {
                 second = entity.getSecondPin();
             }
-            st.execute("INSERT INTO `turn` (firstPin, secondPin, foreignKey) VALUES ('"
-                    + entity.getFirstPin() + "', '" + second + "', '0')");
+            BowlingTurnEntityImpl.uniqueId += 1;
+            st.execute("INSERT INTO `turn` (id, firstPin, secondPin, foreignKey) VALUES ('"
+                    + BowlingTurnEntityImpl.uniqueId + "', '"
+                    + entity.getFirstPin() + "', '" + second + "', '"
+                    + ((BowlingTurnEntityImpl) entity).getForeignId() + "')");
         } catch (SQLException e) {
             e.printStackTrace();
         }

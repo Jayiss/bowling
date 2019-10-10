@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BowlingGameEntityImpl implements GameEntity {
+    public static Integer uniqueId = 0;
+
     private Integer id;
     private Integer totalScore;
     private List<Integer> scores;
