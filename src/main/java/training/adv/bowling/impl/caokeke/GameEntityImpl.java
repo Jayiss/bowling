@@ -4,6 +4,8 @@ import training.adv.bowling.api.BowlingRule;
 import training.adv.bowling.api.GameEntity;
 import training.adv.bowling.api.TurnEntity;
 
+import java.io.Serializable;
+
 public class GameEntityImpl implements GameEntity{
 
     private int id;
@@ -36,7 +38,8 @@ public class GameEntityImpl implements GameEntity{
     }
 
     @Override
-    public void setId(Integer id) {
-        this.id=id;
+    public void setId(Serializable id) {
+        //this.id=id;
     }
+
 }

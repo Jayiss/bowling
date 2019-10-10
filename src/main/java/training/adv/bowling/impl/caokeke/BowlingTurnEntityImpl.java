@@ -43,4 +43,5 @@ public class BowlingTurnEntityImpl implements BowlingTurnEntity {
     public void setId(TurnKey id) {
         this.turnKey=turnKey;
     }
+
 }

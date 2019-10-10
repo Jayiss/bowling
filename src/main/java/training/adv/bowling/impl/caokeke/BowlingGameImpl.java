@@ -1,9 +1,6 @@
 package training.adv.bowling.impl.caokeke;
 
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingRule;
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.GameEntity;
+import training.adv.bowling.api.*;
 
 public class BowlingGameImpl implements BowlingGame{
 
@@ -13,7 +10,7 @@ public class BowlingGameImpl implements BowlingGame{
     private BowlingRule br;
     private Integer [] scores;
     private BowlingTurn [] turns;
-    private GameEntity ge;
+    private BowlingGameEntity bge;
 
 
     public BowlingGameImpl()
@@ -28,9 +25,9 @@ public class BowlingGameImpl implements BowlingGame{
         scores=new Integer[MAX_TURNS+3];
         turns=new BowlingTurn[MAX_TURNS+3];
 
-        ge=new GameEntityImpl();
+        bge=new BowlingGameEntityImpl();
     }
-    public BowlingGameImpl(Integer curTurn,BowlingTurn []turns,GameEntity ge)
+    public BowlingGameImpl(Integer curTurn,BowlingTurn []turns,BowlingGameEntity bge)
     {
         this.curTurn=curTurn;
 
@@ -41,13 +38,15 @@ public class BowlingGameImpl implements BowlingGame{
 
         scores=new Integer[MAX_TURNS+3];
         this.turns=turns;
-
-        ge=new GameEntityImpl();
+        this.bge=bge;
+        Integer[] tmp=getScores();
+        for(int i=0;i<tmp.length;i++)
+            scores[i+1]=tmp[i];
     }
 
     @Override
-    public GameEntity getEntity() {
-        return ge;
+    public BowlingGameEntity getEntity() {
+        return bge;
     }
 
     @Override
@@ -89,15 +88,15 @@ public class BowlingGameImpl implements BowlingGame{
         int index=0;
 
         if(turns[curTurn]!=null && turns[curTurn].getSecondPin()==null && turns[curTurn].getFirstPin()!=MAX_SCORE)
-            turns[curTurn]=new BowlingTurnImpl(turns[curTurn].getFirstPin(),pins[index++],index,ge.getId());
+            turns[curTurn]=new BowlingTurnImpl(turns[curTurn].getFirstPin(),pins[index++],index,bge.getId());
 
         while(index<pins.length){
             if(pins[index]==MAX_SCORE)
-                turns[++curTurn]=new BowlingTurnImpl(pins[index++],0,index,ge.getId());
+                turns[++curTurn]=new BowlingTurnImpl(pins[index++],0,index,bge.getId());
             else if(pins[index]<MAX_SCORE && pins[index]>0 && index+1>=pins.length)
-                turns[++curTurn]=new BowlingTurnImpl(pins[index++],null,index,ge.getId());
+                turns[++curTurn]=new BowlingTurnImpl(pins[index++],null,index,bge.getId());
             else if(pins[index]<MAX_SCORE && pins[index]>0 && pins[index+1] >0 && pins[index+1]+pins[index]<=MAX_SCORE)
-                turns[++curTurn]=new BowlingTurnImpl(pins[index++],pins[index++],index,ge.getId());
+                turns[++curTurn]=new BowlingTurnImpl(pins[index++],pins[index++],index,bge.getId());
             else{
                 System.out.println("invalid data");
                 break;

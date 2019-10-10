@@ -26,23 +26,14 @@ public class DBUtil {
 		return connection;
 	}
 	public static void main(String [] args){
-//		Connection conn=getConnection();
-//		Statement st = null;
-//		try{
-//			st = conn.createStatement();
-//			String sql = "select id,name from persons";
-//			ResultSet rs=st.executeQuery(sql);
-//			while(rs.next()){
-//				int id=rs.getInt(1);
-//				String name=rs.getString(2);
-//				System.out.println(id+name);
-//			}
-//
-//		}catch(SQLException e){
-//			e.printStackTrace();
-//		}
-		BowlingTurnDao btd=new BowlingTrunDaoImpl();
-		BowlingTurn bt=new BowlingTurnImpl(1,1,1,1);
-		btd.save(bt);
+		Connection connection=DBUtil.getConnection();
+		Statement st = null;
+		try{
+			st = connection.createStatement();
+			String sql = "DELETE FROM games";
+			int rs=st.executeUpdate(sql);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 	}
 }

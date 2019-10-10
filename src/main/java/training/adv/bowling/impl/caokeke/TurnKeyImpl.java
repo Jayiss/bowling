@@ -13,6 +13,18 @@ public class TurnKeyImpl implements TurnKey {
     }
 
     @Override
+    public boolean equals(Object obj){
+        if(obj==null)return false;
+        if(obj instanceof TurnKey){
+            TurnKey tmp=(TurnKey)obj;
+            int id=tmp.getId();
+            int foreignId=tmp.getForeignId();
+            return this.id==id && this.foreignId==foreignId;
+        }
+        return false;
+    }
+
+    @Override
     public Integer getId() {
         return id;
     }
