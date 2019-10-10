@@ -79,6 +79,7 @@ public class DataAccessTest {
     //
     private GameEntity query(Integer id) {
         //TODO
+        Integer qTurnMax = null;
         try {
             Connection conn = DBUtil.getConnection();
             Statement st = conn.createStatement();
@@ -88,7 +89,7 @@ public class DataAccessTest {
             while (rs.next()) {
                 System.out.println(rs.getInt(1));
                 System.out.println(rs.getInt(2));
-                int qTurnMax = rs.getInt(2);
+                qTurnMax = rs.getInt(2);
             }
             System.out.println("Now Empty");
             conn.close();
@@ -96,10 +97,13 @@ public class DataAccessTest {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        BowlingRule rule = new BowlingRuleImpl();
-        GameEntity en = (GameEntity) new BowlingGameImpl(rule).getEntity();
-        en.setId(id);
-        return en;
+        if (qTurnMax != null) {
+            BowlingRule rule = new BowlingRuleImpl();
+            GameEntity en = (GameEntity) new BowlingGameImpl(rule).getEntity();
+            en.setId(id);
+            return en;
+        }
+        return null;
     }
 
     private BowlingTurnEntity query(TurnKey key) {
@@ -124,7 +128,7 @@ public class DataAccessTest {
                 qId = rs.getInt(1);
                 qFirstPin = rs.getInt(2);
                 qSecondPin = rs.getInt(3);
-                if (qSecondPin == -1){
+                if (qSecondPin == -1) {
                     qSecondPin = null;
                 }
             }
