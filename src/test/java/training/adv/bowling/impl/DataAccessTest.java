@@ -28,14 +28,27 @@ public class DataAccessTest {
     private BowlingGameFactory factory = new BowlingGameFactoryImpl();
 
     @Before
-    // Can add extra logic here.
     public void before() {
+//        String path = ClassLoader.getSystemResource("script/setup.sql").getPath();
+//        System.out.println(path);
+//        try (Connection conn = DBUtil.getConnection();
+//             FileReader fr = new FileReader(new File(path))) {
+//            RunScript.execute(conn, fr);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @After
-    // Can add extra logic here.
     public void after() {
-
+//        String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
+//        System.out.println(path);
+//        try (Connection conn = DBUtil.getConnection();
+//             FileReader fr = new FileReader(new File(path))) {
+//            RunScript.execute(conn, fr);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Test
@@ -82,9 +95,7 @@ public class DataAccessTest {
 
 
     // Assemble a BowlingGameEntityImpl based on its id in DB.
-    //
     private GameEntity query(Integer id) {
-        //TODO
         Integer qTurnMax = null;
         try {
             Connection conn = DBUtil.getConnection();
@@ -113,7 +124,6 @@ public class DataAccessTest {
     }
 
     private BowlingTurnEntity query(TurnKey key) {
-        //TODO
         Integer qId = null;
         Integer qFirstPin = null;
         Integer qSecondPin = null;
@@ -150,5 +160,4 @@ public class DataAccessTest {
         en.setSecondPin(qSecondPin);
         return en;
     }
-
 }

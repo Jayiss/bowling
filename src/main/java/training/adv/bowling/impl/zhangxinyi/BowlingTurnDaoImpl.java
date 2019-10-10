@@ -14,20 +14,24 @@ import java.util.List;
 public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnDao {
     Statement st;
     Connection conn;
+    public static boolean isTableCreated = false;
 
     // Turn table includes id, firstPin, secondPin and foreign id
     public BowlingTurnDaoImpl(Connection connection) {
         try {
             conn = connection;
             st = conn.createStatement();
-//            st.execute("CREATE TABLE turn (\n" +
-//                    "  `id` int(11),\n" +
-//                    "  `firstPin` int(11),\n" +
-//                    "  `secondPin` int(11),\n" +
-//                    "  `foreignKey` int(11),\n" +
-//                    "  PRIMARY KEY (`id`)\n" +
-//                    ")");
-//            conn.commit();
+//            if (!isTableCreated) {
+//                st.execute("CREATE TABLE turn (\n" +
+//                        "  `id` int(11),\n" +
+//                        "  `firstPin` int(11),\n" +
+//                        "  `secondPin` int(11),\n" +
+//                        "  `foreignKey` int(11),\n" +
+//                        "  PRIMARY KEY (`id`)\n" +
+//                        ")");
+//                isTableCreated = true;
+//            }
+            conn.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -36,7 +40,6 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
     @Override
     // According to given foreignId(Game ID), get a list consisted of all the turn keys.
     protected List<TurnKey> loadAllKey(int foreignId) {
-        //TODO
         Integer lId = null;
         Integer lFirstPin = null;
         Integer lSecondPin = null;
