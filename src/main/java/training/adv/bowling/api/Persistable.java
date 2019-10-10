@@ -2,6 +2,6 @@ package training.adv.bowling.api;
 
 import java.io.Serializable;
 
-public interface Persistable<T extends Entity<? extends Serializable>> {
-	T getEntity();
+public interface Persistable<E extends Entity<? extends Serializable>> {
+	E getEntity();
 }
