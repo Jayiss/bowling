@@ -5,7 +5,7 @@ import training.adv.bowling.api.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BowlingGameEntityImpl implements GameEntity {
+public class BowlingGameEntityImpl implements BowlingGameEntity {
     public static Integer uniqueId = 0;
 
     private Integer id;
@@ -14,7 +14,7 @@ public class BowlingGameEntityImpl implements GameEntity {
     private List<BowlingTurn> turns;
 
     @Override
-    public void setTurnEntities(TurnEntity[] turns) {
+    public void setTurnEntities(BowlingTurnEntity[] turns) {
         BowlingTurnEntity[] bTurns = (BowlingTurnEntity[])turns;
         int len = bTurns.length;
         this.turns = new ArrayList<>(len);
@@ -24,8 +24,8 @@ public class BowlingGameEntityImpl implements GameEntity {
     }
 
     @Override
-    public TurnEntity[] getTurnEntities() {
-        TurnEntity[] turnEntities = new TurnEntity[turns.size()];
+    public BowlingTurnEntity[] getTurnEntities() {
+        BowlingTurnEntity[] turnEntities = new BowlingTurnEntity[turns.size()];
         for (int i = 0; i < turns.size(); i++) {
             turnEntities[i] = turns.get(i).getEntity();
         }
@@ -69,5 +69,10 @@ public class BowlingGameEntityImpl implements GameEntity {
 
     public void setTurns(List<BowlingTurn> turns) {
         this.turns = turns;
+    }
+
+    @Override
+    public Integer getMaxPin() {
+        return new BowlingRuleImpl().getMaxPin();
     }
 }

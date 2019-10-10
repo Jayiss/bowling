@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class BowlingGameDaoImpl extends AbstractDao<GameEntity, BowlingGame, Integer> implements BowlingGameDao {
+public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGame, Integer> implements BowlingGameDao {
     Statement st;
     Connection conn;
 
@@ -33,7 +33,7 @@ public class BowlingGameDaoImpl extends AbstractDao<GameEntity, BowlingGame, Int
     // Use H2 DB to save the game data
     // Auto allocate id
     // Need to call Turn Dao's doSave
-    protected void doSave(GameEntity entity) {
+    protected void doSave(BowlingGameEntity entity) {
         try {
             BowlingGameEntityImpl.uniqueId += 1;
             st.execute("INSERT INTO game (id, maxTurn) VALUES ('"+BowlingGameEntityImpl.uniqueId+"', '" +
@@ -51,13 +51,14 @@ public class BowlingGameDaoImpl extends AbstractDao<GameEntity, BowlingGame, Int
 
     @Override
     // load the BowlingGameEntity according to its id
-    protected GameEntity doLoad(Integer id) {
+    protected BowlingGameEntity doLoad(Integer id) {
         return null;
     }
 
     @Override
     // After comlete loading, build its corresponding domain
-    protected BowlingGame doBuildDomain(GameEntity entity) {
+    protected BowlingGame doBuildDomain(BowlingGameEntity entity) {
+        BowlingTurnEntity[] turnEntities = entity.getTurnEntities();
         return null;
     }
 
