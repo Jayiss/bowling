@@ -2,9 +2,11 @@ package training.adv.bowling.impl.dingziyuan;
 
 import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
+import training.adv.bowling.api.TurnKey;
 
-public class BowlingTurnImpl implements BowlingTurn {
+public class BowlingTurnImpl implements BowlingTurn,BowlingTurnEntity {
     private Integer[] pins = new Integer[2];
+    TurnKey key;
     public Integer len = 0;
 
     public BowlingTurnImpl(Integer... pins) {
@@ -26,7 +28,27 @@ public class BowlingTurnImpl implements BowlingTurn {
     }
 
     @Override
+    public void setFirstPin(Integer pin) {
+        pins[0]=pin;
+    }
+
+    @Override
+    public void setSecondPin(Integer pin) {
+        pins[1]=pin;
+    }
+
+    @Override
     public BowlingTurnEntity getEntity() {
         return null;
+    }
+
+    @Override
+    public TurnKey getId() {
+        return null;
+    }
+
+    @Override
+    public void setId(TurnKey id) {
+
     }
 }

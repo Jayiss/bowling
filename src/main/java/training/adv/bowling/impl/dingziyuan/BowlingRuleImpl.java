@@ -6,6 +6,7 @@ import training.adv.bowling.api.BowlingTurn;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BowlingRuleImpl implements BowlingRule {
     private final Integer MAX_TURN;
@@ -170,6 +171,7 @@ public class BowlingRuleImpl implements BowlingRule {
         List<Integer> pins = new ArrayList<>();
         if (turns.isEmpty())
             return pins;
+
         for (BowlingTurn turn : turns) {
             pins.add(turn.getFirstPin());
             if (turn.getSecondPin() != null)

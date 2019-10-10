@@ -3,7 +3,7 @@ package training.adv.bowling.impl.dingziyuan;
 import training.adv.bowling.api.*;
 import training.adv.bowling.impl.AbstractGame;
 
-public class BowlingGameImpl  extends AbstractGame<BowlingTurn, BowlingRule> implements BowlingGame{
+public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> implements BowlingGame{
 
     private BowlingTurn[] turns = new BowlingTurn[0];
 
