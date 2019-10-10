@@ -16,8 +16,10 @@ import training.adv.bowling.impl.caokeke.*;
 import java.io.File;
 import java.io.FileReader;
 import java.sql.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DataAccessTest {
 	
 	private BowlingService bowlingService = new BowlingServiceImpl();
@@ -28,8 +30,9 @@ public class DataAccessTest {
 		String path = ClassLoader.getSystemResource("script/setup.sql").getPath();
 		System.out.println(path);
 		try (Connection conn = DBUtil.getConnection();
-			 FileReader fr = new FileReader(new File(path))) {
+				FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -37,7 +40,15 @@ public class DataAccessTest {
 	
 	@After
 	public void after() {
-
+		String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
+		System.out.println(path);
+		try (Connection conn = DBUtil.getConnection();
+			 FileReader fr = new FileReader(new File(path))) {
+			RunScript.execute(conn, fr);
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
@@ -63,7 +74,6 @@ public class DataAccessTest {
 	public void testBLoad() {
 		BowlingGame game = bowlingService.load(1001);
 		GameEntity entity = game.getEntity();
-		
 		assertEquals(Integer.valueOf(1001), entity.getId());
 		assertEquals(Integer.valueOf(10), entity.getMaxTurn());
 		assertEquals(12, game.getTurns().length);
@@ -109,4 +119,5 @@ public class DataAccessTest {
 		}
 		return res;
 	}
+	
 }

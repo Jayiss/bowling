@@ -9,7 +9,7 @@ import java.sql.*;
 
 public class DBUtil {
 	
-	private static final String url = "jdbc:h2:~/test";
+	private static final String url = "jdbc:h2:mem:~/test";
 	private static final String user = "sa";
 	private static final String pwd = "";
 	
