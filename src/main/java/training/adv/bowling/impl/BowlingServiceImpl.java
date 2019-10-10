@@ -10,13 +10,15 @@ import training.adv.bowling.api.BowlingService;
 import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnDao;
 import training.adv.bowling.api.BowlingTurnEntity;
+import training.adv.bowling.impl.fanxu.BowlingGameDaoImpl;
+import training.adv.bowling.impl.fanxu.BowlingTurnDaoImpl;
 
 public class BowlingServiceImpl implements BowlingService {
 	//TODO: implement DBUtil
 	private Connection connection = DBUtil.getConnection();
 	
-	private BowlingGameDao gameDao = null;//new BowlingGameDaoImpl(connection);
-	private BowlingTurnDao turnDao = null;//new BowlingTurnDaoImpl(connection);
+	private BowlingGameDao gameDao = new BowlingGameDaoImpl(connection);
+	private BowlingTurnDao turnDao = new BowlingTurnDaoImpl(connection);
 	
 	@Override
 	public void save(BowlingGame game) {

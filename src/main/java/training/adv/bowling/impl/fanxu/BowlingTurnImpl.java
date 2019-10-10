@@ -4,14 +4,9 @@ import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.TurnKey;
 
-public class BowlingTurnImpl implements BowlingTurn, BowlingTurnEntity {
+public class BowlingTurnImpl implements BowlingTurn{
     private Integer firstPin;
     private Integer secondPin;
-    private TurnKey turnKeyId;
-
-    BowlingTurnImpl(){
-
-    }
     BowlingTurnImpl(Integer firstPin,Integer secondPin){
         this.firstPin = firstPin;
         this.secondPin = secondPin;
@@ -26,28 +21,12 @@ public class BowlingTurnImpl implements BowlingTurn, BowlingTurnEntity {
         return this.secondPin;
     }
 
-    @Override
-    public void setFirstPin(Integer pin) {
-        this.firstPin = pin;
-    }
-
-    @Override
-    public void setSecondPin(Integer pin) {
-        this.secondPin =  pin;
-    }
-
-    @Override
-    public TurnKey getId() {
-        return this.turnKeyId;
-    }
-
-    @Override
-    public void setId(TurnKey id) {
-        this.turnKeyId = id;
-    }
 
     @Override
     public BowlingTurnEntity getEntity() {
-        return null;
+        BowlingTurnEntity bowlingTurnEntity =  new BowlingTurnInfo();
+        bowlingTurnEntity.setFirstPin(firstPin);
+        bowlingTurnEntity.setSecondPin(secondPin);
+        return bowlingTurnEntity;
     }
 }

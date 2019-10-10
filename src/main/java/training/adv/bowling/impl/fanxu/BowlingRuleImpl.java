@@ -9,7 +9,6 @@ import java.util.Arrays;
 public class BowlingRuleImpl implements BowlingRule {
     final int MAX_TURN = 10;
     final int MAX_PINS = 10;
-
     @Override
     public Boolean isNewPinsAllowed(BowlingTurn[] existingTurns, Integer[] newPins) {
         return null;
@@ -46,38 +45,25 @@ public class BowlingRuleImpl implements BowlingRule {
 
     @Override
     public Boolean isGameFinished(BowlingTurn[] allTurns) {
-        int turn = 0;
-        for(BowlingTurn bowlingTurn:allTurns){
-            if(turn<MAX_TURN){
-                if (bowlingTurn.getFirstPin()==null||bowlingTurn.getSecondPin()==null){
-                    return false;
-                }
-                turn++;
-            }else{//turn>=10:10,11
-                //judge three condition
-                if(isStrike(allTurns[MAX_TURN-1])){
-                    if(isFinish(allTurns[MAX_TURN])){
-                        //if it's strike
-                        if(isStrike(allTurns[MAX_TURN])){
-                            if(allTurns[MAX_TURN+1].getFirstPin()==null){
-                                return false;
-                            }
-                        }
-                    }else {
-                        return false;
-                    }
-                }
-                if(isSpare(allTurns[MAX_TURN-1])){
-                     if(allTurns[MAX_TURN].getFirstPin()==null){
-                         return false;
-                     }
-                }
-
-            }
-        }
-        return true;
+        return isGameFinished(allTurns,0);
     }
 
+    private boolean isGameFinished(BowlingTurn[] bowlingTurns,int index){
+        //当index为11的时候，通过第十轮来判断，
+        if(index==MAX_TURN+1){
+            if(isStrike(bowlingTurns[MAX_TURN-1])&&isStrike(bowlingTurns[MAX_TURN])){
+                return bowlingTurns[MAX_TURN+1].getFirstPin()!=null;
+            }
+            return true;
+        }
+        if(isFinish(bowlingTurns[index])){
+            return  isGameFinished(bowlingTurns,index+1);
+        }else {
+            return false;
+        }
+    }
+
+    //还没来的及修改！
     @Override
     public Integer[] calcScores(BowlingTurn[] allTurns) {
         Integer[] scores = new Integer[MAX_TURN];
@@ -112,8 +98,37 @@ public class BowlingRuleImpl implements BowlingRule {
                 }
             }
         }
+        //还未完成的版本；
+        //截取数组：
+//        for(;index<allTurns.length;index++){
+//            if(!isFinish(allTurns[index]){
+//                break;
+//            }
+//        }
+        //当前的index是没有完成的那个，保证index前的都是finished；
+//        for(int i = 0;i<index;i++){
+//            if(isStrike(allTurns[i])){
+//               if(i+1==index){
+//                   scores[i] = MAX_PINS + allTurns[index].getFirstPin();
+//               }else if(isStrike(allTurns[i+1])){
+//                   scores[i] = MAX_PINS + MAX_PINS + allTurns[i+2].getFirstPin();
+//               }else {
+//                   scores[i] = MAX_PINS + allTurns[i+1].getFirstPin() +allTurns[i+1].getSecondPin();
+//               }
+//            }
+//            if(isSpare(allTurns[i])){
+//                scores[i] = allTurns[i+1].getFirstPin() + MAX_PINS;
+//            }
+//            if(isMiss(allTurns[i])){
+//                scores[i] = allTurns[i].getFirstPin()+allTurns[i].getSecondPin();
+//            }
+//        }
+//        if(allTurns[index].getFirstPin()!=null){
+//            scores[index] = allTurns[index].getFirstPin();
+//        }
         return scores;
     }
+
 
     @Override
     public Boolean isValid(BowlingTurn turn) {
@@ -134,59 +149,55 @@ public class BowlingRuleImpl implements BowlingRule {
 
     @Override
     public BowlingTurn[] addScores(BowlingTurn[] existingTurns, Integer... pins) {
-        //find the index we should add ;
         BowlingTurn[] beforeTurns = new BowlingTurnImpl[existingTurns.length];
         //for copy exsistingturns
         for(int i = 0;i<existingTurns.length;i++){
             beforeTurns[i] = existingTurns[i];
         }
+        //find the index we should add ;
         int index = 0;
-        for(BowlingTurn bowlingTurn:existingTurns){
-            if(isFinish(bowlingTurn)){
-               index++;
+        boolean isTenTurnStrike = false;
+        boolean indexIncFlag  = false;
+        for(; index<existingTurns.length;index++){
+            if(!isFinish(existingTurns[index])){
+               break;
             }
         }
         //having found the index starting add
         for(Integer i:pins){
+            if(isGameFinished(existingTurns)){
+             return beforeTurns;
+            }
             BowlingTurn newBowlingTurn;
-            if(!isGameFinished(existingTurns)){
-                BowlingTurn bowlingTurn = existingTurns[index];
-                if(bowlingTurn.getFirstPin()!=null){
-                     newBowlingTurn = new BowlingTurnImpl(bowlingTurn.getFirstPin(),i);
-                    if(isValid(newBowlingTurn)){
-                        Arrays.fill(existingTurns,index,index+1,newBowlingTurn);
-                        index++;
-                    }else {
-                        return beforeTurns;
-                    }
-                }else {
-                    if(i.equals(MAX_PINS)){
-                        newBowlingTurn  = new BowlingTurnImpl(i,0);
-                        if(isValid(newBowlingTurn)){
-                            Arrays.fill(existingTurns,index,index+1,newBowlingTurn);
-
-                        }else {
-                            return beforeTurns;
-                        }
-                        index++;
-                    }else{
-                         newBowlingTurn = new BowlingTurnImpl(i,null);
-                        if(isValid(newBowlingTurn)){
-                            Arrays.fill(existingTurns,index,index+1,newBowlingTurn);
-
-                        }else {
-                            System.out.println("in");
-                            return beforeTurns;
-                        }
-                    }
-
-                }
+            BowlingTurn nowBowlingTurn = existingTurns[index];
+            if(nowBowlingTurn.getFirstPin()!=null){
+                newBowlingTurn = new BowlingTurnImpl(nowBowlingTurn.getFirstPin(),i);
+                index++;
+                indexIncFlag = true;
             }else {
+                if(i.equals(MAX_PINS)){
+                    newBowlingTurn  = new BowlingTurnImpl(i,0);
+                    index++;
+                    indexIncFlag = true;
+                }else{
+                    newBowlingTurn = new BowlingTurnImpl(i,null);
+                    indexIncFlag = false;
+                }
+            }
+            if(!isValid(newBowlingTurn)){
                 return beforeTurns;
             }
+            int changeIndex = indexIncFlag?index-1:index;
+            existingTurns[changeIndex] = newBowlingTurn;
+            //当改变的index是maxturn的时候
+            if(index==MAX_TURN){
+                if(!existingTurns[MAX_TURN-1].getFirstPin().equals(10)){
+                    existingTurns[MAX_TURN] =  new BowlingTurnImpl(existingTurns[MAX_TURN].getFirstPin(),0);
+                }
+            }
+
         }
         return existingTurns;
-
     }
 
     @Override
