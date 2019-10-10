@@ -5,7 +5,7 @@ import training.adv.bowling.api.BowlingGameFactory;
 
 public class BowlingGameFactoryImpl implements BowlingGameFactory {
 
-    private Integer id=1;
+    private static Integer id=1001;
     @Override
     public BowlingGame getGame() {
         return new BowlingGameImpl(BowlingRuleImpl.getInstance(),getId());

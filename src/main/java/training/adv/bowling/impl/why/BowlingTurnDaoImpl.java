@@ -25,7 +25,7 @@ public class BowlingTurnDaoImpl  extends AbstractBatchDao implements BowlingTurn
     }
 
     private Connection con;
-    BowlingTurnDaoImpl(Connection connection){
+    public BowlingTurnDaoImpl(Connection connection){
         this.con=connection;
     }
 
@@ -59,7 +59,7 @@ public class BowlingTurnDaoImpl  extends AbstractBatchDao implements BowlingTurn
             statement.setInt(2,key.getForeignId());
             statement.setInt(3,entity.getFirstPin());
             if (entity.getSecondPin()!=null)
-            statement.setInt(4,key.getId());
+            statement.setInt(4,entity.getSecondPin());
             else  statement.setNull(4, Types.INTEGER);
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -77,10 +77,11 @@ public class BowlingTurnDaoImpl  extends AbstractBatchDao implements BowlingTurn
             statement.setInt(1,id.getId());
             statement.setInt(2,id.getForeignId());
             ResultSet set=statement.executeQuery();
-            set.next();
-            entity.setFirstPin(set.getInt("first"));
-            entity.setSecondPin(set.getInt("second"));
-            if (set.wasNull())entity.setSecondPin(null);
+            if (set.next()) {
+                entity.setFirstPin(set.getInt("first"));
+                entity.setSecondPin(set.getInt("second"));
+                if (set.wasNull())entity.setSecondPin(null);
+            }else return null;
             return entity;
         } catch (SQLException e) {
             e.printStackTrace();

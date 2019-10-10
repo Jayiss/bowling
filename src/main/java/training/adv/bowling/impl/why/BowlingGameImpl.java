@@ -6,17 +6,22 @@ import training.adv.bowling.impl.AbstractGame;
 import java.util.Arrays;
 
 
-public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule>
+public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule,BowlingGameEntity>
         implements BowlingGame {
 
 
-    BowlingGameEntityImpl entity=new BowlingGameEntityImpl();
+    BowlingGameEntity entity;
     public BowlingGameImpl(BowlingRule rule,Integer id){
         super(rule);
+        entity=new BowlingGameEntityImpl();
         entity.setId(id);
         entity.setTurnEntities(new BowlingTurnEntityImpl[0]);
     }
 
+    BowlingGameImpl(BowlingRule rule,BowlingGameEntity gameEntity){
+        super(rule);
+        this.entity=gameEntity;
+    }
     @Override
     public Integer getTotalScore() {
         Integer[] a=getScores();
@@ -30,17 +35,17 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule>
 
     @Override
     public Integer[] getScores() {
-        return rule.calcScores(entity.getBowlingTurn());
+        return rule.calcScores(getBowlingTurn(entity.getTurnEntities()));
     }
 
     @Override
     public BowlingTurn[] getTurns() {
-        return entity.getBowlingTurn();
+        return getBowlingTurn(entity.getTurnEntities());
     }
 
     @Override
     public Integer[] addScores(Integer... pins) {
-        BowlingTurn[] turn=rule.addScores(entity.getBowlingTurn(),pins);
+        BowlingTurn[] turn=rule.addScores(getBowlingTurn(entity.getTurnEntities()),pins);
         BowlingTurnEntity[] temp=new BowlingTurnEntity[turn.length];
         for (int i = 0; i < temp.length; i++) {
             temp[i]=turn[i].getEntity();
@@ -51,18 +56,15 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule>
     }
 
     @Override
-    public GameEntity getEntity() {
-//        GameEntity gameEntity=new BowlingGameEntityImpl();
-//        TurnEntity[] entities=new TurnEntity[turn.length];
-//        for (int i=0;i<entities.length;i++) {
-//            BowlingTurn singleTurn= turn[i];
-//            BowlingTurnEntityImpl entity=new BowlingTurnEntityImpl();
-//            entity.setFirstPin(singleTurn.getFirstPin());
-//            entity.setSecondPin(singleTurn.getSecondPin());
-//            entity.setId(new TurnKeyImpl(i+1,gameId));
-//        }
-//        gameEntity.setTurnEntities(entities);
-//        gameEntity.setId(gameId);
+    public BowlingGameEntity getEntity() {
         return entity;
+    }
+
+    BowlingTurn[] getBowlingTurn(BowlingTurnEntity[] turns){
+        BowlingTurn[] temp=new BowlingTurn[turns.length];
+        for (int i = 0; i < temp.length; i++) {
+            temp[i]=new BowlingTurnImpl(turns[i]);
+        }
+        return temp;
     }
 }
