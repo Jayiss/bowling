@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, BowlingGameEntity> implements BowlingGame,
         BowlingGameEntity {
-    int gameId;
+    private int gameId;
     private Integer maxTurn, maxPin;
 //    private BowlingTurn[] bowlingTurns;
 
@@ -27,6 +27,13 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
     //TODO
     BowlingGameImpl(BowlingRule rule, GameEntity gameEntity) {
         super(rule);
+    }
+
+    public BowlingGameImpl(BowlingRule rule, int gameId) {
+        super(rule);
+        this.maxTurn = rule.getMaxTurn();
+        this.maxPin = rule.getMaxPin();
+        this.gameId = gameId;
     }
 
     @Override

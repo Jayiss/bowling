@@ -6,8 +6,8 @@ import java.sql.SQLException;
 
 public class DBUtil {
 
-    private static final String url = "jdbc:h2:file:/Users/caoyu/IdeaProjects/citi intern/bowling/DataSource/bowling";
-    private static final String user = "CAOYU";
+	private static final String url = "jdbc:h2:file:/Users/caoyu/IdeaProjects/citi intern/bowling/DataSource/bowling";
+	private static final String user = "CAOYU";
 	private static final String pwd = "";
 	
 	public static Connection getConnection() {
@@ -19,7 +19,7 @@ public class DBUtil {
 		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+
 		return connection;
 	}
 	

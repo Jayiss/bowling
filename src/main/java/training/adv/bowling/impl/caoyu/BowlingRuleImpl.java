@@ -8,7 +8,20 @@ import java.util.Collections;
 import java.util.Objects;
 
 public class BowlingRuleImpl implements BowlingRule {
+    private int maxPin, maxTurn;
+
+    BowlingRuleImpl() {
+        maxPin = 10;
+        maxTurn = 10;
+    }
+
+    public BowlingRuleImpl(int maxTurn, int maxPin) {
+        this.maxPin = maxPin;
+        this.maxTurn = maxTurn;
+    }
+
     @Override
+
     public Boolean isNewPinsAllowed(BowlingTurn[] existingTurns, Integer[] newPins) {
 
         /*if new pins is empty, no action is necessary
@@ -229,11 +242,11 @@ public class BowlingRuleImpl implements BowlingRule {
 
     @Override
     public Integer getMaxPin() {
-        return 10;
+        return maxPin;
     }
 
     @Override
     public Integer getMaxTurn() {
-        return 10;
+        return maxTurn;
     }
 }
