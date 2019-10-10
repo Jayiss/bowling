@@ -7,13 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingGameFactory;
-import training.adv.bowling.api.BowlingService;
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.BowlingTurnEntity;
-import training.adv.bowling.api.GameEntity;
-import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.api.*;
 import training.adv.bowling.impl.fanjuncai.*;
 
 
@@ -38,6 +32,7 @@ public class DataAccessTest {
 		game.addScores(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 		bowlingService.save(game);
 		GameEntity result = query(game.getEntity().getId());
+
 		assertEquals(game.getEntity().getId(), result.getId());
 		assertEquals(game.getEntity().getMaxTurn(), result.getMaxTurn());
 		
@@ -75,13 +70,11 @@ public class DataAccessTest {
 	}	
 	
 	
-	private GameEntity query(Integer id) {
+	private BowlingGameEntity query(Integer id) {
 		//TODO
 		if(id !=null){
 			BowlingGameDaoImpl bowlingGameDao = new BowlingGameDaoImpl();
-			GameEntityImpl gameEntity = new GameEntityImpl();
-			gameEntity = (GameEntityImpl) bowlingGameDao.doLoad(id);
-			return gameEntity;
+			return bowlingGameDao.doLoad(id);
 		}
 		else
 			return null;
@@ -92,9 +85,7 @@ public class DataAccessTest {
 		//TODO
 		if(key != null){
 			BowlingTurnDaoImpl bowlingTurnDao = new BowlingTurnDaoImpl();
-			BowlingTurnEntityImpl bowlingTurnEntity = new BowlingTurnEntityImpl();
-			bowlingTurnEntity = (BowlingTurnEntityImpl) bowlingTurnDao.doLoad(key);
-			return bowlingTurnEntity;
+			return bowlingTurnDao.doLoad(key);
 		}
 		else
 			return null;

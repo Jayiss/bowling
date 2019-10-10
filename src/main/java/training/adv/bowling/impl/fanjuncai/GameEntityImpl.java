@@ -3,6 +3,8 @@ package training.adv.bowling.impl.fanjuncai;
 import training.adv.bowling.api.GameEntity;
 import training.adv.bowling.api.TurnEntity;
 
+import java.io.Serializable;
+
 public class GameEntityImpl implements GameEntity {
 
     private Integer MaxTurn = 10;
@@ -34,7 +36,13 @@ public class GameEntityImpl implements GameEntity {
     }
 
     @Override
+    public void setId(Serializable id) {
+
+    }
+
+
     public void setId(Integer id) {
         this.Id = id;
     }
+
 }

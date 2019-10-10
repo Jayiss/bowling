@@ -9,6 +9,25 @@ public class BowlingTurnImpl implements BowlingTurn {
     private Integer FirstPin;
     private Integer SecondPin;
 
+
+    private Integer GameId;
+    private Integer Id;
+
+    public Integer getId() {
+        return Id;
+    }
+
+    public void setId(Integer id) {
+        Id = id;
+    }
+
+    public Integer getGameId() {
+        return this.GameId;
+    }
+
+    public void setGameId(Integer gameId) {
+        this.GameId = gameId;
+    }
     public BowlingTurnImpl(Integer[] turn) {
         //this.blTurn = turn;
         this.numOfPins = turn.length;
@@ -34,6 +53,8 @@ public class BowlingTurnImpl implements BowlingTurn {
         this.numOfPins = null;
         this.FirstPin = null;
         this.SecondPin = null;
+        setGameId(Sequence.ID);
+        setId(Sequence.TurnTD++);
     }
 
     @Override
@@ -48,6 +69,13 @@ public class BowlingTurnImpl implements BowlingTurn {
 
     @Override
     public BowlingTurnEntity getEntity() {
-        return null;
+        TurnKeyImpl turnKey = new TurnKeyImpl();
+        turnKey.setId(this.Id);
+        turnKey.setForeignId(this.GameId);
+        BowlingTurnEntityImpl bowlingTurnEntity = new BowlingTurnEntityImpl();
+        bowlingTurnEntity.setFirstPin(this.FirstPin);
+        bowlingTurnEntity.setSecondPin(this.SecondPin);
+        bowlingTurnEntity.setId(turnKey);
+        return bowlingTurnEntity;
     }
 }

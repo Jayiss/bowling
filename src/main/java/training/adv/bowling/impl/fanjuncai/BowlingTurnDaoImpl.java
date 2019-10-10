@@ -25,7 +25,6 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
             pstm.setInt(1,foreignId);
             ResultSet rs = pstm.executeQuery();
             while(rs.next()){
-
                 TurnKeyImpl turnKeyImpl = new TurnKeyImpl();
                 turnKeyImpl.setId(rs.getInt("ID"));
                 turnKeyImpl.setId(rs.getInt("BOWLINGGAMEID"));
@@ -55,19 +54,29 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
                 ResultSet rs = pstm.executeQuery();
 
                 if(!rs.next()){
-                    str = "INSERT INTO BOWLINGGAME VALUES(?)";
-                    pstm = connection.prepareStatement(str);
-                    pstm.setInt(1,entity.getId().getForeignId());
+                    BowlingGameEntityImpl bowlingGameEntity = new BowlingGameEntityImpl();
+                    BowlingGameDaoImpl bowlingGameDao = new BowlingGameDaoImpl();
+                    bowlingGameDao.doSave(bowlingGameEntity);
+                }
+
+                if(entity.getSecondPin()==null){
+                    String sql1 = "INSERT INTO BOWLINGTURN(ID,BOWLINGGAMEID,FIRSTPIN) VALUES(?,?,?)";
+                    pstm = connection.prepareStatement(sql1);
+                    pstm.setInt(1,entity.getId().getId());
+                    pstm.setInt(2,entity.getId().getForeignId());
+                    pstm.setInt(3,entity.getFirstPin());
+                    pstm.executeUpdate();
+                }
+                else{
+                    String sql2 = "INSERT INTO BOWLINGTURN VALUES(?,?,?,?)";
+                    pstm = connection.prepareStatement(sql2);
+                    pstm.setInt(1,entity.getId().getId());
+                    pstm.setInt(2,entity.getId().getForeignId());
+                    pstm.setInt(3,entity.getFirstPin());
+                    pstm.setInt(4,entity.getSecondPin());
                     pstm.executeUpdate();
                 }
 
-                String sql = "INSERT INTO BOWLINGTURN VALUES(?,?,?,?)";
-                pstm = connection.prepareStatement(sql);
-                pstm.setInt(1,entity.getId().getId());
-                pstm.setInt(2,entity.getId().getForeignId());
-                pstm.setInt(3,entity.getFirstPin());
-                pstm.setInt(4,entity.getSecondPin());
-                pstm.executeUpdate();
 
                 connection.commit();
                 pstm.close();
@@ -96,7 +105,9 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
                 while(rs.next()){
                     bowlingTurnEntity.setId(id);
                     bowlingTurnEntity.setFirstPin(rs.getInt("FIRSTPIN"));
-                    bowlingTurnEntity.setSecondPin(rs.getInt("SECONDPIN"));
+                    if(rs.getObject("SECONDPIN")!=null){
+                        bowlingTurnEntity.setSecondPin(rs.getInt("SECONDPIN"));
+                    }
                 }
                 connection.commit();
                 pstm.close();
@@ -110,6 +121,15 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
         }
         else
             return null;
+    }
+
+    public List<BowlingTurnEntity> batchLoad(Integer id){
+        ArrayList<BowlingTurnEntity> bowlingTurnEntityArrayList = new ArrayList<>();
+        List<TurnKey> turnKeys = loadAllKey(id);
+        for(TurnKey turnKey:turnKeys)
+            bowlingTurnEntityArrayList.add(doLoad(turnKey));
+        return bowlingTurnEntityArrayList;
+
     }
 
     @Override
@@ -169,5 +189,9 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
         }
         else
             return false;
+    }
+
+    public void save(BowlingTurn bowlingTurn){
+        doSave(bowlingTurn.getEntity());
     }
 }

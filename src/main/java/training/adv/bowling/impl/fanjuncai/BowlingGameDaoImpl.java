@@ -12,15 +12,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class BowlingGameDaoImpl extends AbstractDao<GameEntity, BowlingGame,Integer> implements BowlingGameDao {
+public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGame,Integer> implements BowlingGameDao {
     @Override
-    protected void doSave(GameEntity entity) {
+    protected void doSave(BowlingGameEntity entity) {
         if(entity!=null  ){
             Connection connection = DBUtil.getConnection();
             String sql = "INSERT INTO BOWLINGGAME VALUES(?,?)";
             try {
                 PreparedStatement psmt = connection.prepareStatement(sql);
-                psmt.setInt(1,Sequence.ID);
+                if(entity.getId()!=null)
+                    psmt.setInt(1,entity.getId());
+                else
+                    psmt.setInt(1,Sequence.ID);
                 //Sequence.ID++;
                 psmt.setInt(2,entity.getMaxTurn());
                 psmt.executeUpdate();
@@ -31,64 +34,51 @@ public class BowlingGameDaoImpl extends AbstractDao<GameEntity, BowlingGame,Inte
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
-            BowlingTurnDaoImpl bowlingTurnDao = new BowlingTurnDaoImpl();
-            Integer countturn = 1;
-            TurnKeyImpl turnKey = new TurnKeyImpl();
-            turnKey.setForeignId(Sequence.ID);
-            for(TurnEntity entity1:entity.getTurnEntities()){
-                turnKey.setId(countturn);
-                entity1.setId(turnKey);
-                bowlingTurnDao.doSave((BowlingTurnEntity) entity1);
-                countturn++;
-            }
             Sequence.ID++;
         }
 
     }
 
-    @Override
-    public GameEntity doLoad(Integer id) {
-        if(id !=null){
+    public void save(BowlingGame bowlingGame){
+        doSave(bowlingGame.getEntity());
+    }
 
-            Integer count = 1;
-            GameEntityImpl gameEntity = new GameEntityImpl();
-            BowlingTurnEntity bowlingTurnEntity = new BowlingTurnEntityImpl();
-            ArrayList<TurnEntity> turnEntities = new ArrayList<>();
+    @Override
+    public BowlingGameEntity doLoad(Integer id) {
+        if(id !=null){
+            BowlingGameEntityImpl gameEntity = new BowlingGameEntityImpl();
             Connection connection = DBUtil.getConnection();
             String sql = "SELECT * FROM BOWLINGGAME WHERE ID = ?";
             try {
                 PreparedStatement psmt = connection.prepareStatement(sql);
                 psmt.setInt(1,id);
                 ResultSet rs = psmt.executeQuery();
-                while(!rs.next()){
+                while(rs.next()){
                     gameEntity.setId(rs.getInt("ID"));
                     gameEntity.setMaxTurn(rs.getInt("MAXTURN"));
-                    TurnKeyImpl turnKey = new TurnKeyImpl();
-                    turnKey.setId(count++);
-                    turnKey.setForeignId(rs.getInt("ID"));
-                    BowlingTurnDaoImpl bowlingTurnDao = new BowlingTurnDaoImpl();
-                    bowlingTurnEntity = bowlingTurnDao.doLoad(turnKey);
-                    while (bowlingTurnEntity!=null){
-                        turnEntities.add(bowlingTurnEntity);
-                        turnKey.setId(count++);
-                        turnKey.setForeignId(rs.getInt("ID"));
-                        bowlingTurnDao = new BowlingTurnDaoImpl();
-                        bowlingTurnEntity = bowlingTurnDao.doLoad(turnKey);
-                    }
                 }
+                return gameEntity;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
-            return gameEntity;
+            return null;
         }
         else
             return null;
     }
+    public BowlingGameImpl load(Integer id){
+        BowlingGameEntity bowlingGameEntity = new BowlingGameEntityImpl();
+        BowlingGameImpl bowlingGame = new BowlingGameImpl(new BowlingRuleImpl());
+        BowlingGameDaoImpl bowlingGameDao = new BowlingGameDaoImpl();
+        bowlingGameEntity = bowlingGameDao.doLoad(id);
+
+        bowlingGame.setId(bowlingGameEntity.getId());
+
+        return bowlingGame;
+    }
 
     @Override
-    protected BowlingGame doBuildDomain(GameEntity entity) {
+    protected BowlingGame doBuildDomain(BowlingGameEntity entity) {
         if(entity!=null){
             BowlingRuleImpl bowlingRule = new BowlingRuleImpl();
             bowlingRule.setMaxTurn(entity.getMaxTurn());

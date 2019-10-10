@@ -3,14 +3,26 @@ package training.adv.bowling.impl.fanjuncai;
 import training.adv.bowling.api.*;
 import training.adv.bowling.impl.AbstractGame;
 
-public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> implements BowlingGame {
+public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule,BowlingGameEntity> implements BowlingGame {
 
     public BowlingGameImpl(BowlingRule rule) {
         super(rule);
+        Id = Sequence.ID+1;
+        Sequence.ID++;
     }
 
+    private Integer Id;
     private  Integer[] Scores;
     private BowlingTurn[] ExistingTurns;
+
+
+    public Integer getId() {
+        return this.Id;
+    }
+
+    public void setId(Integer id) {
+        this.Id = id;
+    }
 
     public void setScores(Integer[] scores) {
         Scores = scores;
@@ -42,7 +54,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
 
     @Override
     public BowlingTurn[] getTurns() {
-        return new BowlingTurn[0];
+        return ExistingTurns;
     }
 
     @Override
@@ -62,10 +74,10 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
     }
 
     @Override
-    public GameEntity getEntity() {
-        GameEntityImpl gameEntity = new GameEntityImpl();
-        gameEntity.setTurnEntities((TurnEntity[]) this.ExistingTurns);
-
-        return gameEntity;
+    public BowlingGameEntity getEntity() {
+        BowlingGameEntityImpl bowlingGameEntity = new BowlingGameEntityImpl();
+        if(bowlingGameEntity.getId()==null)
+            bowlingGameEntity.setId(this.Id);
+        return bowlingGameEntity;
     }
 }
