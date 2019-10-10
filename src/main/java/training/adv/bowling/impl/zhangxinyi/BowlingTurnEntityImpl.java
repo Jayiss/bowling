@@ -4,7 +4,7 @@ import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.TurnKey;
 
 public class BowlingTurnEntityImpl implements BowlingTurnEntity {
-    public static Integer uniqueId = 0;
+    public static Integer uniqueId = 2000;
 
     private TurnKey id;
     private Integer firstPin;

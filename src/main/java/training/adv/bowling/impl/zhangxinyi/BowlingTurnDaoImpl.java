@@ -72,6 +72,7 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
                     + entity.getId().getId() + "', '"
                     + entity.getFirstPin() + "', '" + second + "', '"
                     + entity.getId().getForeignId() + "')");
+            conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }

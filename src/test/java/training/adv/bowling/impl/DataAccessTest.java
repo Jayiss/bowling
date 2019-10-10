@@ -34,6 +34,7 @@ public class DataAccessTest {
         try (Connection conn = DBUtil.getConnection();
              FileReader fr = new FileReader(new File(path))) {
             RunScript.execute(conn, fr);
+            conn.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,6 +47,7 @@ public class DataAccessTest {
         try (Connection conn = DBUtil.getConnection();
              FileReader fr = new FileReader(new File(path))) {
             RunScript.execute(conn, fr);
+            conn.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
