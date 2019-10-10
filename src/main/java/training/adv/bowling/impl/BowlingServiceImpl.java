@@ -25,6 +25,7 @@ public class BowlingServiceImpl implements BowlingService {
                     "(\n" +
                     "\tgame_id int,\n" +
                     "\tmax_turn int,\n" +
+                    "\tmax_pin int,\n" +
                     "\tconstraint games_pk\n" +
                     "\t\tprimary key (game_id)\n" +
                     ");\n" +

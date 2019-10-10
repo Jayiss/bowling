@@ -2,18 +2,20 @@ package training.adv.bowling.impl.caoyu;
 
 import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
+import training.adv.bowling.api.TurnKey;
 
-public class BowlingTurnImpl implements BowlingTurn {
-    private BowlingTurnEntity bowlingTurnEntity = new BowlingTurnEntityImpl();
+public class BowlingTurnImpl implements BowlingTurn, BowlingTurnEntity {
+    private TurnKey turnKey;
+    Integer firstPin, secondPin;
 
     //constructors
     public BowlingTurnImpl(Integer firstPin, Integer secondPin) {
-        bowlingTurnEntity.setFirstPin(firstPin);
-        bowlingTurnEntity.setSecondPin(secondPin);
+        this.setFirstPin(firstPin);
+        this.setSecondPin(secondPin);
     }
 
     public BowlingTurnImpl(Integer firstPin) {
-        bowlingTurnEntity.setFirstPin(firstPin);
+        this.setFirstPin(firstPin);
     }
 
     public BowlingTurnImpl() {
@@ -21,18 +23,38 @@ public class BowlingTurnImpl implements BowlingTurn {
 
     //inherited methods
     @Override
+    public BowlingTurnEntity getEntity() {
+        //to be implemented
+        return null;
+    }
+
+    @Override
     public Integer getFirstPin() {
-        return bowlingTurnEntity.getFirstPin();
+        return firstPin;
     }
 
     @Override
     public Integer getSecondPin() {
-        return bowlingTurnEntity.getSecondPin();
+        return secondPin;
     }
 
     @Override
-    public BowlingTurnEntity getEntity() {
-        //to be implemented
-        return null;
+    public void setFirstPin(Integer pin) {
+        this.firstPin = pin;
+    }
+
+    @Override
+    public void setSecondPin(Integer pin) {
+        this.secondPin = pin;
+    }
+
+    @Override
+    public TurnKey getId() {
+        return turnKey;
+    }
+
+    @Override
+    public void setId(TurnKey turnKey) {
+        this.turnKey = turnKey;
     }
 }
