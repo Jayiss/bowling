@@ -9,8 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGame, Integer> implements BowlingGameDao {
-    Statement st;
     Connection conn;
+    Statement st;
     public static boolean isTableCreated = false;
 
     // Initialize DB and create the table.
@@ -60,16 +60,10 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
     protected BowlingGameEntity doLoad(Integer id) {
         try {
             ResultSet rs = st.executeQuery("SELECT * FROM game WHERE id = '" + id + "'");
-
             conn.commit();
             while (rs.next()) {
-                System.out.println(rs.getInt(1));
-                System.out.println(rs.getInt(2));
                 Integer lTurnMax = rs.getInt(2);
             }
-            System.out.println("Now Empty");
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

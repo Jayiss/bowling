@@ -26,12 +26,10 @@ INSERT INTO turn (id, firstPin, secondPin, foreignKey) VALUES ('10', '10', '-1',
 INSERT INTO turn (id, firstPin, secondPin, foreignKey) VALUES ('11', '10', '-1', '1001');
 INSERT INTO turn (id, firstPin, secondPin, foreignKey) VALUES ('12', '10', '-1', '1001');
 
-INSERT INTO turn (firstPin, secondPin, foreignKey) VALUES ('', '', '');
-
 SELECT id FROM game WHERE id = ''
 
 DELETE FROM game;
-DELETE FROM turn
+DELETE FROM turn;
 
 DROP TABLE game;
 DROP TABLE turn;

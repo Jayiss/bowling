@@ -29,26 +29,26 @@ public class DataAccessTest {
 
     @Before
     public void before() {
-//        String path = ClassLoader.getSystemResource("script/setup.sql").getPath();
-//        System.out.println(path);
-//        try (Connection conn = DBUtil.getConnection();
-//             FileReader fr = new FileReader(new File(path))) {
-//            RunScript.execute(conn, fr);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        String path = ClassLoader.getSystemResource("script/setup.sql").getPath();
+        System.out.println(path);
+        try (Connection conn = DBUtil.getConnection();
+             FileReader fr = new FileReader(new File(path))) {
+            RunScript.execute(conn, fr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @After
     public void after() {
-//        String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
-//        System.out.println(path);
-//        try (Connection conn = DBUtil.getConnection();
-//             FileReader fr = new FileReader(new File(path))) {
-//            RunScript.execute(conn, fr);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
+        System.out.println(path);
+        try (Connection conn = DBUtil.getConnection();
+             FileReader fr = new FileReader(new File(path))) {
+            RunScript.execute(conn, fr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
