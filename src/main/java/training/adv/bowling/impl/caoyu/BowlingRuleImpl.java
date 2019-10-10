@@ -21,7 +21,6 @@ public class BowlingRuleImpl implements BowlingRule {
     }
 
     @Override
-
     public Boolean isNewPinsAllowed(BowlingTurn[] existingTurns, Integer[] newPins) {
 
         /*if new pins is empty, no action is necessary
@@ -226,7 +225,6 @@ public class BowlingRuleImpl implements BowlingRule {
     }
 
     private boolean isNewPinsHeadAddable(BowlingTurn[] existingTurns, Integer[] pins) {
-
         boolean isExistingTurnsEmpty = (existingTurns.length == 0);
 
         BowlingTurn lastExistingTurn = null;

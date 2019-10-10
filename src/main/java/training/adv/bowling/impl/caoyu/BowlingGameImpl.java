@@ -10,16 +10,12 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
         BowlingGameEntity {
     private int gameId;
     private Integer maxTurn, maxPin;
-//    private BowlingTurn[] bowlingTurns;
-
-    //    private BowlingGameEntity gameEntity;
     private ArrayList<BowlingTurnImpl> turns = new ArrayList<>();
     private ArrayList<Integer> scores = new ArrayList<>();
 
     BowlingGameImpl(BowlingRule rule) {
         super(rule);
         this.gameId = UidUtil.getNewGameId();
-//        this.bowlingTurns = new BowlingTurnImpl[0];
         this.maxTurn = rule.getMaxTurn();
         this.maxPin = rule.getMaxPin();
     }
@@ -95,10 +91,6 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 
     @Override
     public void setTurnEntities(BowlingTurnEntity[] bowlingTurnEntities) {
-//        this.turns.clear();//addAll(Arrays.asList(bowlingTurnEntities));
-//        for (int i = 0; i < bowlingTurnEntities.length; i++) {
-//            turns.add(bowlingTurnEntities[i])
-//        }
         //empty turnEntities
         this.turns.clear();
 

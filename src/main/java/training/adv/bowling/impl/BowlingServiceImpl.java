@@ -28,8 +28,6 @@ public class BowlingServiceImpl implements BowlingService {
     public BowlingGame load(Integer id) {
         BowlingGameImpl game = (BowlingGameImpl) gameDao.load(id);
         List<BowlingTurnEntity> turns = turnDao.batchLoad(id);
-//        BowlingRule rule = new BowlingRuleImpl(game.);
-//        BowlingGameImpl bowlingGame = new BowlingGameImpl();
         game.setTurnEntities(turns.toArray(BowlingTurnEntity[]::new));
         return game;
     }
