@@ -25,6 +25,8 @@ public class BowlingServiceImpl implements BowlingService {
     public void save(BowlingGame game) {
         gameDao.save(game);
         for (BowlingTurn turn : game.getTurns()) {
+            Integer a = turn.getFirstPin();
+            Integer b = turn.getSecondPin();
             turnDao.save(turn);
         }
         commit();
@@ -35,6 +37,7 @@ public class BowlingServiceImpl implements BowlingService {
         BowlingGame game = gameDao.load(id);
         List<BowlingTurnEntity> turns = turnDao.batchLoad(id);
         game.getEntity().setTurnEntities(turns.toArray(new BowlingTurnEntity[0]));
+
         return game;
     }
 

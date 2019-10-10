@@ -76,10 +76,19 @@ public class DataAccessTest {
 
     private BowlingTurnEntity query(TurnKey key) {
         BowlingGame game = bowlingService.load(key.getForeignId());
-        for (BowlingTurn turn : game.getTurns()) {
-            if (turn.getEntity().getId().getId() == key.getId())
-                return turn.getEntity();
+        BowlingTurnEntity[] tt = game.getEntity().getTurnEntities();
+        for(BowlingTurnEntity turnEntity : tt)
+        {
+            Integer a= turnEntity.getId().getId();
+            Integer b = key.getId();
+            if(turnEntity.getId().getId().equals(key.getId()))
+                return turnEntity;
         }
+//        BowlingTurn[] turns = game.getTurns();
+//        for (BowlingTurn turn : game.getTurns()) {
+//            if (turn.getEntity().getId().getId() == key.getId())
+//                return turn.getEntity();
+//        }
         return null;
     }
 
