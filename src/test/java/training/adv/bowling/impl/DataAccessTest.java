@@ -17,9 +17,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
-import java.sql.Connection;
 
 
 public class DataAccessTest {
@@ -99,26 +97,19 @@ public class DataAccessTest {
     // Assemble a BowlingGameEntityImpl based on its id in DB.
     private GameEntity query(Integer id) {
         Integer qTurnMax = null;
-        try {
-            Connection conn = DBUtil.getConnection();
-            Statement st = conn.createStatement();
+        try (Connection conn = DBUtil.getConnection();
+             Statement st = conn.createStatement();) {
             ResultSet rs = st.executeQuery("SELECT * FROM GAME WHERE id = '" + id + "'");
             conn.commit();
-            System.out.println("id is " + id);
             while (rs.next()) {
-                System.out.println(rs.getInt(1));
-                System.out.println(rs.getInt(2));
                 qTurnMax = rs.getInt(2);
             }
-            System.out.println("Now Empty");
-            conn.close();
-            st.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         if (qTurnMax != null) {
             BowlingRule rule = new BowlingRuleImpl();
-            GameEntity en = (GameEntity) new BowlingGameImpl(rule).getEntity();
+            GameEntity en = new BowlingGameImpl(rule).getEntity();
             en.setId(id);
             return en;
         }
@@ -126,33 +117,20 @@ public class DataAccessTest {
     }
 
     private BowlingTurnEntity query(TurnKey key) {
-        Integer qId = null;
         Integer qFirstPin = null;
         Integer qSecondPin = null;
-        try {
-            Connection conn = DBUtil.getConnection();
-            Statement st = conn.createStatement();
+        try (Connection conn = DBUtil.getConnection();
+             Statement st = conn.createStatement();) {
             ResultSet rs = st.executeQuery("SELECT * FROM turn WHERE foreignKey = '" + key.getForeignId() + "'");
             conn.commit();
-            System.out.println("id is " + key.getId());
-            System.out.println("foreignId is" + key.getForeignId());
 
             while (rs.next()) {
-                System.out.println(rs.getInt(1));
-                System.out.println(rs.getInt(2));
-                System.out.println(rs.getInt(3));
-                System.out.println(rs.getInt(4));
-
-                qId = rs.getInt(1);
                 qFirstPin = rs.getInt(2);
                 qSecondPin = rs.getInt(3);
                 if (qSecondPin == -1) {
                     qSecondPin = null;
                 }
             }
-            System.out.println("Now Empty");
-            conn.close();
-            st.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

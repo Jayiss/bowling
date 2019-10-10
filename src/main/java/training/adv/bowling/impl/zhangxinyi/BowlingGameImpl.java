@@ -17,7 +17,6 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
     }
 
     @Override
-    // Ugly code, just copy part of addscores.
     public Integer getTotalScore() {
         BowlingGameEntityImpl entity = (BowlingGameEntityImpl) getEntity();
         Integer[] scoresArray = rule.calcScores(entity.getTurns().toArray(new BowlingTurn[0]));

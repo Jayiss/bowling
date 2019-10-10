@@ -3,7 +3,6 @@ package training.adv.bowling.impl.zhangxinyi;
 import training.adv.bowling.api.*;
 import training.adv.bowling.impl.AbstractBatchDao;
 
-import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,25 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnDao {
-    Statement st;
-    Connection conn;
-    public static boolean isTableCreated = false;
+    private Statement st;
+    private Connection conn;
 
     // Turn table includes id, firstPin, secondPin and foreign id
     public BowlingTurnDaoImpl(Connection connection) {
         try {
             conn = connection;
             st = conn.createStatement();
-//            if (!isTableCreated) {
-//                st.execute("CREATE TABLE turn (\n" +
-//                        "  `id` int(11),\n" +
-//                        "  `firstPin` int(11),\n" +
-//                        "  `secondPin` int(11),\n" +
-//                        "  `foreignKey` int(11),\n" +
-//                        "  PRIMARY KEY (`id`)\n" +
-//                        ")");
-//                isTableCreated = true;
-//            }
             conn.commit();
         } catch (Exception e) {
             e.printStackTrace();

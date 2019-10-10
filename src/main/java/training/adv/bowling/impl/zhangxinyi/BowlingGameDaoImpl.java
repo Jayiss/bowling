@@ -9,9 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGame, Integer> implements BowlingGameDao {
-    Connection conn;
-    Statement st;
-    public static boolean isTableCreated = false;
+    private Connection conn;
+    private Statement st;
 
     // Initialize DB and create the table.
     // Game table includes id and max turn.
@@ -19,14 +18,6 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
         try {
             conn = connection;
             st = conn.createStatement();
-//            if (!isTableCreated) {
-//                st.execute("CREATE TABLE game (\n" +
-//                        "  id int(11),\n" +
-//                        "  maxTurn int(11) NOT NULL DEFAULT '10',\n" +
-//                        "  PRIMARY KEY (id)\n" +
-//                        ")");
-//                isTableCreated = true;
-//            }
             conn.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,7 +42,7 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
         BowlingTurnDaoImpl turnDao = new BowlingTurnDaoImpl(conn);
         for (TurnEntity en : turnEntities) {
             BowlingTurnEntityImpl.uniqueId += 1;
-            ((BowlingTurnEntityImpl) en).setId(new BowlingTurnKeyImpl(BowlingTurnEntityImpl.uniqueId, BowlingGameEntityImpl.uniqueId));
+            en.setId(new BowlingTurnKeyImpl(BowlingTurnEntityImpl.uniqueId, BowlingGameEntityImpl.uniqueId));
         }
     }
 
