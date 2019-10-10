@@ -7,7 +7,7 @@ public class BowlingTurnImpl implements BowlingTurn {
     private BowlingTurnEntity turn = new BowlingTurnEntityImpl();
 
     // Stored Turn[] should be either legal or not finished.
-    BowlingTurnImpl(Integer... pins) {
+    public BowlingTurnImpl(Integer... pins) {
         if (pins.length == 1) {
             getEntity().setFirstPin(pins[0]);
             getEntity().setSecondPin(null);

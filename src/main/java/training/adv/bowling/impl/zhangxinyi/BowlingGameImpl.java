@@ -17,7 +17,14 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
     }
 
     @Override
+    // Ugly code, just copy part of addscores.
     public Integer getTotalScore() {
+        BowlingGameEntityImpl entity = (BowlingGameEntityImpl) getEntity();
+        BowlingTurn[] turnsArray = rule.addScores(entity.getTurns().toArray(new BowlingTurn[0]));
+        entity.setTurns(Arrays.asList(turnsArray));
+        Integer[] scoresArray = rule.calcScores(entity.getTurns().toArray(new BowlingTurn[0]));
+        entity.setScores(Arrays.asList(scoresArray));
+        entity.setTotalScore(updateTotalScore(entity.getScores().toArray(new Integer[0])));
         return ((BowlingGameEntityImpl) getEntity()).getTotalScore();
     }
 
@@ -48,7 +55,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
         return entity.getScores().toArray(new Integer[0]);
     }
 
-    private Integer updateTotalScore(Integer[] scores) {
+    public Integer updateTotalScore(Integer[] scores) {
         int sum = 0;
         for (Integer score : scores) {
             sum += score;

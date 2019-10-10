@@ -15,11 +15,13 @@ public class BowlingGameEntityImpl implements BowlingGameEntity {
 
     @Override
     public void setTurnEntities(BowlingTurnEntity[] turns) {
-        BowlingTurnEntity[] bTurns = (BowlingTurnEntity[])turns;
-        int len = bTurns.length;
-        this.turns = new ArrayList<>(len);
-        for (int i = 0; i < len; i++) {
-            this.turns.add(new BowlingTurnImpl(bTurns[i].getFirstPin(), bTurns[i].getSecondPin()));
+        this.turns = new ArrayList<BowlingTurn>(turns.length);
+        for (BowlingTurnEntity turn : turns) {
+            BowlingTurn temp = new BowlingTurnImpl();
+            temp.getEntity().setId(turn.getId());
+            temp.getEntity().setFirstPin(turn.getFirstPin());
+            temp.getEntity().setSecondPin(turn.getSecondPin());
+            this.turns.add(temp);
         }
     }
 
