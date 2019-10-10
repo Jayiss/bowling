@@ -3,6 +3,7 @@ package training.adv.bowling.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +15,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.sql.Connection;
 
 
 public class DataAccessTest {
