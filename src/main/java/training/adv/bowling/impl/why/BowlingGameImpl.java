@@ -6,23 +6,15 @@ import training.adv.bowling.impl.AbstractGame;
 import java.util.Arrays;
 
 
-public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> implements BowlingGame {
+public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule>
+        implements BowlingGame {
 
-    private Integer gameId;
-    public BowlingGameImpl(BowlingRule rule) {
-        super(rule);
-    }
+
+    BowlingGameEntityImpl entity=new BowlingGameEntityImpl();
     public BowlingGameImpl(BowlingRule rule,Integer id){
-        this(rule);
-        this.gameId=id;
-    }
-
-    private int [] score=new int[rule.getMaxTurn()];
-    private BowlingTurn turn[]=new BowlingTurn[0];
-    private int currentIndex=0;
-
-    private TurnKey getCurrentKey(){
-        return new TurnKeyImpl(currentIndex+1,gameId);
+        super(rule);
+        entity.setId(id);
+        entity.setTurnEntities(new BowlingTurnEntityImpl[0]);
     }
 
     @Override
@@ -38,22 +30,39 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
 
     @Override
     public Integer[] getScores() {
-        return rule.calcScores(turn);
+        return rule.calcScores(entity.getBowlingTurn());
     }
 
     @Override
     public BowlingTurn[] getTurns() {
-        return Arrays.copyOf(turn,turn.length);
+        return entity.getBowlingTurn();
     }
 
     @Override
     public Integer[] addScores(Integer... pins) {
-        turn=rule.addScores(turn,pins);
+        BowlingTurn[] turn=rule.addScores(entity.getBowlingTurn(),pins);
+        BowlingTurnEntity[] temp=new BowlingTurnEntity[turn.length];
+        for (int i = 0; i < temp.length; i++) {
+            temp[i]=turn[i].getEntity();
+            temp[i].setId(new TurnKeyImpl(i,entity.getId()));
+        }
+        entity.setTurnEntities(temp);
         return getScores();
     }
 
     @Override
     public GameEntity getEntity() {
-        return null;
+//        GameEntity gameEntity=new BowlingGameEntityImpl();
+//        TurnEntity[] entities=new TurnEntity[turn.length];
+//        for (int i=0;i<entities.length;i++) {
+//            BowlingTurn singleTurn= turn[i];
+//            BowlingTurnEntityImpl entity=new BowlingTurnEntityImpl();
+//            entity.setFirstPin(singleTurn.getFirstPin());
+//            entity.setSecondPin(singleTurn.getSecondPin());
+//            entity.setId(new TurnKeyImpl(i+1,gameId));
+//        }
+//        gameEntity.setTurnEntities(entities);
+//        gameEntity.setId(gameId);
+        return entity;
     }
 }

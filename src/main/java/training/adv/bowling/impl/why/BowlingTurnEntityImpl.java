@@ -9,6 +9,7 @@ public class BowlingTurnEntityImpl implements BowlingTurnEntity {
     private Integer second;
     private TurnKey key;
 
+
     @Override
     public Integer getFirstPin() {
         return first;

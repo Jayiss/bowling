@@ -6,43 +6,43 @@ import training.adv.bowling.api.TurnKey;
 
 public class BowlingTurnImpl implements BowlingTurn {
 
-    private Integer first;
-    private Integer second;
-    private TurnKey key;
 
-    public BowlingTurnImpl(int first, int second){
-        this.first=first;
-        this.second=second;
+    private BowlingTurnEntity entity;
+
+    public BowlingTurnImpl(Integer first, Integer second){
+        this(first);
+        entity.setSecondPin(second);
     }
 
-    public BowlingTurnImpl(int first){
-        this.first=first;
+    public BowlingTurnImpl(Integer first){
+        entity=new BowlingTurnEntityImpl();
+        entity.setFirstPin(first);
+    }
+
+    BowlingTurnImpl(BowlingTurnEntity entity){
+        this.entity=entity;
     }
 
     void setSecond(int second){
-        this.second=second;
+        entity.setSecondPin(second);
     }
 
     void setKey(TurnKey key){
-        this.key=key;
+        entity.setId(key);
     }
 
     @Override
     public Integer getFirstPin() {
-        return first;
+        return entity.getFirstPin();
     }
 
     @Override
     public Integer getSecondPin() {
-        return second;
+        return entity.getSecondPin();
     }
 
     @Override
     public BowlingTurnEntity getEntity() {
-        BowlingTurnEntityImpl temp=new BowlingTurnEntityImpl();
-        temp.setFirstPin(first);
-        temp.setSecondPin(second);
-        temp.setId(key);
-        return temp;
+        return entity;
     }
 }

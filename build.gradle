@@ -9,4 +9,7 @@ repositories {
 dependencies {
     testCompile 'junit:junit:4.12'
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.199'
+    
+    compile 'junit:junit:4.12'
+    compile group: 'com.h2database', name: 'h2', version: '1.4.199'
 }

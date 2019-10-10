@@ -1,6 +1,7 @@
 package training.adv.bowling.impl;
 
 
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -18,17 +19,10 @@ public class App {
 //		game.addScores(4, 5, 6); // TODO: play your game here
 		// blah blah
 		// System.out.println(game.getTotalScore());
-		Integer i=new Integer(3);
-		System.out.println(i);
-		test(i);
-		System.out.println(i);
-
+		Connection con=DBUtil.getConnection();
 	}
 
 	public static void test(Integer i){
 		i++;
 	}
-}
-class pointer{
-	int i;
 }

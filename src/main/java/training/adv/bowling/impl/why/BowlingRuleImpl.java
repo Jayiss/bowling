@@ -13,10 +13,10 @@ public class BowlingRuleImpl implements BowlingRule {
     public static final int maxTurns=10;
 
     private static class InstanceHolder{
-        private static BowlingRuleImpl instance=new BowlingRuleImpl();
+        private static BowlingRule instance=new BowlingRuleImpl();
     }
 
-    public static BowlingRuleImpl getInstance(){
+    public static BowlingRule getInstance(){
         return InstanceHolder.instance;
     }
 
@@ -65,7 +65,7 @@ public class BowlingRuleImpl implements BowlingRule {
     private boolean addable(List<BowlingTurn> list){
         //assume list is legal
         if (list.size()<getMaxTurn())return true;
-        else {
+
             BowlingTurn lastTurn=list.get(getMaxTurn()-1);//get the last round
             if (!isFinish(lastTurn))return true;
             else if (isSpare(lastTurn)){
@@ -79,7 +79,7 @@ public class BowlingRuleImpl implements BowlingRule {
                     else return false;
                 }else return false;
             }else return false;
-        }
+
 
     }
     /**
@@ -187,8 +187,7 @@ public class BowlingRuleImpl implements BowlingRule {
             return existingTurns;
         }
         List<BowlingTurn> list=new ArrayList<>();
-        for (BowlingTurn turn :
-            existingTurns) {
+        for (BowlingTurn turn : existingTurns) {
             list.add(turn);
         }
         for (Integer i :
