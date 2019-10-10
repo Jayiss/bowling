@@ -1,23 +1,21 @@
 package training.adv.bowling.impl.zhuyurui;
 
-import training.adv.bowling.api.BowlingRule;
-import training.adv.bowling.api.GameEntity;
-import training.adv.bowling.api.TurnEntity;
+import training.adv.bowling.api.*;
 
-import java.time.Instant;
+public class BowlingGameEntityImpl implements BowlingGameEntity {
 
-public class BowlingGameEntityImpl implements GameEntity {
-
-    private TurnEntity[] turnEntities;
-    private int id;
+    private BowlingTurnEntity[] turnEntities;
+    private Integer id;
 
     @Override
-    public void setTurnEntities(TurnEntity[] turns) {
+    public void setTurnEntities(BowlingTurnEntity[] turns) {
+
         turnEntities = turns;
     }
 
+
     @Override
-    public TurnEntity[] getTurnEntities() {
+    public BowlingTurnEntity[] getTurnEntities() {
 
         return turnEntities;
     }
@@ -35,5 +33,10 @@ public class BowlingGameEntityImpl implements GameEntity {
     @Override
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Override
+    public Integer getMaxPin() {
+        return BowlingRuleImpl.getInstance().getMaxPin();
     }
 }

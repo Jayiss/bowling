@@ -11,6 +11,7 @@ public class BowlingGameFactoryImpl implements BowlingGameFactory {
 
     @Override
     public BowlingGame getGame() {
+        bowlingGame.getEntity().setId(IDUtils.createID());
         return bowlingGame;
     }
 }

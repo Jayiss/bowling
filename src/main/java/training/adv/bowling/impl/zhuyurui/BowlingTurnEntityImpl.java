@@ -4,9 +4,19 @@ import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.TurnKey;
 
 public class BowlingTurnEntityImpl implements BowlingTurnEntity {
-    private int firstPin;
-    private int secondPin;
+    private Integer firstPin;
+    private Integer secondPin;
     private TurnKey turnKey;
+
+    public BowlingTurnEntityImpl(){
+
+    }
+
+    public BowlingTurnEntityImpl(Integer firstPin,Integer secondPin,TurnKey turnKey){
+        this.turnKey=turnKey;
+        this.firstPin=firstPin;
+        this.secondPin=secondPin;
+    }
 
 
     @Override

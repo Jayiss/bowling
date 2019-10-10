@@ -5,41 +5,40 @@ import training.adv.bowling.api.BowlingTurnEntity;
 
 public class BowlingTurnImpl implements BowlingTurn {
 
-    private Integer firstPin;
-    private Integer secondPin;
-
-
-
-    public BowlingTurnImpl(Integer firstPin, Integer secondPin){
-        this.firstPin = firstPin;
-        this.secondPin = secondPin;
-    }
-
-    public BowlingTurnImpl(Integer firstPin){
-        this(firstPin,null);
-    }
+    private BowlingTurnEntity bowlingTurnEntity=new BowlingTurnEntityImpl();
 
     public BowlingTurnImpl(){
 
     }
 
+    public BowlingTurnImpl(Integer firstPin, Integer secondPin) {
+        this.bowlingTurnEntity.setFirstPin(firstPin);
+        this.bowlingTurnEntity.setSecondPin(secondPin);
+    }
+
+    public BowlingTurnImpl(Integer firstPin) {
+        this(firstPin, null);
+    }
+
+    public BowlingTurnImpl(BowlingTurnEntity entity) {
+        this(entity.getFirstPin(),entity.getSecondPin());
+        this.bowlingTurnEntity.setId(entity.getId());
+    }
+
     @Override
     public Integer getFirstPin() {
 
-        return firstPin;
+        return bowlingTurnEntity.getFirstPin();
     }
 
     @Override
     public Integer getSecondPin() {
 
-        return secondPin;
+        return bowlingTurnEntity.getSecondPin();
     }
 
     @Override
     public BowlingTurnEntity getEntity() {
-        BowlingTurnEntity bowlingTurnEntity=new BowlingTurnEntityImpl();
-        bowlingTurnEntity.setFirstPin(firstPin);
-        bowlingTurnEntity.setSecondPin(secondPin);
         return bowlingTurnEntity;
     }
 }

@@ -6,10 +6,7 @@ import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.TurnKey;
 import training.adv.bowling.impl.AbstractBatchDao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +20,10 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
     @Override
     protected List<TurnKey> loadAllKey(int foreignId) {
         List<TurnKey> turnKeys=new ArrayList<>();
-        String sql="SELECT id FROM test.turns where gameId="+foreignId+";";
+        String sql="SELECT id FROM turns where gameId="+foreignId+";";
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            ResultSet resultSet=preparedStatement.executeQuery(sql);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet=statement.executeQuery(sql);
 
             while (resultSet.next()){
                 int x=resultSet.getInt(1);
@@ -56,12 +53,13 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
         BowlingTurnEntity bowlingTurnEntity=new BowlingTurnEntityImpl();
 
 
-        String sql="Select * from turns where gameId="+id.getForeignId()+"&id="+id.getId()+";";
+        String sql="Select * from turns where gameId="+id.getForeignId()+" AND id="+id.getId()+";";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet= preparedStatement.executeQuery();
             while (resultSet.next()){
                 int i=resultSet.getInt(1);
+                bowlingTurnEntity.setId(id);
                 bowlingTurnEntity.setFirstPin(resultSet.getInt(3));
                 bowlingTurnEntity.setSecondPin(resultSet.getInt(4));
             }
@@ -82,7 +80,7 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
     @Override
     public boolean remove(TurnKey key) {
         int i=0;
-        String sql="delete FROM turns where id="+key.getId()+"&gameId="+key.getForeignId()+";";
+        String sql="delete FROM turns where id="+key.getId()+" AND gameId="+key.getForeignId()+";";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             i=preparedStatement.executeUpdate();
