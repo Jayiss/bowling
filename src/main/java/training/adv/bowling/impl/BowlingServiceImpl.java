@@ -23,9 +23,9 @@ public class BowlingServiceImpl implements BowlingService {
 	@Override
 	public void save(BowlingGame game) {
 		gameDao.save(game);
-		for (BowlingTurn turn : game.getTurns()) {
+		/*for (BowlingTurn turn : game.getTurns()) {
 			turnDao.save(turn);
-		}
+		}*/
 		commit();
 	}
 

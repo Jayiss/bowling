@@ -30,7 +30,7 @@ public class BowlingTurnEntityImpl implements BowlingTurnEntity {
 
     @Override
     public TurnKey getId() {
-        return new TurnKeyImpl();
+        return new TurnKeyImpl(1001,2);
     }
 
     @Override

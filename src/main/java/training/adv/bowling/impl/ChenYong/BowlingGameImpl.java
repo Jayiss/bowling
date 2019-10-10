@@ -1,18 +1,64 @@
 package training.adv.bowling.impl.ChenYong;
 
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingRule;
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.GameEntity;
+import training.adv.bowling.api.*;
 import training.adv.bowling.impl.AbstractGame;
 
-public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> implements BowlingGame {
+import java.util.ArrayList;
+import java.util.List;
+
+public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, BowlingGameEntity> implements BowlingGameEntity, BowlingGame {
 
     private BowlingTurn []turns=new BowlingTurn[0];
+    private Integer id = 0;
+
     @Override
-    public GameEntity getEntity() {
-        return null;
+    public Integer getMaxPin() {
+        return super.rule.getMaxPin();
     }
+
+    @Override
+    public Integer getMaxTurn() {
+        return super.rule.getMaxTurn();
+    }
+
+    @Override
+    public Integer getId() {
+        return 1001;
+    }
+
+    @Override
+    public void setTurnEntities(BowlingTurnEntity[] turns) {
+
+    }
+
+    @Override
+    public void setId(Integer id) {
+        this.id=id;
+    }
+
+
+
+    @Override
+    public BowlingTurnEntity[] getTurnEntities() {
+        List<BowlingTurnEntity> list=new ArrayList<>();
+        BowlingTurnEntity bowlingTurnEntity=new BowlingTurnEntityImpl();
+        for(int i=0;i<turns.length;i++)
+        {
+            bowlingTurnEntity.setFirstPin(turns[i].getFirstPin());
+            bowlingTurnEntity.setSecondPin(turns[i].getSecondPin());
+            TurnKey turnKey=new TurnKeyImpl(i,1001);
+            bowlingTurnEntity.setId(turnKey);
+        }
+        return list.toArray(new BowlingTurnEntity[0]);
+    }
+
+    @Override
+    public BowlingGameEntity getEntity() {
+        return this;
+    }
+
+
+
     public BowlingGameImpl(BowlingRule rule) {
         super(rule);
     }

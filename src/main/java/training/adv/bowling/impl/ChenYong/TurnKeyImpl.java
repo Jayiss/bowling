@@ -6,10 +6,11 @@ public class TurnKeyImpl implements TurnKey {
     Integer id;
     Integer foreignId;
 
-    public TurnKeyImpl()
+    public TurnKeyImpl(Integer id,Integer foreignId)
     {
-        id=getId();
-        foreignId=getForeignId();
+        this.id=id;
+        this.foreignId=foreignId;
+        //foreignId=getForeignId();
     }
     @Override
     public Integer getId() {
