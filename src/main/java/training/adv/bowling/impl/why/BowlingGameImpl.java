@@ -63,7 +63,9 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule,Bowli
     BowlingTurn[] getBowlingTurn(BowlingTurnEntity[] turns){
         BowlingTurn[] temp=new BowlingTurn[turns.length];
         for (int i = 0; i < temp.length; i++) {
-            temp[i]=new BowlingTurnImpl(turns[i]);
+            temp[i]=new BowlingTurnImpl(turns[i].getFirstPin(),turns[i].getSecondPin());
+            temp[i].getEntity().setId(new TurnKeyImpl(turns[i].getId().getId()
+                    ,turns[i].getId().getForeignId()));
         }
         return temp;
     }

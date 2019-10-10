@@ -19,10 +19,6 @@ public class BowlingTurnImpl implements BowlingTurn {
         entity.setFirstPin(first);
     }
 
-    BowlingTurnImpl(BowlingTurnEntity entity){
-        this.entity=entity;
-    }
-
     void setSecond(int second){
         entity.setSecondPin(second);
     }

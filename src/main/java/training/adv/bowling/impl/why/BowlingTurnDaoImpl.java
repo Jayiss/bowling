@@ -91,7 +91,7 @@ public class BowlingTurnDaoImpl  extends AbstractBatchDao implements BowlingTurn
 
     @Override
     protected BowlingTurn doBuildDomain(BowlingTurnEntity entity) {
-        return new BowlingTurnImpl(entity);
+        return new BowlingTurnImpl(entity.getFirstPin(),entity.getSecondPin());
     }
 
     @Override
