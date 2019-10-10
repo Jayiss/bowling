@@ -1,9 +1,6 @@
 package training.adv.bowling.impl.fanjuncai;
 
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingRule;
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.GameEntity;
+import training.adv.bowling.api.*;
 import training.adv.bowling.impl.AbstractGame;
 
 public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> implements BowlingGame {
@@ -14,6 +11,19 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
 
     private  Integer[] Scores;
     private BowlingTurn[] ExistingTurns;
+
+    public void setScores(Integer[] scores) {
+        Scores = scores;
+    }
+
+    public BowlingTurn[] getExistingTurns() {
+        return ExistingTurns;
+    }
+
+    public void setExistingTurns(BowlingTurn[] existingTurns) {
+        ExistingTurns = existingTurns;
+    }
+
     @Override
     public Integer getTotalScore() {
         Integer TotalScore = 0;
@@ -53,6 +63,9 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule> impl
 
     @Override
     public GameEntity getEntity() {
-        return null;
+        GameEntityImpl gameEntity = new GameEntityImpl();
+        gameEntity.setTurnEntities((TurnEntity[]) this.ExistingTurns);
+
+        return gameEntity;
     }
 }

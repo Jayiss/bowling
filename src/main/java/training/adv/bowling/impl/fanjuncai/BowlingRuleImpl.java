@@ -12,6 +12,14 @@ public class BowlingRuleImpl implements BowlingRule {
     private Integer MaxTurn = 10;
     private BowlingTurn[] ExistingTurns = null;
 
+    public BowlingTurn[] getExistingTurns() {
+        return ExistingTurns;
+    }
+
+    public void setExistingTurns(BowlingTurn[] existingTurns) {
+        ExistingTurns = existingTurns;
+    }
+
     @Override
     public Boolean isNewPinsAllowed(BowlingTurn[] existingTurns, Integer[] newPins) {
         BowlingTurn existingturn = new BowlingTurnImpl();

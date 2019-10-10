@@ -14,15 +14,17 @@ import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.GameEntity;
 import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.impl.fanjuncai.*;
 
 
 public class DataAccessTest {
 	
 	private BowlingService bowlingService = new BowlingServiceImpl();
-	private BowlingGameFactory factory = null; // new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory = new BowlingGameFactoryImpl();
 	
 	@Before
 	public void before() {
+
 	}
 	
 	@After
@@ -75,12 +77,28 @@ public class DataAccessTest {
 	
 	private GameEntity query(Integer id) {
 		//TODO
-		return null;
+		if(id !=null){
+			BowlingGameDaoImpl bowlingGameDao = new BowlingGameDaoImpl();
+			GameEntityImpl gameEntity = new GameEntityImpl();
+			gameEntity = (GameEntityImpl) bowlingGameDao.doLoad(id);
+			return gameEntity;
+		}
+		else
+			return null;
+
 	}
 	
 	private BowlingTurnEntity query(TurnKey key) {
 		//TODO
-		return null;
+		if(key != null){
+			BowlingTurnDaoImpl bowlingTurnDao = new BowlingTurnDaoImpl();
+			BowlingTurnEntityImpl bowlingTurnEntity = new BowlingTurnEntityImpl();
+			bowlingTurnEntity = (BowlingTurnEntityImpl) bowlingTurnDao.doLoad(key);
+			return bowlingTurnEntity;
+		}
+		else
+			return null;
+
 	}
 	
 }
