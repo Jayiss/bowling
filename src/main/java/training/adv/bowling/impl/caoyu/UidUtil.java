@@ -1,13 +1,13 @@
 package training.adv.bowling.impl.caoyu;
 
-public class UidUtil {
-    private static Integer gameId = 1001, turnId = 0;
+class UidUtil {
+    private static Integer gameId = 0, turnId = 1000;
 
-    synchronized public static Integer getNewGameId() {
+    synchronized static Integer getNewGameId() {
         return gameId++;
     }
 
-    synchronized public static Integer getNewTurnId() {
+    synchronized static Integer getNewTurnId() {
         return turnId++;
     }
 }

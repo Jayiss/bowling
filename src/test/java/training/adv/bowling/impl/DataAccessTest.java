@@ -32,6 +32,7 @@ public class DataAccessTest {
         try (Connection conn = DBUtil.getConnection();
              FileReader fr = new FileReader(new File(path))) {
             RunScript.execute(conn, fr);
+            conn.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,14 +40,15 @@ public class DataAccessTest {
 
     @After
     public void after() {
-        String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
-        System.out.println(path);
-        try (Connection conn = DBUtil.getConnection();
-             FileReader fr = new FileReader(new File(path))) {
-            RunScript.execute(conn, fr);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
+//        System.out.println(path);
+//        try (Connection conn = DBUtil.getConnection();
+//             FileReader fr = new FileReader(new File(path))) {
+//            RunScript.execute(conn, fr);
+//            conn.commit();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Test
@@ -73,7 +75,7 @@ public class DataAccessTest {
         BowlingGame game = bowlingService.load(1001);
         GameEntity entity = game.getEntity();
 
-        assertEquals(Integer.valueOf(1001), entity.getId());
+        assertEquals(1001, entity.getId());
         assertEquals(Integer.valueOf(10), entity.getMaxTurn());
         assertEquals(12, game.getTurns().length);
         assertEquals(Integer.valueOf(300), game.getTotalScore());
@@ -83,7 +85,7 @@ public class DataAccessTest {
     @Test
     public void testRemove() {
         GameEntity before = query(1001);
-        assertEquals(Integer.valueOf(1001), before.getId());
+        assertEquals(1001, before.getId());
 
         bowlingService.remove(1001);
 

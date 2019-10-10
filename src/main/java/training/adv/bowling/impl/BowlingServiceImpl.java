@@ -2,6 +2,7 @@ package training.adv.bowling.impl;
 
 import training.adv.bowling.api.*;
 import training.adv.bowling.impl.caoyu.BowlingGameDaoImpl;
+import training.adv.bowling.impl.caoyu.BowlingGameImpl;
 import training.adv.bowling.impl.caoyu.BowlingTurnDaoImpl;
 
 import java.sql.Connection;
@@ -25,9 +26,11 @@ public class BowlingServiceImpl implements BowlingService {
 
     @Override
     public BowlingGame load(Integer id) {
-        BowlingGame game = gameDao.load(id);
+        BowlingGameImpl game = (BowlingGameImpl) gameDao.load(id);
         List<BowlingTurnEntity> turns = turnDao.batchLoad(id);
-        game.getEntity().setTurnEntities(turns.toArray(new BowlingTurnEntity[0]));
+//        BowlingRule rule = new BowlingRuleImpl(game.);
+//        BowlingGameImpl bowlingGame = new BowlingGameImpl();
+        game.setTurnEntities(turns.toArray(BowlingTurnEntity[]::new));
         return game;
     }
 

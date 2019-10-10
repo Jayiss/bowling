@@ -27,6 +27,8 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
             PreparedStatement deleteExistingGame = connection.prepareStatement("DELETE FROM PUBLIC.GAMES WHERE " +
                     "GAME_ID = ?;");
             deleteExistingGame.setInt(1, entity.getId());
+            deleteExistingGame.executeUpdate();
+
 
             //game insertion
             PreparedStatement insertBowlingGameStatement = connection.prepareStatement("INSERT INTO \"PUBLIC\"" +
@@ -39,7 +41,6 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return;
     }
 
     @Override
@@ -72,6 +73,15 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
 
     @Override
     public boolean remove(Integer key) {
-        return false;
+        try {
+            PreparedStatement deleteExistingGame = connection.prepareStatement("DELETE FROM PUBLIC.GAMES WHERE " +
+                    "GAME_ID = ?;");
+            deleteExistingGame.setInt(1, key);
+            deleteExistingGame.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

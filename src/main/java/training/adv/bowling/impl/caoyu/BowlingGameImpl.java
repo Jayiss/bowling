@@ -13,7 +13,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 //    private BowlingTurn[] bowlingTurns;
 
     //    private BowlingGameEntity gameEntity;
-    private ArrayList<BowlingTurn> turns = new ArrayList<>();
+    private ArrayList<BowlingTurnImpl> turns = new ArrayList<>();
     private ArrayList<Integer> scores = new ArrayList<>();
 
     BowlingGameImpl(BowlingRule rule) {
@@ -47,7 +47,12 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 
     @Override
     public BowlingTurn[] getTurns() {
-        return turns.toArray(new BowlingTurn[0]);
+        BowlingTurnImpl[] result = new BowlingTurnImpl[this.turns.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = new BowlingTurnImpl(this.turns.get(i).getFirstPin(), this.turns.get(i).getSecondPin());
+            result[i].setId(this.turns.get(i).getId());
+        }
+        return result;
     }
 
     @Override
@@ -97,17 +102,25 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
         //empty turnEntities
         this.turns.clear();
 
-        for (int i = 0; i < turns.size(); i++) {
+        for (BowlingTurnEntity bowlingTurnEntity : bowlingTurnEntities) {
 
             //construct new turn entity
             BowlingTurnImpl currentTurn = new BowlingTurnImpl();
             TurnKey currentTurnKey = new BowlingTurnKeyImpl(this.gameId);
             currentTurn.setId(currentTurnKey);
-            currentTurn.setFirstPin(currentTurn.getFirstPin());
-            currentTurn.setSecondPin(currentTurn.getSecondPin());
+            currentTurn.setFirstPin(bowlingTurnEntity.getFirstPin());
+            currentTurn.setSecondPin(bowlingTurnEntity.getSecondPin());
 
             //add new
             this.turns.add(currentTurn);
+        }
+
+
+        //add and update scores
+        Integer[] updatedScores = rule.calcScores(this.turns.toArray(new BowlingTurn[0]));
+        if (null != this.turns) {
+            this.scores = new ArrayList<>();
+            this.scores.addAll(Arrays.asList(updatedScores));
         }
     }
 
