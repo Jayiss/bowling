@@ -3,6 +3,7 @@ package training.adv.bowling.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,11 @@ import training.adv.bowling.api.GameEntity;
 import training.adv.bowling.api.TurnKey;
 import training.adv.bowling.impl.ChenYong.BowlingGameFactoryImpl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.sql.Connection;
+
 
 public class DataAccessTest {
 	
@@ -24,11 +30,26 @@ public class DataAccessTest {
 	
 	@Before
 	public void before() {
+		String path = ClassLoader.getSystemResource("script/setup.sql").getPath();
+		System.out.println(path);
+		try (Connection conn = DBUtil.getConnection();
+				FileReader fr = new FileReader(new File(path))) {
+			RunScript.execute(conn, fr);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@After
 	public void after() {
-		
+		String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
+		System.out.println(path);
+		try (Connection conn = DBUtil.getConnection();
+			 FileReader fr = new FileReader(new File(path))) {
+			RunScript.execute(conn, fr);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
