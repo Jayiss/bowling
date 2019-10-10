@@ -1,9 +1,6 @@
 package training.adv.bowling.impl.zhangxinyi;
 
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.BowlingTurnEntity;
-import training.adv.bowling.api.GameEntity;
-import training.adv.bowling.api.TurnEntity;
+import training.adv.bowling.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +23,11 @@ public class BowlingGameEntityImpl implements GameEntity {
 
     @Override
     public TurnEntity[] getTurnEntities() {
-        return (TurnEntity[]) turns.toArray(new BowlingTurn[0]);
+        TurnEntity[] turnEntities = new TurnEntity[turns.size()];
+        for (int i = 0; i < turns.size(); i++) {
+            turnEntities[i] = turns.get(i).getEntity();
+        }
+        return turnEntities;
     }
 
     @Override
