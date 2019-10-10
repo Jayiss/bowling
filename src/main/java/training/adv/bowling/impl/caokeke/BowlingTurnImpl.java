@@ -7,11 +7,19 @@ public class BowlingTurnImpl implements BowlingTurn {
 
     private Integer firstPin;
     private Integer secondPin;
+    private BowlingTurnEntity turnEntity;
 
     public BowlingTurnImpl(Integer firstPin,Integer secondPin)
     {
         this.firstPin=firstPin;
         this.secondPin=secondPin;
+    }
+
+    public BowlingTurnImpl(Integer firstPin,Integer secondPin,Integer id,Integer foreignId)
+    {
+        this.firstPin=firstPin;
+        this.secondPin=secondPin;
+        turnEntity=new BowlingTurnEntityImpl(firstPin,secondPin,id,foreignId);
     }
 
     @Override
@@ -26,6 +34,6 @@ public class BowlingTurnImpl implements BowlingTurn {
 
     @Override
     public BowlingTurnEntity getEntity() {
-        return null;
+        return turnEntity;
     }
 }

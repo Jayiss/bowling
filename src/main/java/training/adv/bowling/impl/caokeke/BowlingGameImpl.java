@@ -12,8 +12,9 @@ public class BowlingGameImpl implements BowlingGame{
     private int curTurn;
     private BowlingRule br;
     private Integer [] scores;
-
     private BowlingTurn [] turns;
+    private GameEntity ge;
+
 
     public BowlingGameImpl()
     {
@@ -26,11 +27,27 @@ public class BowlingGameImpl implements BowlingGame{
 
         scores=new Integer[MAX_TURNS+3];
         turns=new BowlingTurn[MAX_TURNS+3];
+
+        ge=new GameEntityImpl();
+    }
+    public BowlingGameImpl(Integer curTurn,BowlingTurn []turns,GameEntity ge)
+    {
+        this.curTurn=curTurn;
+
+        br=new BowlingRuleImpl();
+
+        MAX_SCORE=br.getMaxPin();
+        MAX_TURNS=br.getMaxTurn();
+
+        scores=new Integer[MAX_TURNS+3];
+        this.turns=turns;
+
+        ge=new GameEntityImpl();
     }
 
     @Override
     public GameEntity getEntity() {
-        return null;
+        return ge;
     }
 
     @Override
@@ -72,15 +89,15 @@ public class BowlingGameImpl implements BowlingGame{
         int index=0;
 
         if(turns[curTurn]!=null && turns[curTurn].getSecondPin()==null && turns[curTurn].getFirstPin()!=MAX_SCORE)
-            turns[curTurn]=new BowlingTurnImpl(turns[curTurn].getFirstPin(),pins[index++]);
+            turns[curTurn]=new BowlingTurnImpl(turns[curTurn].getFirstPin(),pins[index++],index,ge.getId());
 
         while(index<pins.length){
             if(pins[index]==MAX_SCORE)
-                turns[++curTurn]=new BowlingTurnImpl(pins[index++],0);
+                turns[++curTurn]=new BowlingTurnImpl(pins[index++],0,index,ge.getId());
             else if(pins[index]<MAX_SCORE && pins[index]>0 && index+1>=pins.length)
-                turns[++curTurn]=new BowlingTurnImpl(pins[index++],null);
+                turns[++curTurn]=new BowlingTurnImpl(pins[index++],null,index,ge.getId());
             else if(pins[index]<MAX_SCORE && pins[index]>0 && pins[index+1] >0 && pins[index+1]+pins[index]<=MAX_SCORE)
-                turns[++curTurn]=new BowlingTurnImpl(pins[index++],pins[index++]);
+                turns[++curTurn]=new BowlingTurnImpl(pins[index++],pins[index++],index,ge.getId());
             else{
                 System.out.println("invalid data");
                 break;
