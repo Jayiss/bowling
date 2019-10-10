@@ -19,6 +19,10 @@ public class BowlingTurnImpl implements BowlingTurn {
         this(firstPin,null);
     }
 
+    public BowlingTurnImpl(){
+
+    }
+
     @Override
     public Integer getFirstPin() {
 

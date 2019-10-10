@@ -12,6 +12,14 @@ public class BowlingRuleImpl implements BowlingRule {
     private int MAX_PINS = 10;
     private int MAX_TURNS = 10;
 
+    private static class InstanceHolder{
+        private static BowlingRule instance=new BowlingRuleImpl();
+    }
+
+    public static BowlingRule getInstance(){
+        return InstanceHolder.instance;
+    }
+
     @Override
     public Boolean isNewPinsAllowed(BowlingTurn[] existingTurns, Integer[] newPins) {
         return null;
@@ -88,7 +96,7 @@ public class BowlingRuleImpl implements BowlingRule {
 
         int f;
         if (isGameFinished(allTurns)) {
-            f = MAX_TURNS;
+            f = getMaxTurn();
         } else {
             f = allTurns.length;
         }
