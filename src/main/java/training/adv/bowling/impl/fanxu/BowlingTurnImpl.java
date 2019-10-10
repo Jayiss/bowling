@@ -30,4 +30,6 @@ public class BowlingTurnImpl implements BowlingTurn {
         bowlingTurnEntity.setSecondPin(secondPin);
         return bowlingTurnEntity;
     }
+
+
 }

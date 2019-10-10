@@ -46,7 +46,13 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
     @Override
     public BowlingTurn[] getTurns() {
         //在这里截取：
-        return bowlingTurns;
+        //需要进行深层复制：
+        BowlingTurn[] bowlingTurnsCopy = bowlingTurns.clone();
+        for (int i = 0;i<bowlingTurns.length;i++){
+            BowlingTurn bowlingTurnCopy = new BowlingTurnImpl(bowlingTurns[i].getFirstPin(),bowlingTurns[i].getSecondPin(),bowlingTurns[i].getEntity().getId());
+            bowlingTurnsCopy[i] = bowlingTurnCopy;
+        }
+        return  bowlingTurnsCopy;
     }
 
     @Override
