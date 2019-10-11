@@ -3,10 +3,11 @@ package training.adv.bowling.impl.zhangxinyi;
 import training.adv.bowling.api.*;
 import training.adv.bowling.impl.AbstractGame;
 
+import java.io.*;
 import java.util.*;
 
 public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, BowlingGameEntity> implements BowlingGame {
-    private BowlingGameEntity game = (BowlingGameEntity) new BowlingGameEntityImpl();
+    private BowlingGameEntity game = new BowlingGameEntityImpl();
 
     public BowlingGameImpl(BowlingRule rule) {
         super(rule);
@@ -32,7 +33,15 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 
     @Override
     public BowlingTurn[] getTurns() {
-        return ((BowlingGameEntityImpl) getEntity()).getTurns().toArray(new BowlingTurn[0]);
+        BowlingTurn[] target = ((BowlingGameEntityImpl) getEntity()).getTurns().toArray(new BowlingTurn[0]);
+        BowlingTurn[] copy = new BowlingTurnImpl[target.length];
+        for (int i = 0; i < target.length; i++) {
+            copy[i] = new BowlingTurnImpl();
+            copy[i].getEntity().setId(target[i].getEntity().getId());
+            copy[i].getEntity().setFirstPin(target[i].getEntity().getFirstPin());
+            copy[i].getEntity().setSecondPin(target[i].getEntity().getSecondPin());
+        }
+        return copy;
     }
 
     @Override

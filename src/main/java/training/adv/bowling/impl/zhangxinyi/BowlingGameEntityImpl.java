@@ -70,6 +70,11 @@ public class BowlingGameEntityImpl implements BowlingGameEntity {
     }
 
     public void setTurns(List<BowlingTurn> turns) {
+        for (BowlingTurn turn : turns) {
+            if (turn.getEntity().getId()==null) {
+                turn.getEntity().setId(new BowlingTurnKeyImpl(null, id));
+            }
+        }
         this.turns = turns;
     }
 
