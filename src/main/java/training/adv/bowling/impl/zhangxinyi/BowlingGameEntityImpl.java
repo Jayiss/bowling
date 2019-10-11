@@ -1,0 +1,85 @@
+package training.adv.bowling.impl.zhangxinyi;
+
+import training.adv.bowling.api.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class BowlingGameEntityImpl implements BowlingGameEntity {
+    public static Integer uniqueId = 0;
+
+    private Integer id;
+    private Integer totalScore;
+    private List<Integer> scores;
+    private List<BowlingTurn> turns;
+
+    @Override
+    public void setTurnEntities(BowlingTurnEntity[] turns) {
+        this.turns = new ArrayList<BowlingTurn>(turns.length);
+        for (BowlingTurnEntity turn : turns) {
+            BowlingTurn temp = new BowlingTurnImpl();
+            temp.getEntity().setId(turn.getId());
+            temp.getEntity().setFirstPin(turn.getFirstPin());
+            temp.getEntity().setSecondPin(turn.getSecondPin());
+            this.turns.add(temp);
+        }
+    }
+
+    @Override
+    public BowlingTurnEntity[] getTurnEntities() {
+        BowlingTurnEntity[] turnEntities = new BowlingTurnEntity[turns.size()];
+        for (int i = 0; i < turns.size(); i++) {
+            turnEntities[i] = turns.get(i).getEntity();
+        }
+        return turnEntities;
+    }
+
+    @Override
+    public Integer getMaxTurn() {
+        return new BowlingRuleImpl().getMaxTurn();
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(Integer totalScore) {
+        this.totalScore = totalScore;
+    }
+
+    public List<Integer> getScores() {
+        return scores;
+    }
+
+    public void setScores(List<Integer> scores) {
+        this.scores = scores;
+    }
+
+    public List<BowlingTurn> getTurns() {
+        return turns;
+    }
+
+    public void setTurns(List<BowlingTurn> turns) {
+        for (BowlingTurn turn : turns) {
+            if (turn.getEntity().getId()==null) {
+                turn.getEntity().setId(new BowlingTurnKeyImpl(null, id));
+            }
+        }
+        this.turns = turns;
+    }
+
+    @Override
+    public Integer getMaxPin() {
+        return new BowlingRuleImpl().getMaxPin();
+    }
+}
