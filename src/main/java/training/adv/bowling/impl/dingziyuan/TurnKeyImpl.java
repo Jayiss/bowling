@@ -1,12 +1,11 @@
 package training.adv.bowling.impl.dingziyuan;
 
 import training.adv.bowling.api.TurnKey;
-
 import java.util.Objects;
 
 public class TurnKeyImpl implements TurnKey {
-    private String tid ;
-    private String gid ;
+    private String tid;
+    private String gid;
 
 
     public TurnKeyImpl(String tid, String gid) {

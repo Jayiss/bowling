@@ -20,7 +20,7 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
     protected List<TurnKey> loadAllKey(String foreignId) {
         try {
             String selectSql =
-                    "select tid from TURNS where gid =?";
+                    "SELECT TID FROM TURNS WHERE GID =?";
             PreparedStatement stmt = connection.prepareStatement(selectSql);
             stmt.setString(1, foreignId);
 
@@ -41,7 +41,7 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
     protected void doSave(BowlingTurnEntity entity) {
         try {
             String insertSql =
-                    "insert into TURNS(TID, FIRST_PIN, SECOND_PIN, GID) values(?,?,?,?)";
+                    "INSERT INTO TURNS(TID, FIRST_PIN, SECOND_PIN, GID) VALUES (?,?,?,?)";
             PreparedStatement stmt = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
 
             stmt.setString(1, entity.getId().getId());
@@ -97,12 +97,12 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
     public boolean remove(TurnKey key) {
         try {
             String removeTurnSql =
-                    "DELETE FROM TURNS WHERE TID = ?";
+                    "DELETE FROM TURNS WHERE TID = ? AND GID = ?";
             PreparedStatement stmt = connection.prepareStatement(removeTurnSql);
             stmt.setString(1, key.getId());
-            stmt.executeUpdate();
-            return true;
-//            return false;
+            stmt.setString(1, key.getForeignId());
+
+            return stmt.executeUpdate() > 0 ? true : false;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

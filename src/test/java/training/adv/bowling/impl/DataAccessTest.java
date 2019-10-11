@@ -84,16 +84,13 @@ public class DataAccessTest {
     private GameEntity query(String id) {
         BowlingGame game = bowlingService.load(id);
 		if (game.getTurns().length == 0)
-			return null;
+            return null;
 		return game.getEntity();
     }
 
     private BowlingTurnEntity query(TurnKey key) {
         BowlingGame game = bowlingService.load(key.getForeignId());
-        BowlingTurnEntity[] tt = game.getEntity().getTurnEntities();
-        for (BowlingTurnEntity turnEntity : tt) {
-//            Integer a = turnEntity.getId().getId();
-//            Integer b = key.getId();
+        for (BowlingTurnEntity turnEntity : game.getEntity().getTurnEntities()) {
             if (turnEntity.getId().getId().equals(key.getId()))
                 return turnEntity;
         }

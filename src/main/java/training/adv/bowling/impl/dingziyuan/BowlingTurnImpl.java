@@ -45,12 +45,7 @@ public class BowlingTurnImpl implements BowlingTurn, BowlingTurnEntity {
 
     @Override
     public BowlingTurnEntity getEntity() {
-//        BowlingTurnEntity turn = (BowlingTurnEntity)new BowlingTurnImpl(0);
-//        turn.setFirstPin(this.getFirstPin());
-//        turn.setSecondPin(this.getSecondPin());
-//        turn.setId(this.getId());
         return this;
-//        return turn;
     }
 
     @Override

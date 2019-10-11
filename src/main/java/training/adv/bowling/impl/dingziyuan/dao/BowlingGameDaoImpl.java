@@ -6,9 +6,7 @@ import training.adv.bowling.impl.dingziyuan.BowlingGameImpl;
 import training.adv.bowling.impl.dingziyuan.BowlingRuleImpl;
 import training.adv.bowling.impl.dingziyuan.TurnKeyImpl;
 
-import java.io.Serializable;
 import java.sql.*;
-import java.util.UUID;
 
 public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGame, String> implements BowlingGameDao {
     private Connection connection;
@@ -48,15 +46,11 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
                 Integer gameMAX_TURN = resultSet.getInt(2);
 
                 BowlingGame bowlingGame = new BowlingGameImpl(new BowlingRuleImpl(gameMAX_TURN, 10));
-
                 bowlingGame.getEntity().setId(gameId);
                 return bowlingGame.getEntity();
             }
             BowlingGame bowlingGame = new BowlingGameImpl(new BowlingRuleImpl(10, 10));
-            bowlingGame.getEntity().setId(id);
-//            BowlingGameEntity e = bowlingGame.getEntity();//=null;
-//            e=null;
-
+            bowlingGame.getEntity().setId("NA");
             return bowlingGame.getEntity();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,8 +60,7 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
 
     @Override
     protected BowlingGame doBuildDomain(BowlingGameEntity entity) {
-        BowlingGame game = (BowlingGameImpl) entity;
-        return game;
+        return (BowlingGameImpl) entity;
     }
 
     @Override
@@ -84,7 +77,6 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
             stmt.setString(1, key);
             stmt.executeUpdate();
             return true;
-//            return false;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
