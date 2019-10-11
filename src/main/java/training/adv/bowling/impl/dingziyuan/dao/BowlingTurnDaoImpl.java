@@ -1,7 +1,9 @@
-package training.adv.bowling.impl.dingziyuan;
+package training.adv.bowling.impl.dingziyuan.dao;
 
 import training.adv.bowling.api.*;
 import training.adv.bowling.impl.AbstractBatchDao;
+import training.adv.bowling.impl.dingziyuan.BowlingTurnImpl;
+import training.adv.bowling.impl.dingziyuan.TurnKeyImpl;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,17 +17,17 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
     }
 
     @Override
-    protected List<TurnKey> loadAllKey(int foreignId) {
+    protected List<TurnKey> loadAllKey(String foreignId) {
         try {
             String selectSql =
                     "select tid from TURNS where gid =?";
             PreparedStatement stmt = connection.prepareStatement(selectSql);
-            stmt.setInt(1, foreignId);
+            stmt.setString(1, foreignId);
 
             ResultSet resultSet = stmt.executeQuery();
             List<TurnKey> turnKeys = new ArrayList<>();
             while (resultSet.next()) {
-                Integer turnId = resultSet.getInt(1);
+                String turnId = resultSet.getString(1);
                 turnKeys.add(new TurnKeyImpl(turnId, foreignId));
             }
             return turnKeys;
@@ -39,26 +41,17 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
     protected void doSave(BowlingTurnEntity entity) {
         try {
             String insertSql =
-                    "insert into TURNS(FIRST_PIN,SECOND_PIN,GID) values(?,?,?)";
+                    "insert into TURNS(TID, FIRST_PIN, SECOND_PIN, GID) values(?,?,?,?)";
             PreparedStatement stmt = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
 
-            stmt.setInt(1, entity.getFirstPin());
+            stmt.setString(1, entity.getId().getId());
+            stmt.setInt(2, entity.getFirstPin());
             if (entity.getSecondPin() != null)
-                stmt.setInt(2, entity.getSecondPin());
+                stmt.setInt(3, entity.getSecondPin());
             else
-                stmt.setNull(2, Types.NULL);
-            stmt.setInt(3, entity.getId().getForeignId());
-
+                stmt.setNull(3, Types.NULL);
+            stmt.setString(4, entity.getId().getForeignId());
             stmt.executeUpdate();
-
-            ResultSet resultSet = stmt.getGeneratedKeys();
-            Integer newKey = null;
-            if (resultSet.next()) {
-                newKey = (Integer) resultSet.getObject(1);
-            }
-            TurnKey key = new TurnKeyImpl(newKey, entity.getId().getForeignId());
-            entity.setId(key);
-//            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -68,23 +61,24 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
     protected BowlingTurnEntity doLoad(TurnKey id) {
         try {
             String selectSql =
-                    "select * from TURNS where tid =?";
+                    "SELECT * FROM TURNS WHERE TID =? and GID=?";
             PreparedStatement stmt = connection.prepareStatement(selectSql);
-            stmt.setInt(1, id.getId());
+            stmt.setString(1, id.getId());
+            stmt.setString(2, id.getForeignId());
 
             ResultSet resultSet = stmt.executeQuery();
             if (resultSet.next()) {
-                Integer turnId = resultSet.getInt(1);
+                //Build a BowlingTurnEntity
+                String turnId = resultSet.getString(1);
                 Integer turnFirstPin = resultSet.getInt(2);
-
                 Integer turnSecondPin = resultSet.getInt(3);
                 if (resultSet.wasNull()) {
                     turnSecondPin = null;
                 }
-                Integer turnGid = resultSet.getInt(4);
+                String gameId = resultSet.getString(4);
 
                 BowlingTurn bowlingTurn = new BowlingTurnImpl(turnFirstPin, turnSecondPin);
-                bowlingTurn.getEntity().setId(new TurnKeyImpl(turnId, turnGid));
+                bowlingTurn.getEntity().setId(new TurnKeyImpl(turnId, gameId));
                 return bowlingTurn.getEntity();
             }
             return null;
@@ -101,6 +95,17 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
 
     @Override
     public boolean remove(TurnKey key) {
-        return false;
+        try {
+            String removeTurnSql =
+                    "DELETE FROM TURNS WHERE TID = ?";
+            PreparedStatement stmt = connection.prepareStatement(removeTurnSql);
+            stmt.setString(1, key.getId());
+            stmt.executeUpdate();
+            return true;
+//            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

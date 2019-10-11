@@ -11,7 +11,7 @@ import java.util.List;
 public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnDao {
 
     @Override
-    protected List<TurnKey> loadAllKey(int foreignId) {
+    protected List<TurnKey> loadAllKey(String foreignId) {
         return null;
     }
 

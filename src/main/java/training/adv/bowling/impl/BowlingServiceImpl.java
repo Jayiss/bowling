@@ -10,9 +10,8 @@ import training.adv.bowling.api.BowlingService;
 import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnDao;
 import training.adv.bowling.api.BowlingTurnEntity;
-import training.adv.bowling.impl.DBUtil;
-import training.adv.bowling.impl.dingziyuan.BowlingGameDaoImpl;
-import training.adv.bowling.impl.dingziyuan.BowlingTurnDaoImpl;
+import training.adv.bowling.impl.dingziyuan.dao.BowlingGameDaoImpl;
+import training.adv.bowling.impl.dingziyuan.dao.BowlingTurnDaoImpl;
 
 public class BowlingServiceImpl implements BowlingService {
     //TODO: implement DBUtil
@@ -25,15 +24,13 @@ public class BowlingServiceImpl implements BowlingService {
     public void save(BowlingGame game) {
         gameDao.save(game);
         for (BowlingTurn turn : game.getTurns()) {
-            Integer a = turn.getFirstPin();
-            Integer b = turn.getSecondPin();
             turnDao.save(turn);
         }
         commit();
     }
 
     @Override
-    public BowlingGame load(Integer id) {
+    public BowlingGame load(String id) {
         BowlingGame game = gameDao.load(id);
         List<BowlingTurnEntity> turns = turnDao.batchLoad(id);
         game.getEntity().setTurnEntities(turns.toArray(new BowlingTurnEntity[0]));
@@ -42,7 +39,7 @@ public class BowlingServiceImpl implements BowlingService {
     }
 
     @Override
-    public void remove(Integer id) {
+    public void remove(String id) {
         gameDao.remove(id);
         turnDao.batchRemove(id);
         commit();

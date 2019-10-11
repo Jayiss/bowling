@@ -9,15 +9,15 @@ import training.adv.bowling.api.TurnKey;
 
 public abstract class AbstractBatchDao extends AbstractDao<BowlingTurnEntity, BowlingTurn, TurnKey> {
 	
-	public final List<BowlingTurnEntity> batchLoad(int foreignId) {
+	public final List<BowlingTurnEntity> batchLoad(String foreignId) {
 		List<BowlingTurnEntity> a = loadAllKey(foreignId).stream().map(this::doLoad).collect(Collectors.toList());
 		return loadAllKey(foreignId).stream().map(this::doLoad).collect(Collectors.toList());
 	}
 	
-	public final void batchRemove(int foreignId) {
+	public final void batchRemove(String foreignId) {
 		loadAllKey(foreignId).stream().forEach(this::remove);
 	}
 	
-	abstract protected List<TurnKey> loadAllKey(int foreignId);
+	abstract protected List<TurnKey> loadAllKey(String foreignId);
 
 }

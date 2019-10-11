@@ -151,7 +151,7 @@ public class BowlingRuleImpl implements BowlingRule {
                 if (extraPinsNum > 0)
                     return existingTurns;
         }
-        return (BowlingTurn[]) newTurnsList.toArray(new BowlingTurn[newTurnsList.size()]);
+        return (BowlingTurn[]) newTurnsList.toArray(new BowlingTurnImpl[newTurnsList.size()]);
     }
 
     private Integer countPinsfromTurns(BowlingTurn... turns) {

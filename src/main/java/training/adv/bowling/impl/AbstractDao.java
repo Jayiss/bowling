@@ -17,5 +17,5 @@ public abstract class AbstractDao<E extends Entity<K>, D extends Persistable<E>,
 	}
 	protected abstract E doLoad(K id);
 	protected abstract D doBuildDomain(E entity);
-	public abstract boolean remove(K key);
+	public abstract boolean remove(K id);
 }

@@ -5,22 +5,22 @@ import training.adv.bowling.api.TurnKey;
 import java.util.Objects;
 
 public class TurnKeyImpl implements TurnKey {
-    private Integer tid ;
-    private Integer gid ;
+    private String tid ;
+    private String gid ;
 
 
-    public TurnKeyImpl(Integer tid, Integer gid) {
+    public TurnKeyImpl(String tid, String gid) {
         this.tid = tid;
         this.gid = gid;
     }
 
     @Override
-    public Integer getId() {
+    public String getId() {
         return tid;
     }
 
     @Override
-    public Integer getForeignId() {
+    public String getForeignId() {
         return gid;
     }
 

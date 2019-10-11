@@ -4,9 +4,15 @@ import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.TurnKey;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
 public class BowlingTurnImpl implements BowlingTurn, BowlingTurnEntity {
     private Integer[] pins = new Integer[2];
-    TurnKey id;
+    TurnKey id = new TurnKeyImpl("tid","gid");
     public Integer len = 0;
 
     public BowlingTurnImpl(Integer... pins) {
@@ -39,7 +45,12 @@ public class BowlingTurnImpl implements BowlingTurn, BowlingTurnEntity {
 
     @Override
     public BowlingTurnEntity getEntity() {
+//        BowlingTurnEntity turn = (BowlingTurnEntity)new BowlingTurnImpl(0);
+//        turn.setFirstPin(this.getFirstPin());
+//        turn.setSecondPin(this.getSecondPin());
+//        turn.setId(this.getId());
         return this;
+//        return turn;
     }
 
     @Override
