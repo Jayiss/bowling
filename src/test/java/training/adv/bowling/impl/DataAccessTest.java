@@ -8,13 +8,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingGameFactory;
-import training.adv.bowling.api.BowlingService;
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.BowlingTurnEntity;
-import training.adv.bowling.api.GameEntity;
-import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.api.*;
+import training.adv.bowling.impl.fanjuncai.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,30 +20,38 @@ import java.sql.Connection;
 public class DataAccessTest {
 	
 	private BowlingService bowlingService = new BowlingServiceImpl();
-	private BowlingGameFactory factory = null; // new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory = new BowlingGameFactoryImpl();
 	
 	@Before
 	public void before() {
+
 		String path = ClassLoader.getSystemResource("script/setup.sql").getPath();
 		System.out.println(path);
 		try (Connection conn = DBUtil.getConnection();
 				FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
+			conn.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 	}
 	
 	@After
 	public void after() {
+
 		String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
 		System.out.println(path);
 		try (Connection conn = DBUtil.getConnection();
 			 FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+
 	}
 	
 	@Test
@@ -57,6 +60,7 @@ public class DataAccessTest {
 		game.addScores(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 		bowlingService.save(game);
 		GameEntity result = query(game.getEntity().getId());
+
 		assertEquals(game.getEntity().getId(), result.getId());
 		assertEquals(game.getEntity().getMaxTurn(), result.getMaxTurn());
 		
@@ -94,14 +98,26 @@ public class DataAccessTest {
 	}	
 	
 	
-	private GameEntity query(Integer id) {
+	private BowlingGameEntity query(Integer id) {
 		//TODO
-		return null;
+		if(id !=null){
+			BowlingGameDaoImpl bowlingGameDao = new BowlingGameDaoImpl();
+			return bowlingGameDao.doLoad(id);
+		}
+		else
+			return null;
+
 	}
 	
 	private BowlingTurnEntity query(TurnKey key) {
 		//TODO
-		return null;
+		if(key != null){
+			BowlingTurnDaoImpl bowlingTurnDao = new BowlingTurnDaoImpl();
+			return bowlingTurnDao.doLoad(key);
+		}
+		else
+			return null;
+
 	}
 	
 }
