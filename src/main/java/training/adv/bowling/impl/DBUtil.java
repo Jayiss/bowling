@@ -3,11 +3,10 @@ package training.adv.bowling.impl;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
 public class DBUtil {
-	
-	private static final String url = "";
-	private static final String user = "";
+
+	private static final String url = "jdbc:h2:mem://localhost/~/test";
+	private static final String user = "sa";
 	private static final String pwd = "";
 	
 	public static Connection getConnection() {
@@ -22,6 +21,4 @@ public class DBUtil {
 		
 		return connection;
 	}
-	
-	
 }

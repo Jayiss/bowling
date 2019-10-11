@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface BowlingTurnDao {
     void save(BowlingTurn domain);
-    List<BowlingTurnEntity> batchLoad(int foreignId);
-    void batchRemove(int foreignId);
+    List<BowlingTurnEntity> batchLoad(String foreignId);
+    void batchRemove(String foreignId);
 }

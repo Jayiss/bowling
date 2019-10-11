@@ -9,9 +9,10 @@ import training.adv.bowling.api.BowlingGame;
 import training.adv.bowling.api.BowlingGameFactory;
 import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.impl.dingziyuan.BowlingGameFactoryImpl;
 
 public class DefensiveTest {
-	private BowlingGameFactory factory = null;//new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory = new BowlingGameFactoryImpl();
 	
 	@Test
 	public void testTurnsArrayDefensive() {
@@ -36,7 +37,7 @@ public class DefensiveTest {
 		game.addScores(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 		assertEquals(Integer.valueOf(300), game.getTotalScore());
 		
-		Integer gameId = game.getEntity().getId();
+		String gameId = game.getEntity().getId();
 		
 		BowlingTurn[] turns = game.getTurns();
 		for (int i = 0; i < turns.length; i++) {
@@ -57,12 +58,12 @@ public class DefensiveTest {
 	static class DummyTurnKey implements TurnKey {
 		private static final long serialVersionUID = 1L;
 		@Override
-		public Integer getId() {
-			return -1;
+		public String getId() {
+			return "-1";
 		}
 		@Override
-		public Integer getForeignId() {
-			return -1;
+		public String getForeignId() {
+			return "-1";
 		}
 	}
 	

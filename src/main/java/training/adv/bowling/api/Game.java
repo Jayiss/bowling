@@ -7,6 +7,6 @@ public interface Game<T extends Turn, R extends GameRule<T>, E extends Entity<? 
 	Integer getTotalScore();
 	Integer[] getScores();
 	T[] getTurns();
-	
+
 	Integer[] addScores(Integer... pins);
 }

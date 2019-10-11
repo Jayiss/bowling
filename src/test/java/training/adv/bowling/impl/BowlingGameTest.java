@@ -9,15 +9,15 @@ import org.junit.Test;
 
 import training.adv.bowling.api.BowlingGame;
 import training.adv.bowling.api.BowlingGameFactory;
+import training.adv.bowling.impl.dingziyuan.BowlingGameFactoryImpl;
+
 
 public class BowlingGameTest {
-	
-	private BowlingGameFactory factory = null;// new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory = new BowlingGameFactoryImpl();
 
 	@Test
 	public void testNoPins() {
 		BowlingGame game = factory.getGame();
-		
 		game.addScores();
 		assertEquals(Integer.valueOf(0), game.getTotalScore());
 	}
@@ -34,7 +34,6 @@ public class BowlingGameTest {
 	@Test
 	public void testPartialStrike() {
 		BowlingGame game = factory.getGame();
-		
 		game.addScores(10, 10, 10);
 		assertEquals(Integer.valueOf(60), game.getTotalScore());
 	}
@@ -53,7 +52,7 @@ public class BowlingGameTest {
 		
 		game.addScores(10, 10, 10);
 		assertEquals(Integer.valueOf(60), game.getTotalScore());
-		
+
 		game.addScores(10, 10, 10, 10, 10, 10, 10, 10, 10);
 		assertEquals(Integer.valueOf(300), game.getTotalScore());
 	}
@@ -111,7 +110,7 @@ public class BowlingGameTest {
 		
 		game.addScores(5, 5, 5);
 		assertEquals(Integer.valueOf(270), game.getTotalScore());
-		
+
 		game.addScores(5, 5);
 		assertEquals(Integer.valueOf(285), game.getTotalScore());
 	}
