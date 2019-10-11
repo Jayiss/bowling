@@ -40,8 +40,8 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
     }
 
     @Override
-    public Integer[] addScores(Integer... pins) {
-        return new Integer[0];
+    public int[] addScores(Integer... pins) {
+        return new int[0];
     }
 
     @Override

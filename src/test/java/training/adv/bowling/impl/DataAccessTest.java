@@ -3,31 +3,49 @@ package training.adv.bowling.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingGameFactory;
-import training.adv.bowling.api.BowlingService;
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.BowlingTurnEntity;
-import training.adv.bowling.api.GameEntity;
-import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.api.*;
+import training.adv.bowling.impl.Fangchaoyi.BowlingGameDaoImpl;
+import training.adv.bowling.impl.Fangchaoyi.BowlingGameFactoryImpl;
+import training.adv.bowling.impl.Fangchaoyi.BowlingTurnDaoImpl;
+
+import java.io.File;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.util.List;
 
 
 public class DataAccessTest {
 	
 	private BowlingService bowlingService = new BowlingServiceImpl();
-	private BowlingGameFactory factory = null; // new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory = new BowlingGameFactoryImpl();
 	
 	@Before
 	public void before() {
+		String path = ClassLoader.getSystemResource("script/create.sql").getPath();
+		try (Connection conn = DBUtil.getConnection();
+			 FileReader fr = new FileReader(new File(path))) {
+			RunScript.execute(conn, fr);
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@After
 	public void after() {
-		
+		String path = ClassLoader.getSystemResource("script/drop.sql").getPath();
+		try (Connection conn = DBUtil.getConnection();
+			 FileReader fr = new FileReader(new File(path))) {
+			RunScript.execute(conn, fr);
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
@@ -75,11 +93,26 @@ public class DataAccessTest {
 	
 	private GameEntity query(Integer id) {
 		//TODO
-		return null;
+		Connection connection = DBUtil.getConnection();
+		BowlingGameDao gameDao = new BowlingGameDaoImpl(connection);
+		BowlingTurnDao turnDao = new BowlingTurnDaoImpl(connection);
+		BowlingGame game = gameDao.load(id);
+		BowlingGameEntity entity = game.getEntity();
+		List<BowlingTurnEntity> turns = turnDao.batchLoad(id);
+		if(turns.isEmpty()) return null;
+		entity.setTurnEntities(turns.toArray(new BowlingTurnEntity[0]));
+		if(entity.getTurnEntities() == null) return null;
+		return entity;
 	}
 	
 	private BowlingTurnEntity query(TurnKey key) {
 		//TODO
+		Connection connection = DBUtil.getConnection();
+		BowlingTurnDao turnDao = new BowlingTurnDaoImpl(connection);
+		List<BowlingTurnEntity> turnEntities = turnDao.batchLoad(key.getForeignId());
+		for(BowlingTurnEntity entity : turnEntities){
+			if(entity.getId().getId() == key.getId()) return entity;
+		}
 		return null;
 	}
 	
