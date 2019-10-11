@@ -11,6 +11,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule,Bowli
 
 
     BowlingGameEntity entity;
+
     public BowlingGameImpl(BowlingRule rule,Integer id){
         super(rule);
         entity=new BowlingGameEntityImpl();
