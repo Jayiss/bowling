@@ -18,7 +18,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 
     @Override
     public Integer getMaxTurn() {
-        return super.rule.getMaxTurn();
+        return turns.length;
     }
 
     @Override
@@ -48,6 +48,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
             bowlingTurnEntity.setSecondPin(turns[i].getSecondPin());
             TurnKey turnKey=new TurnKeyImpl(i,1001);
             bowlingTurnEntity.setId(turnKey);
+            list.add(bowlingTurnEntity);
         }
         return list.toArray(new BowlingTurnEntity[0]);
     }
@@ -80,7 +81,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 
     @Override
     public BowlingTurn[] getTurns() {
-        return new BowlingTurn[0];
+        return turns;
     }
 
     @Override

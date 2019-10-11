@@ -2,10 +2,12 @@ package training.adv.bowling.impl.ChenYong;
 
 import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
+import training.adv.bowling.api.TurnKey;
 
 public class BowlingTurnImpl implements BowlingTurn {
     private Integer first;
     private Integer second;
+    private BowlingTurnEntity bowlingTurnEntity=new BowlingTurnEntityImpl();
     public BowlingTurnImpl()
     {
         first=null;
@@ -16,11 +18,14 @@ public class BowlingTurnImpl implements BowlingTurn {
         first=fir;
         second=sec;
     }
+
     public BowlingTurnImpl(Integer fir)
     {
         first=fir;
         second=null;
     }
+
+
 
     @Override
     public Integer getFirstPin()
@@ -36,6 +41,10 @@ public class BowlingTurnImpl implements BowlingTurn {
 
     @Override
     public BowlingTurnEntity getEntity() {
-        return null;
+        bowlingTurnEntity.setFirstPin(first);
+        bowlingTurnEntity.setSecondPin(second);
+        TurnKey turnKey=new TurnKeyImpl(10,1001);
+        bowlingTurnEntity.setId(turnKey);
+        return bowlingTurnEntity;
     }
 }
