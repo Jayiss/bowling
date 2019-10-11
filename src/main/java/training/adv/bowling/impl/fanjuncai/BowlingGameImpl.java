@@ -76,7 +76,10 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule,Bowli
             return bowlingTurns.toArray(new BowlingTurn[0]);
         }
 */
-        return ExistingTurns;
+         ArrayList<BowlingTurn> turns = new ArrayList<>();
+         for(BowlingTurn existingturn:ExistingTurns)
+             turns.add(existingturn);
+        return turns.toArray(new BowlingTurn[0]);
     }
 
     @Override
