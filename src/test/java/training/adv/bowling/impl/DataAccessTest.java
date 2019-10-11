@@ -34,6 +34,7 @@ public class DataAccessTest {
 		try (Connection conn = DBUtil.getConnection();
 				FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -46,11 +47,11 @@ public class DataAccessTest {
 		try (Connection conn = DBUtil.getConnection();
 			 FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
 	@Test
 	public void testSave() {
 		BowlingGame game = factory.getGame();
@@ -74,7 +75,6 @@ public class DataAccessTest {
 	public void testLoad() {
 		BowlingGame game = bowlingService.load(1001);
 		GameEntity entity = game.getEntity();
-		
 		assertEquals(Integer.valueOf(1001), entity.getId());
 		assertEquals(Integer.valueOf(10), entity.getMaxTurn());
 		assertEquals(12, game.getTurns().length);
