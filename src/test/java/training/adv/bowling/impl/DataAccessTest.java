@@ -8,24 +8,24 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingGameFactory;
-import training.adv.bowling.api.BowlingService;
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.BowlingTurnEntity;
-import training.adv.bowling.api.GameEntity;
-import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.api.*;
+import training.adv.bowling.impl.fanxu.BowlingGameFactoryImpl;
+import training.adv.bowling.impl.fanxu.BowlingGameInfo;
+import training.adv.bowling.impl.fanxu.BowlingTurnInfo;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 public class DataAccessTest {
 	
 	private BowlingService bowlingService = new BowlingServiceImpl();
-	private BowlingGameFactory factory = null; // new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory = new BowlingGameFactoryImpl();
 	
 	@Before
 	public void before() {
@@ -34,6 +34,7 @@ public class DataAccessTest {
 		try (Connection conn = DBUtil.getConnection();
 				FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -46,6 +47,7 @@ public class DataAccessTest {
 		try (Connection conn = DBUtil.getConnection();
 			 FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -56,17 +58,18 @@ public class DataAccessTest {
 		BowlingGame game = factory.getGame();
 		game.addScores(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
 		bowlingService.save(game);
-		GameEntity result = query(game.getEntity().getId());
-		assertEquals(game.getEntity().getId(), result.getId());
-		assertEquals(game.getEntity().getMaxTurn(), result.getMaxTurn());
-		
-		for (BowlingTurn turn : game.getTurns()) {
-			BowlingTurnEntity turnEntity = turn.getEntity();
-			BowlingTurnEntity turnResult = query(turnEntity.getId());
-			assertEquals(turnEntity.getId(), turnResult.getId());
-			assertEquals(turnEntity.getFirstPin(), turnResult.getFirstPin());
-			assertEquals(turnEntity.getSecondPin(), turnResult.getSecondPin());
-		}
+			GameEntity result = query(game.getEntity().getId());
+			assertEquals(game.getEntity().getId(), result.getId());
+			assertEquals(game.getEntity().getMaxTurn(), result.getMaxTurn());
+
+			for (BowlingTurn turn : game.getTurns()) {
+				BowlingTurnEntity turnEntity = turn.getEntity();
+				BowlingTurnEntity turnResult = query(turnEntity.getId());
+				assertEquals(turnEntity.getId(), turnResult.getId());
+				assertEquals(turnEntity.getFirstPin(), turnResult.getFirstPin());
+				assertEquals(turnEntity.getSecondPin(), turnResult.getSecondPin());
+			}
+
 	}
 	
 	//Prepared data in db.
@@ -94,14 +97,45 @@ public class DataAccessTest {
 	}	
 	
 	
-	private GameEntity query(Integer id) {
+	private BowlingGameEntity query(Integer id) {
 		//TODO
-		return null;
+		try{
+			String querySql = "select * from bowling_game where id = ?";
+			PreparedStatement statement = DBUtil.getConnection().prepareStatement(querySql);
+			statement.setInt(1,id);
+			ResultSet rs = statement.executeQuery();
+			System.out.println(rs);
+			if(rs.next()){
+				BowlingGameEntity bowlingGameEntity = new BowlingGameInfo(id,rs.getInt(3),rs.getInt(4));
+				return bowlingGameEntity;
+			}else {
+				return null;
+			}
+		}catch (SQLException exc){
+			exc.printStackTrace();
+			return null;
+		}
 	}
 	
 	private BowlingTurnEntity query(TurnKey key) {
 		//TODO
-		return null;
+		try {
+			BowlingTurnEntity bowlingTurnEntity = new BowlingTurnInfo();
+			String querySql = "select * from turn where  id = ? and foreign_id= ?";
+			PreparedStatement statement = DBUtil.getConnection().prepareStatement(querySql);
+			statement.setInt(1,key.getId());
+			statement.setInt(2,key.getForeignId());
+			ResultSet rs = statement.executeQuery();
+			rs.next();
+			bowlingTurnEntity.setFirstPin(rs.getInt(3));
+			bowlingTurnEntity.setSecondPin(rs.getInt(4));
+			bowlingTurnEntity.setId(key);
+			return bowlingTurnEntity;
+		}catch (SQLException exc){
+			exc.printStackTrace();
+			return null;
+		}
+
 	}
 	
 }
