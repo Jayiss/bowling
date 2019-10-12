@@ -1,0 +1,2 @@
+delete turn;
+delete game;

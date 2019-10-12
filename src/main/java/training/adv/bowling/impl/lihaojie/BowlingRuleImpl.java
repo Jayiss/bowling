@@ -1,6 +1,5 @@
 package training.adv.bowling.impl.lihaojie;
 
-import training.adv.bowling.api.BowlingGame;
 import training.adv.bowling.api.BowlingRule;
 import training.adv.bowling.api.BowlingTurn;
 
@@ -15,7 +14,7 @@ public class BowlingRuleImpl implements BowlingRule {
     public Boolean isNewPinsAllowed(BowlingTurn[] existingTurns, Integer... newPins) {
         //pin<0||pin>10
         for (int i = 0; i < newPins.length; i++) {
-            if (newPins[i]<0||newPins[i]>getMAXPIN()){
+            if (newPins[i]<0||newPins[i]> getMaxPin()){
                 return false;
             }
         }
@@ -30,14 +29,14 @@ public class BowlingRuleImpl implements BowlingRule {
             }
         }
         if (curNumberTurns==10){
-            if (newPins.length>2&&existingTurns[getMAXTURN()-1].getFirstPin()==10){
+            if (newPins.length>2&&existingTurns[getMaxTurn()-1].getFirstPin()==10){
                 return false;
             }
-            if (newPins.length>1&&existingTurns[getMAXTURN()-1].getFirstPin()+existingTurns[getMAXTURN()-1].getSecondPin()==10){
+            if (newPins.length>1&&existingTurns[getMaxTurn()-1].getFirstPin()+existingTurns[getMaxTurn()-1].getSecondPin()==10){
                 return false;
             }
-            if (newPins.length>1&&existingTurns[getMAXTURN()-1].getFirstPin()+existingTurns[getMAXTURN()-1].getSecondPin()<10&&
-                    existingTurns[getMAXTURN()-1].getSecondPin()!=-1){
+            if (newPins.length>1&&existingTurns[getMaxTurn()-1].getFirstPin()+existingTurns[getMaxTurn()-1].getSecondPin()<10&&
+                    existingTurns[getMaxTurn()-1].getSecondPin()!=-1){
                 return false;
             }
         }
@@ -69,11 +68,11 @@ public class BowlingRuleImpl implements BowlingRule {
                 return false;
             }
             if (turns.length>10){
-                if (turns[getMAXTURN()].getFirstPin()+turns[getMAXTURN()].getSecondPin()==10&&turns.length>11){
+                if (turns[getMaxTurn()].getFirstPin()+turns[getMaxTurn()].getSecondPin()==10&&turns.length>11){
                     return false;
                 }
-                if (turns[getMAXTURN()].getFirstPin()+turns[getMAXTURN()].getSecondPin()<10&&turns.length>10
-                        &&turns[getMAXTURN()].getSecondPin()!=-1){
+                if (turns[getMaxTurn()].getFirstPin()+turns[getMaxTurn()].getSecondPin()<10&&turns.length>10
+                        &&turns[getMaxTurn()].getSecondPin()!=-1){
                     return false;
                 }
 
@@ -114,7 +113,7 @@ public class BowlingRuleImpl implements BowlingRule {
     @Override
     public Boolean isMiss(BowlingTurn turn) {
 
-        if (turn.getSecondPin()+turn.getFirstPin()<getMAXPIN()&&turn.getSecondPin()!=-1){
+        if (turn.getSecondPin()+turn.getFirstPin()< getMaxPin()&&turn.getSecondPin()!=-1){
             return true;
         }
         return false;
@@ -126,7 +125,7 @@ public class BowlingRuleImpl implements BowlingRule {
     }
 
     @Override
-    public Integer getMAXPIN() {
+    public Integer getMaxPin() {
         return MAXPIN;
     }
 
@@ -138,7 +137,7 @@ public class BowlingRuleImpl implements BowlingRule {
     @Override
     public Integer[] calcScores(BowlingTurn[] allTurns) {
         List<Integer>list=new ArrayList<>();
-        for (int i = 0; i < allTurns.length&&i< getMAXTURN(); i++) {
+        for (int i = 0; i < allTurns.length&&i< getMaxTurn(); i++) {
             int curScore=0;
             if (isStrike(allTurns[i])){
                 curScore+=10;
@@ -208,7 +207,7 @@ public class BowlingRuleImpl implements BowlingRule {
     public List<BowlingTurn> pinsToturns(int index,Integer...pins){
         List<BowlingTurn>bowlingTurnList=new ArrayList<>();
         for (int i = index; i < pins.length; i++) {
-            if (pins[i]==this.getMAXPIN()){
+            if (pins[i]==this.getMaxPin()){
                 bowlingTurnList.add(new BowlingTurnImpl(pins[i]) );
             }else if (pins[i]==-1){
                 continue;
@@ -224,7 +223,7 @@ public class BowlingRuleImpl implements BowlingRule {
         return bowlingTurnList;
     }
     @Override
-    public Integer getMAXTURN() {
+    public Integer getMaxTurn() {
         return MAXTURN;
     }
 }

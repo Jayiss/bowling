@@ -11,5 +11,5 @@ public interface GameRule<T extends Turn> {
 	
 	T[] addScores(T[] existingTurns, Integer... pins);
 	
-	Integer getMAXTURN();
+	Integer getMaxTurn();
 }
