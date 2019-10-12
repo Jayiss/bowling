@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-
 public class DataAccessTest {
 
     private BowlingService bowlingService = new BowlingServiceImpl();
@@ -27,11 +26,12 @@ public class DataAccessTest {
 
     @Before
     public void before() {
-        String path = "D:/Citi Projects/bowling/src/main/java/training/adv/bowling/impl/xushizhi/resources/scripts/setup.sql";
-        // String path = DBUtil.class.getResource("xushizhi/resources/scripts/setup.sql").getPath();
-        System.out.println(path);
+        String path_before = "/src/main/java/training/adv/bowling/impl/xushizhi/resources/scripts/setup.sql";
+        String path = System.getProperty("user.dir") + path_before;
+        System.out.println("SQL Setup File Path : " + path.replace("%20"," "));
+
         try (Connection conn = DBUtil.getConnection();
-             FileReader fr = new FileReader(new File(path))) {
+             FileReader fr = new FileReader(new File(path.replace("%20"," ")))) {
             RunScript.execute(conn, fr);
             conn.commit();
         } catch (Exception e) {
@@ -41,11 +41,12 @@ public class DataAccessTest {
 
     @After
     public void after() {
-        String path = "D:/Citi Projects/bowling/src/main/java/training/adv/bowling/impl/xushizhi/resources/scripts/clean.sql";
-        // String path = DBUtil.class.getResource("xushizhi/resources/scripts/clean.sql").getPath();
-        System.out.println(path);
+        String path_after = "/src/main/java/training/adv/bowling/impl/xushizhi/resources/scripts/clean.sql";
+        String path = System.getProperty("user.dir") + path_after;
+        System.out.println("SQL Clean File Path : " + path.replace("%20"," "));
+
         try (Connection conn = DBUtil.getConnection();
-             FileReader fr = new FileReader(new File(path))) {
+             FileReader fr = new FileReader(new File(path.replace("%20"," ")))) {
             RunScript.execute(conn, fr);
             conn.commit();
         } catch (Exception e) {
