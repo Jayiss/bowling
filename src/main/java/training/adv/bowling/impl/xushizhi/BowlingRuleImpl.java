@@ -9,10 +9,7 @@ public class BowlingRuleImpl implements BowlingRule {
     private static final int MAX_TURN = 10;  // Set default bowling game max turn to 10
 
     private Boolean isRegularTurn(BowlingTurn[] existingTurns, int cursor_AddedTurn) {
-        if (existingTurns.length + cursor_AddedTurn == MAX_TURN) {
-            return true;
-        }
-        return false;
+        return existingTurns.length + cursor_AddedTurn == MAX_TURN;
     }
 
     @Override
@@ -20,7 +17,7 @@ public class BowlingRuleImpl implements BowlingRule {
         // Check if all new pins are positive integers
         for (Integer newPin : newPins) {
             if (newPin < 0 || newPin > MAX_PIN) {
-                System.out.println("Invalid Pin Detected ! New toss pin must always be 0~10 !\n");
+                System.out.println("Invalid Pin Detected ! Each pin must always be > 0 & <= 10 !\n");
                 return false;
             }
         }
@@ -95,7 +92,7 @@ public class BowlingRuleImpl implements BowlingRule {
     }
 
     @Override
-    // Check current turn
+    // Check if current turn is valid -> firstPin + secondPin < 10
     public Boolean isValid(BowlingTurn currTurn) {
         Integer firstPin = currTurn.getFirstPin(), secondPin = currTurn.getSecondPin();
         if (currTurn.getSecondPin() != null) {  // Check (Sum < Max Pin)
@@ -129,18 +126,18 @@ public class BowlingRuleImpl implements BowlingRule {
     }
 
     @Override
-    public Boolean isFinish(BowlingTurn turn) {  // Check if current turn is finished
+    // Check if current turn has finished -> !(1stPin < Max_Pin & 2ndPin == null)
+    public Boolean isFinish(BowlingTurn turn) {
         return !(turn.getFirstPin() < MAX_PIN && turn.getSecondPin() == null);
     }
 
     @Override
     public Boolean isGameFinished(BowlingTurn[] allTurns) {
-        if ((allTurns.length >= MAX_TURN + 2)  // Poss 1: >= 12 Turns
+        // The only 3 possibilities if current game has finished
+        // Poss 3: 10th Turn is MISS
+        return (allTurns.length >= MAX_TURN + 2)  // Poss 1: >= 12 Turns
                 || (allTurns.length == MAX_TURN + 1 && isSpare(allTurns[MAX_TURN - 1]))  // Poss 2: 11th Turn is SPARE
-                || (allTurns.length == MAX_TURN && isMiss(allTurns[MAX_TURN - 1]))) {  // 10th Turn is MISS
-            return true;
-        }
-        return false;
+                || (allTurns.length == MAX_TURN && isMiss(allTurns[MAX_TURN - 1]));
     }
 
     @Override
@@ -196,12 +193,12 @@ public class BowlingRuleImpl implements BowlingRule {
         return scores;
     }
 
-    private BowlingTurn[] addOneTurn(BowlingTurn[] existingTurns, BowlingTurn newTurn) {
-        int len = existingTurns.length;
-        BowlingTurn[] newTurns = new BowlingTurn[len + 1];
-        System.arraycopy(existingTurns, 0, newTurns, 0, len);
-        newTurns[len] = newTurn;
-        return newTurns;
+    private BowlingTurn[] bonusTurn(BowlingTurn[] existingTurns, BowlingTurn currTurn) {
+        BowlingTurn[] bonusTurns = new BowlingTurn[existingTurns.length + 1];
+        System.arraycopy(existingTurns, 0, bonusTurns, 0, existingTurns.length);
+
+        bonusTurns[existingTurns.length] = currTurn;  // Set the last turn to currTurn
+        return bonusTurns;
     }
 
     @Override
@@ -225,13 +222,15 @@ public class BowlingRuleImpl implements BowlingRule {
             // * Possibilities: 1.1 isSTRIKE; 1.2 Last new pin; 1.3 Has reached max turn
             if (pins[cursor_Pin] == MAX_PIN || cursor_Pin == pins.length - 1 || len_ExtgTurn >= MAX_PIN) {
                 currTurn = new BowlingTurnImpl(pins[cursor_Pin], null);
-                existingTurns = addOneTurn(existingTurns, currTurn);
+                existingTurns = bonusTurn(existingTurns, currTurn);  // Reload existing turns
+
                 cursor_Pin++;
                 len_ExtgTurn++;
                 // Scenario II/2: Current turn consists of 2 tosses -> {newPins[n], newPins[n+1]}
             } else if (cursor_Pin < pins.length - 1) {
                 currTurn = new BowlingTurnImpl(pins[cursor_Pin], pins[cursor_Pin + 1]);
-                existingTurns = addOneTurn(existingTurns, currTurn);
+                existingTurns = bonusTurn(existingTurns, currTurn);  // Reload existing turns
+
                 cursor_Pin += 2;
                 len_ExtgTurn++;
             }

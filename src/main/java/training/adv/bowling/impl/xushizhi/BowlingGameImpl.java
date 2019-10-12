@@ -84,13 +84,12 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
             if (bowlingRule.isNewPinsAllowed(existingTurns, pins)) {
                 // addScores() BowlingTurn[] -> setTurns() List<BowlingTurn>
                 gameEntity.setTurns(Arrays.asList(bowlingRule.addScores(existingTurns, pins)));
-
                 existingTurns = gameEntity.getTurns().toArray(new BowlingTurn[0]);  // Reload
+
                 // calcScores() Integer[] -> setScores() List<Integer>
                 gameEntity.setScores(Arrays.asList(bowlingRule.calcScores(existingTurns)));
-
                 existingScores = gameEntity.getScores().toArray(new Integer[0]);  // Reload
-                // calcFinalScore() Integer -> setTotalScore() Integer
+
                 gameEntity.setTotalScore(calcFinalScore(existingScores));
             }
         }
