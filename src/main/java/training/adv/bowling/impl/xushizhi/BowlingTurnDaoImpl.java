@@ -29,7 +29,7 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
         }
     }
 
-    public void closeAll(Connection conn, PreparedStatement pstmt, ResultSet rs) {
+    private void closeAll(Connection conn, PreparedStatement pstmt, ResultSet rs) {
         // Close ResultSet
         if (rs != null) {
             try {
@@ -59,7 +59,7 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
     @Override
     // Get all turn keys (id_turn) of designated game by given FK (id_game / foreignId)
     protected List<TurnKey> loadAllKey(int foreignId) {
-        Integer id_turn = null;
+        Integer id_turn;
         List<TurnKey> turnKeys = new ArrayList<>();
 
         String sql = "Select * From TURN Where id_game = ?";
@@ -95,13 +95,9 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, entity.getId().getId());  // id_turn
-            System.out.println("id_turn: " + entity.getId().getId());  //TODO
             pstmt.setInt(2, entity.getId().getForeignId());  // id_game
-            System.out.println("id_game: " + entity.getId().getForeignId());
             pstmt.setInt(3, entity.getFirstPin());  // firstPin
-            System.out.println("firstPin: " + entity.getFirstPin());
             pstmt.setInt(4, secondPin);  // secondPin
-            System.out.println("secondPin: " + secondPin);
             pstmt.executeUpdate();
             conn.commit();
         } catch (SQLException se) {

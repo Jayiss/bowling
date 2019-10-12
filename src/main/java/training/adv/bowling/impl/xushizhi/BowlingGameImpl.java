@@ -18,8 +18,8 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 
         BowlingGameEntityImpl gameEntity = (BowlingGameEntityImpl) getEntity();
         gameEntity.setTotalScore(0);
-        gameEntity.setScores(new ArrayList<Integer>());
-        gameEntity.setTurns(new ArrayList<BowlingTurn>());
+        gameEntity.setScores(new ArrayList<>());
+        gameEntity.setTurns(new ArrayList<>());
     }
 
     @Override
@@ -55,8 +55,11 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
     }
 
     @Override
+    // Create corresponding game entity
     public Integer getTotalScore() {
         BowlingGameEntityImpl gameEntity = (BowlingGameEntityImpl) getEntity();
+
+        // Set the final score of current game
         Integer[] tempScores = bowlingRule.calcScores(gameEntity.getTurns().toArray(new BowlingTurn[0]));
         gameEntity.setScores(Arrays.asList(tempScores));
         gameEntity.setTotalScore(calcFinalScore(gameEntity.getScores().toArray(new Integer[0])));

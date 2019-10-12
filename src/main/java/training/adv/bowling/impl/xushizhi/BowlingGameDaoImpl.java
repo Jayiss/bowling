@@ -21,7 +21,7 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
         }
     }
 
-    public void closeAll(Connection conn, PreparedStatement pstmt, ResultSet rs) {
+    private void closeAll(Connection conn, PreparedStatement pstmt, ResultSet rs) {
         // Close ResultSet
         if (rs != null) {
             try {
@@ -88,12 +88,6 @@ public class BowlingGameDaoImpl extends AbstractDao<BowlingGameEntity, BowlingGa
             pstmt.setInt(1, id);
             rs = pstmt.executeQuery();
             conn.commit();
-
-            //TODO
-            // Get current game MAX_TURN
-            while (rs.next()) {
-                Integer maxTurn = rs.getInt(2);
-            }
         } catch (SQLException se) {
             se.printStackTrace();
         } finally {
