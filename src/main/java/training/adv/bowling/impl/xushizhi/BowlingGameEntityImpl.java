@@ -52,8 +52,7 @@ public class BowlingGameEntityImpl implements BowlingGameEntity {
 
     @Override
     public Integer getMaxTurn() {
-        BowlingRule bowlingRule = new BowlingRuleImpl();
-        return bowlingRule.getMaxTurn();
+        return new BowlingRuleImpl().getMaxTurn();
     }
 
     @Override
@@ -63,17 +62,29 @@ public class BowlingGameEntityImpl implements BowlingGameEntity {
     }
 
     @Override
-    public void setTurnEntities(BowlingTurnEntity[] turns) {
-        BowlingTurnEntity[] turnEntities = turns;
-        this.bowlingTurns = new ArrayList<>(turnEntities.length);
-        // Add completed bowling turns to turns' entity
-        for (int i = 0; i < turnEntities.length; i++) {
-            this.bowlingTurns.add(new BowlingTurnImpl(turnEntities[i].getFirstPin(), turnEntities[i].getSecondPin()));
+    public BowlingTurnEntity[] getTurnEntities() {
+        BowlingTurnEntity[] turnEntities = new BowlingTurnEntity[bowlingTurns.size()];
+
+        int i = 0;
+        for (BowlingTurn bowlingTurn : bowlingTurns) {
+            turnEntities[i++] = bowlingTurn.getEntity();
         }
+        return turnEntities;
     }
 
     @Override
-    public BowlingTurnEntity[] getTurnEntities() {
-        return (bowlingTurns.toArray(new BowlingTurnEntity[0]));
+    public void setTurnEntities(BowlingTurnEntity[] turns) {
+        this.bowlingTurns = new ArrayList<>(turns.length);
+        // Add completed bowling turns to turns' entity array
+        for (BowlingTurnEntity turn : turns) {
+            BowlingTurn tempTurn = new BowlingTurnImpl(null, null);
+            BowlingTurnEntity tempTurnEntity = tempTurn.getEntity();
+
+            tempTurnEntity.setId(turn.getId());
+            tempTurnEntity.setFirstPin(turn.getFirstPin());
+            tempTurnEntity.setSecondPin(turn.getSecondPin());
+
+            this.bowlingTurns.add(tempTurn);
+        }
     }
 }

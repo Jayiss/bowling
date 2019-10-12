@@ -7,7 +7,7 @@ public class BowlingTurnImpl implements BowlingTurn {
 
     private BowlingTurnEntity turnEntity = new BowlingTurnEntityImpl();
 
-    public BowlingTurnImpl(Integer firstPin, Integer secondPin) {
+    public BowlingTurnImpl(Integer firstPin, Integer secondPin) {  // Accept null
         getEntity().setFirstPin(firstPin);
         getEntity().setSecondPin(secondPin);
     }

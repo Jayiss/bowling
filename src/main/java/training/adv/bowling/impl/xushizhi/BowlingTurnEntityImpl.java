@@ -4,17 +4,20 @@ import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.TurnKey;
 
 public class BowlingTurnEntityImpl implements BowlingTurnEntity {
-    private TurnKey id;  // DB Turn PK
+
+    private TurnKey id_TurnKey;  // DB Turn
     private Integer firstPin, secondPin;
+
+    public static Integer id_turn = 0;  // DB id_turn (TURN PK)
 
     @Override
     public TurnKey getId() {
-        return id;
+        return id_TurnKey;
     }
 
     @Override
-    public void setId(TurnKey id) {
-        this.id = id;
+    public void setId(TurnKey id_TurnKey) {
+        this.id_TurnKey = id_TurnKey;
     }
 
     @Override

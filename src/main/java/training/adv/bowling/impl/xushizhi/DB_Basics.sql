@@ -18,9 +18,9 @@ create table Turn
 	firstPin int,
 	secondPin int,
 	constraint Turn_pk
-		primary key (id_turn),
+	primary key (id_turn, id_game),
 	constraint Turn_GAME_ID_GAME_fk
-		foreign key (id_game) references GAME
+	foreign key (id_game) references GAME
 );
 
 comment on table Turn is 'PK - Turn ID, FK - Game ID';

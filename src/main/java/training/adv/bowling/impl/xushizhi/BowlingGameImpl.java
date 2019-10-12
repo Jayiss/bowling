@@ -1,9 +1,6 @@
 package training.adv.bowling.impl.xushizhi;
 
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingGameEntity;
-import training.adv.bowling.api.BowlingRule;
-import training.adv.bowling.api.BowlingTurn;
+import training.adv.bowling.api.*;
 import training.adv.bowling.impl.AbstractGame;
 
 import java.util.ArrayList;
@@ -26,9 +23,21 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
     }
 
     @Override
+    // Return a deep copy of target turns -> Defence mechanism
     public BowlingTurn[] getTurns() {
-        List<BowlingTurn> targetTurns = ((BowlingGameEntityImpl) getEntity()).getTurns();
-        return targetTurns.toArray(new BowlingTurn[0]);
+        List<BowlingTurn> tempList = ((BowlingGameEntityImpl) getEntity()).getTurns();
+        BowlingTurn[] targetTurns = tempList.toArray(new BowlingTurn[0]);
+
+        BowlingTurn[] deepCopy = new BowlingTurnImpl[targetTurns.length];
+        for (int i = 0; i < targetTurns.length; i++) {
+            deepCopy[i] = new BowlingTurnImpl(null, null);  // Set 1st & 2nd Pin to null
+            BowlingTurnEntity tempEntity = targetTurns[i].getEntity(), deepEntity = deepCopy[i].getEntity();
+
+            deepEntity.setId(tempEntity.getId());  // Copy ID
+            deepEntity.setFirstPin(tempEntity.getFirstPin());  // Copy first pin
+            deepEntity.setSecondPin(tempEntity.getSecondPin());  // Copy second pin
+        }
+        return deepCopy;
     }
 
     @Override
@@ -37,17 +46,22 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
         return targetScores.toArray(new Integer[0]);
     }
 
-    @Override
-    public Integer getTotalScore() {
-        return ((BowlingGameEntityImpl) getEntity()).getTotalScore();
-    }
-
     private Integer calcFinalScore(Integer[] scores) {
         Integer finalScore = 0;
         for (Integer score : scores) {
             finalScore += score;
         }
         return finalScore;
+    }
+
+    @Override
+    public Integer getTotalScore() {
+        BowlingGameEntityImpl gameEntity = (BowlingGameEntityImpl) getEntity();
+        Integer[] tempScores = bowlingRule.calcScores(gameEntity.getTurns().toArray(new BowlingTurn[0]));
+        gameEntity.setScores(Arrays.asList(tempScores));
+        gameEntity.setTotalScore(calcFinalScore(gameEntity.getScores().toArray(new Integer[0])));
+
+        return ((BowlingGameEntityImpl) getEntity()).getTotalScore();
     }
 
     @Override
