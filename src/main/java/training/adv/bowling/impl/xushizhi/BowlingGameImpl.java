@@ -9,13 +9,14 @@ import java.util.List;
 
 public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, BowlingGameEntity> implements BowlingGame {
 
-    private BowlingGameEntity gameEntity = new BowlingGameEntityImpl();
     private BowlingRule bowlingRule;
+    private BowlingGameEntity gEntity = new BowlingGameEntityImpl();
 
     public BowlingGameImpl(BowlingRule bRule) {
         super(bRule);  // No default constructor available in parent class - 'Abstract Game'
         bowlingRule = bRule;
 
+        // getEntity() must cast to BowlingGameEntityImpl type
         BowlingGameEntityImpl gameEntity = (BowlingGameEntityImpl) getEntity();
         gameEntity.setTotalScore(0);
         gameEntity.setScores(new ArrayList<>());
@@ -69,7 +70,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 
     @Override
     public BowlingGameEntity getEntity() {
-        return gameEntity;
+        return gEntity;
     }
 
     @Override

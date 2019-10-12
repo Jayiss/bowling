@@ -15,8 +15,8 @@ public class BowlingTurnEntityImpl implements BowlingTurnEntity {
     }
 
     @Override
-    public void setId(TurnKey id_TurnKey) {
-        this.id_TurnKey = id_TurnKey;
+    public void setId(TurnKey id) {
+        this.id_TurnKey = id;
     }
 
     @Override

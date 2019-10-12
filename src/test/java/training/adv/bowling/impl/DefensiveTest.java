@@ -7,6 +7,8 @@ import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.TurnKey;
 import training.adv.bowling.impl.xushizhi.BowlingGameFactoryImpl;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -20,9 +22,7 @@ public class DefensiveTest {
         assertEquals(Integer.valueOf(300), game.getTotalScore());
 
         BowlingTurn[] turns = game.getTurns();
-        for (int i = 0; i < turns.length; i++) {
-            turns[i] = null;
-        }
+		Arrays.fill(turns, null);
         assertEquals(Integer.valueOf(300), game.getTotalScore());
 
         for (BowlingTurn bowlingTurn : game.getTurns()) {
@@ -36,19 +36,17 @@ public class DefensiveTest {
         game.addScores(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
         assertEquals(Integer.valueOf(300), game.getTotalScore());
 
-        Integer gameId = game.getEntity().getId();
-
         BowlingTurn[] turns = game.getTurns();
         for (int i = 0; i < turns.length; i++) {
             turns[i].getEntity().setId(new DummyTurnKey());
             turns[i].getEntity().setFirstPin(5);
             turns[i].getEntity().setSecondPin(5);
         }
-
         assertEquals(Integer.valueOf(300), game.getTotalScore());
 
+        Integer gameId = game.getEntity().getId();
         for (BowlingTurn bowlingTurn : game.getTurns()) {
-            assertEquals(gameId, bowlingTurn.getEntity().getId().getForeignId());
+			assertEquals(gameId, bowlingTurn.getEntity().getId().getForeignId());
             assertEquals(Integer.valueOf(10), bowlingTurn.getFirstPin());
             assertNotEquals(Integer.valueOf(5), bowlingTurn.getSecondPin());
         }

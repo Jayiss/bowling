@@ -10,7 +10,8 @@ import java.util.List;
 
 public class BowlingGameEntityImpl implements BowlingGameEntity {
 
-    private Integer id;  // DB Game PK
+    private Integer id;  // DB Game PK - id_game
+    private Integer id_turn = 1;  // DB Turn PK - id_turn
     private Integer finalScore;
 
     private List<Integer> scores;  // Scores of each turn
@@ -32,6 +33,14 @@ public class BowlingGameEntityImpl implements BowlingGameEntity {
 
     public void setTurns(List<BowlingTurn> bowlingTurns) {
         this.bowlingTurns = bowlingTurns;
+
+        // Set TurnKey(id_turn, id_game) for each bowling turn entity
+        for (BowlingTurn bowlingTurn : bowlingTurns) {
+            // If current turn key does not exist -> Set TurnKey(id_turn, id_game)
+            if (bowlingTurn.getEntity().getId() == null) {
+                bowlingTurn.getEntity().setId(new TurnKeyImpl(id_turn++, id));
+            }
+        }
     }
 
     public Integer getTotalScore() {
