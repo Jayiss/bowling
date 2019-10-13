@@ -9,9 +9,10 @@ import training.adv.bowling.api.BowlingGame;
 import training.adv.bowling.api.BowlingGameFactory;
 import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.impl.liushiying.BowlingGameFactoryImpl;
 
 public class DefensiveTest {
-	private BowlingGameFactory factory = null;//new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory = BowlingGameFactoryImpl.getInstance();
 	
 	@Test
 	public void testTurnsArrayDefensive() {

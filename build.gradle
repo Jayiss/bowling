@@ -1,3 +1,7 @@
+plugins {
+    id 'java'
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
 
@@ -7,6 +11,23 @@ repositories {
 }
 
 dependencies {
+
+
     testCompile 'junit:junit:4.12'
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.199'
+
+
+    implementation 'junit:junit:4.12'
+}
+group 'bowling'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
