@@ -8,32 +8,38 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingGameFactory;
-import training.adv.bowling.api.BowlingService;
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.BowlingTurnEntity;
-import training.adv.bowling.api.GameEntity;
-import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.api.*;
+import training.adv.bowling.impl.ChenYong.BowlingGameFactoryImpl;
+import training.adv.bowling.impl.ChenYong.BowlingGameImpl;
+import training.adv.bowling.impl.ChenYong.BowlingRuleImpl;
+import training.adv.bowling.impl.ChenYong.BowlingTurnEntityImpl;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.net.URLDecoder;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 
 public class DataAccessTest {
 	
 	private BowlingService bowlingService = new BowlingServiceImpl();
-	private BowlingGameFactory factory = null; // new BowlingGameFactoryImpl();
+	private BowlingGameFactory factory =  new BowlingGameFactoryImpl();
 	
 	@Before
 	public void before() {
 		String path = ClassLoader.getSystemResource("script/setup.sql").getPath();
+		try {
+			path = URLDecoder.decode(path, "UTF-8");
+		}catch (Exception e){}
+		//path="E://script/setup.sql";
 		System.out.println(path);
 		try (Connection conn = DBUtil.getConnection();
-				FileReader fr = new FileReader(new File(path))) {
+			 FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -42,10 +48,15 @@ public class DataAccessTest {
 	@After
 	public void after() {
 		String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
+		try {
+			path = URLDecoder.decode(path, "UTF-8");
+		}catch (Exception e){}
+		//path="E://script/clean.sql";
 		System.out.println(path);
 		try (Connection conn = DBUtil.getConnection();
 			 FileReader fr = new FileReader(new File(path))) {
 			RunScript.execute(conn, fr);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -94,14 +105,49 @@ public class DataAccessTest {
 	}	
 	
 	
-	private GameEntity query(Integer id) {
+	private BowlingGameEntity query(Integer id) {
 		//TODO
-		return null;
+		//BowlingGameEntity bowlingGameEntity=new BowlingGameImpl(new BowlingRuleImpl());
+		String sql="select * from game where id = ?";
+		try {
+			PreparedStatement ps = DBUtil.getConnection().prepareStatement(sql);
+			ps.setInt(1,id);
+			ResultSet resultSet=ps.executeQuery();
+            resultSet.next();
+			int gameScore=resultSet.getInt(2);
+			int gameTurn=resultSet.getInt(3);
+			int gameId=resultSet.getInt(1);
+
+
+			BowlingGameEntity bowlingGameEntity=new BowlingGameImpl(new BowlingRuleImpl(),gameScore,gameTurn);
+			bowlingGameEntity.setId(gameId);
+			return bowlingGameEntity;
+
+
+		}
+		catch (Exception e){
+			return null;
+		}
+		//return new BowlingGameImpl(new BowlingRuleImpl());
 	}
 	
 	private BowlingTurnEntity query(TurnKey key) {
 		//TODO
-		return null;
+		BowlingTurnEntity bowlingTurnEntity=new BowlingTurnEntityImpl();
+		String sql="select * from turn where  id = ? and foreignid= ?";
+		try {
+			PreparedStatement ps = DBUtil.getConnection().prepareStatement(sql);
+			ps.setInt(1,key.getId());
+			ps.setInt(2,key.getForeignId());
+			ResultSet resultSet=ps.executeQuery();
+			resultSet.next();
+			bowlingTurnEntity.setFirstPin(resultSet.getInt(3));
+			bowlingTurnEntity.setSecondPin(resultSet.getInt(4));
+			bowlingTurnEntity.setId(key);
+		}
+		catch (Exception e){}
+
+		return bowlingTurnEntity;
 	}
 	
 }
