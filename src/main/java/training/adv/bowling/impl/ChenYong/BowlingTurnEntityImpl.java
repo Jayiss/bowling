@@ -7,7 +7,15 @@ public class BowlingTurnEntityImpl implements BowlingTurnEntity {
 
     private Integer firstPin;
     private Integer secondPin;
-    private Integer id;
+    private TurnKey turnKey;
+    public BowlingTurnEntityImpl(){}
+
+    public BowlingTurnEntityImpl(Integer firstPin,Integer secondPin,TurnKey turnKey)
+    {
+        this.firstPin=firstPin;
+        this.secondPin=secondPin;
+        this.turnKey=turnKey;
+    }
     @Override
     public Integer getFirstPin() {
         return firstPin;
@@ -30,11 +38,11 @@ public class BowlingTurnEntityImpl implements BowlingTurnEntity {
 
     @Override
     public TurnKey getId() {
-        return new TurnKeyImpl(1001,2);
+        return turnKey;
     }
 
     @Override
     public void setId(TurnKey id) {
-         this.id=id.getForeignId();
+        turnKey=id;
     }
 }

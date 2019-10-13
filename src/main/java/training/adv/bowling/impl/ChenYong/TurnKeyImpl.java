@@ -12,6 +12,7 @@ public class TurnKeyImpl implements TurnKey {
         this.foreignId=foreignId;
         //foreignId=getForeignId();
     }
+
     @Override
     public Integer getId() {
         return id;

@@ -7,22 +7,22 @@ import training.adv.bowling.api.TurnKey;
 public class BowlingTurnImpl implements BowlingTurn {
     private Integer first;
     private Integer second;
-    private BowlingTurnEntity bowlingTurnEntity=new BowlingTurnEntityImpl();
-    public BowlingTurnImpl()
-    {
-        first=null;
-        second=null;
-    }
-    public BowlingTurnImpl(Integer fir,Integer sec)
+    private BowlingTurnEntity bowlingTurnEntity;
+
+
+
+    public BowlingTurnImpl(Integer fir,Integer sec,TurnKey turnKey)
     {
         first=fir;
         second=sec;
+        bowlingTurnEntity=new BowlingTurnEntityImpl(fir,sec,turnKey);
     }
 
-    public BowlingTurnImpl(Integer fir)
+    public BowlingTurnImpl(Integer fir,TurnKey turnKey)
     {
         first=fir;
         second=null;
+        bowlingTurnEntity=new BowlingTurnEntityImpl(fir,null,turnKey);
     }
 
 
@@ -41,10 +41,6 @@ public class BowlingTurnImpl implements BowlingTurn {
 
     @Override
     public BowlingTurnEntity getEntity() {
-        bowlingTurnEntity.setFirstPin(first);
-        bowlingTurnEntity.setSecondPin(second);
-        TurnKey turnKey=new TurnKeyImpl(10,1001);
-        bowlingTurnEntity.setId(turnKey);
         return bowlingTurnEntity;
     }
 }

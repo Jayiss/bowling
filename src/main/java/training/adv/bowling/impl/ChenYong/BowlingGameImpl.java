@@ -2,14 +2,40 @@ package training.adv.bowling.impl.ChenYong;
 
 import training.adv.bowling.api.*;
 import training.adv.bowling.impl.AbstractGame;
+import training.adv.bowling.impl.DBUtil;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, BowlingGameEntity> implements BowlingGameEntity, BowlingGame {
 
+
+
     private BowlingTurn []turns=new BowlingTurn[0];
     private Integer id = 0;
+    private Integer score;
+    private Integer turnCount;
+
+    public BowlingGameImpl(BowlingRule rule,int score,int turnCount) {
+        super(rule);
+        int gameId=1001;
+        String sql="select max(id) from game";
+        try{
+            PreparedStatement ps= DBUtil.getConnection().prepareStatement(sql);
+            ResultSet rs=ps.executeQuery();
+            rs.next();
+            if(rs.getInt(1)>1000)
+                gameId=rs.getInt(1)+1;
+            this.id=gameId;
+
+        }catch (Exception e){}
+        this.id=gameId;
+        this.score=score;
+        this.turnCount=turnCount;
+    }
 
     @Override
     public Integer getMaxPin() {
@@ -18,16 +44,17 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 
     @Override
     public Integer getMaxTurn() {
-        return turns.length;
+        return super.rule.getMaxTurn();
     }
 
     @Override
     public Integer getId() {
-        return 1001;
+        return this.id;
     }
 
     @Override
     public void setTurnEntities(BowlingTurnEntity[] turns) {
+
 
     }
 
@@ -46,7 +73,7 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
         {
             bowlingTurnEntity.setFirstPin(turns[i].getFirstPin());
             bowlingTurnEntity.setSecondPin(turns[i].getSecondPin());
-            TurnKey turnKey=new TurnKeyImpl(i,1001);
+            TurnKey turnKey=new TurnKeyImpl(i,this.id);
             bowlingTurnEntity.setId(turnKey);
             list.add(bowlingTurnEntity);
         }
@@ -62,6 +89,18 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 
     public BowlingGameImpl(BowlingRule rule) {
         super(rule);
+        int gameId=1001;
+        String sql="select max(id) from game";
+        try{
+            PreparedStatement ps= DBUtil.getConnection().prepareStatement(sql);
+            ResultSet rs=ps.executeQuery();
+            rs.next();
+            if(rs.getInt(1)>1000)
+                gameId=rs.getInt(1)+1;
+            this.id=gameId;
+
+        }catch (Exception e){}
+        this.id=gameId;
     }
     @Override
     public Integer getTotalScore() {
@@ -81,12 +120,21 @@ public class BowlingGameImpl extends AbstractGame<BowlingTurn, BowlingRule, Bowl
 
     @Override
     public BowlingTurn[] getTurns() {
-        return turns;
+        //在这里截取：
+        BowlingTurn[] bowlingTurns1= Arrays.copyOf(turns,turns.length);
+        return bowlingTurns1;
     }
 
     @Override
     public Integer[] addScores(Integer... pins) {
         turns= super.rule.addScores(turns,pins);
+        turnCount=turns.length;
         return null;
     }
+
+    public void setTurns(BowlingTurn[] turns) {
+        this.turns = turns;
+    }
+
+
 }

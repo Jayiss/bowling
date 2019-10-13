@@ -3,7 +3,11 @@ package training.adv.bowling.impl.ChenYong;
 import training.adv.bowling.api.BowlingGame;
 import training.adv.bowling.api.BowlingRule;
 import training.adv.bowling.api.BowlingTurn;
+import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.impl.DBUtil;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +17,22 @@ import static java.util.Arrays.asList;
 public class BowlingRuleImpl implements BowlingRule {
     public static Integer MAX_PINS=10;
     public static Integer MAX_TURN=10;
+    private Integer foreignId;
+    public BowlingRuleImpl()
+    {
+        int gameId=1001;
+        String sql="select max(id) from game";
+        try{
+            PreparedStatement ps= DBUtil.getConnection().prepareStatement(sql);
+            ResultSet rs=ps.executeQuery();
+            rs.next();
+            if(rs.getInt(1)>1000)
+                gameId=rs.getInt(1)+1;
+
+        }catch (Exception e){}
+        this.foreignId=gameId;
+
+    }
     public Boolean isNewPinsAllowed(BowlingTurn[] existingTurns, Integer[] newPins)
     {
         List<Integer> list_pins=new ArrayList<>();
@@ -169,10 +189,16 @@ public class BowlingRuleImpl implements BowlingRule {
             int listTurnSize=listTurns.size();
             if(listTurnSize==0)
             {
-                if(pins[0]<MAX_PINS)
-                    listTurns.add(new BowlingTurnImpl(pins[0]));
-                else
-                    listTurns.add(new BowlingTurnImpl(pins[0],0));
+                if(pins[0]<MAX_PINS) {
+                    Integer id=listTurns.size();
+                    TurnKey turnKey=new TurnKeyImpl(id,this.foreignId);
+                    listTurns.add(new BowlingTurnImpl(pins[0],turnKey));
+                }
+                else {
+                    Integer id=listTurns.size();
+                    TurnKey turnKey=new TurnKeyImpl(id,this.foreignId);
+                    listTurns.add(new BowlingTurnImpl(pins[0], 0,turnKey));
+                }
                 continue;
             }
 
@@ -180,7 +206,10 @@ public class BowlingRuleImpl implements BowlingRule {
             {
                 Integer first=listTurns.get(listTurnSize-1).getFirstPin();
                 listTurns.remove(listTurnSize-1);
-                BowlingTurnImpl newTurn=new BowlingTurnImpl(first,pins[i]);
+
+                Integer id=listTurns.size();
+                TurnKey turnKey=new TurnKeyImpl(id,this.foreignId);
+                BowlingTurnImpl newTurn=new BowlingTurnImpl(first,pins[i],turnKey);
                 listTurns.add(newTurn);
                 continue;
             }
@@ -188,11 +217,15 @@ public class BowlingRuleImpl implements BowlingRule {
 
             if(pins[i]==MAX_PINS)
             {
-                BowlingTurnImpl newTurn=new BowlingTurnImpl(MAX_PINS,0);
+                Integer id=listTurns.size();
+                TurnKey turnKey=new TurnKeyImpl(id,this.foreignId);
+                BowlingTurnImpl newTurn=new BowlingTurnImpl(MAX_PINS,0,turnKey);
                 listTurns.add(newTurn);
                 continue;
             }
-            BowlingTurnImpl newTurn=new BowlingTurnImpl(pins[i]);
+            Integer id=listTurns.size();
+            TurnKey turnKey=new TurnKeyImpl(id,this.foreignId);
+            BowlingTurnImpl newTurn=new BowlingTurnImpl(pins[i],turnKey);
             listTurns.add(newTurn);
         }
         return listTurns.toArray(new BowlingTurn[0]);

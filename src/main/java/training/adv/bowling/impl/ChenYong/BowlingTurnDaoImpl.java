@@ -8,6 +8,8 @@ import training.adv.bowling.impl.AbstractBatchDao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnDao {
@@ -20,7 +22,20 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
 
     @Override
     protected List<TurnKey> loadAllKey(int foreignId) {
-        return null;
+        List<TurnKey> turnKeyList=new ArrayList<>();
+        String sql="select id from turn where foreignId = ?";
+        try{
+            PreparedStatement ps=connection.prepareStatement(sql);
+            ps.setInt(1,foreignId);
+            ResultSet rs=ps.executeQuery();
+            while(rs.next())
+            {
+                TurnKey turnKey=new TurnKeyImpl(rs.getInt(1),foreignId);
+                turnKeyList.add(turnKey);
+            }
+
+        }catch (Exception e){}
+        return turnKeyList;
     }
 
     @Override
@@ -50,6 +65,14 @@ public class BowlingTurnDaoImpl extends AbstractBatchDao implements BowlingTurnD
 
     @Override
     public boolean remove(TurnKey key) {
+        String sql="delete turn where id = ? and foreignid = ?";
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(sql);
+            preparedStatement.setInt(1,key.getId());
+            preparedStatement.setInt(2,key.getForeignId());
+            preparedStatement.executeUpdate();
+            return true;
+        }catch (Exception e){}
         return false;
     }
 }
