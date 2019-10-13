@@ -8,8 +8,8 @@ import training.adv.bowling.api.BowlingGame;
 import training.adv.bowling.api.BowlingService;
 import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
-import training.adv.bowling.impl.jz68011.BowlingGameDao;
-import training.adv.bowling.impl.jz68011.BowlingTurnDao;
+import training.adv.bowling.api.BowlingGameDao;
+import training.adv.bowling.api.BowlingTurnDao;
 
 public class BowlingServiceImpl implements BowlingService {
 	//TODO: implement DBUtil
