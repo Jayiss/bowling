@@ -6,17 +6,20 @@ import java.util.List;
 
 import training.adv.bowling.api.BowlingGame;
 import training.adv.bowling.api.BowlingGameDao;
+import training.adv.bowling.api.BowlingGameEntity;
 import training.adv.bowling.api.BowlingService;
 import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnDao;
 import training.adv.bowling.api.BowlingTurnEntity;
+import training.adv.bowling.impl.shike.BowlingGameDaoImpl;
+import training.adv.bowling.impl.shike.BowlingTurnDaoImpl;
 
 public class BowlingServiceImpl implements BowlingService {
 	//TODO: implement DBUtil
 	private Connection connection = DBUtil.getConnection();
 	
-	private BowlingGameDao gameDao = null;//new BowlingGameDaoImpl(connection);
-	private BowlingTurnDao turnDao = null;//new BowlingTurnDaoImpl(connection);
+	private BowlingGameDao gameDao = new BowlingGameDaoImpl(connection);
+	private BowlingTurnDao turnDao = new BowlingTurnDaoImpl(connection);
 	
 	@Override
 	public void save(BowlingGame game) {
@@ -37,8 +40,11 @@ public class BowlingServiceImpl implements BowlingService {
 	
 	@Override
 	public void remove(Integer id) {
-		gameDao.remove(id);
+//		gameDao.remove(id);
+//		turnDao.batchRemove(id);
 		turnDao.batchRemove(id);
+		gameDao.remove(id);
+		
 		commit();
 	}
 	
