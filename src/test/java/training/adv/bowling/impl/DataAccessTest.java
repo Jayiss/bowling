@@ -14,22 +14,44 @@ import training.adv.bowling.api.BowlingTurn;
 import training.adv.bowling.api.BowlingTurnEntity;
 import training.adv.bowling.api.GameEntity;
 import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.impl.liuyumin.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 public class DataAccessTest {
 	
 	private BowlingService bowlingService = new BowlingServiceImpl();
-	private BowlingGameFactory factory = null; // new BowlingGameFactoryImpl();
-	
-	@Before
+	private BowlingGameFactory factory = new BowlingGameFactoryImpl();
+
+	/*@Before
 	public void before() {
+		String path = ClassLoader.getSystemResource("script/setup.sql").getPath();
+		System.out.println(path);
+		try (Connection conn = DBUtil.getConnection();
+			 FileReader fr = new FileReader(new File(path))) {
+			RunScript.execute(conn, fr);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	@After
 	public void after() {
-		
-	}
-	
+		String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
+		System.out.println(path);
+		try (Connection conn = DBUtil.getConnection();
+			 FileReader fr = new FileReader(new File(path))) {
+			RunScript.execute(conn, fr);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
+
+
 	@Test
 	public void testSave() {
 		BowlingGame game = factory.getGame();
@@ -74,12 +96,39 @@ public class DataAccessTest {
 	
 	
 	private GameEntity query(Integer id) {
-		//TODO
+		try(Connection connection = DBUtil.getConnection()){
+			String sql = "select * from game where game_id=?";
+			PreparedStatement preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setInt(1,id);
+			ResultSet set= preparedStatement.executeQuery();
+			if (set.next()){
+				BowlingGameImpl gameEntity=new BowlingGameImpl(new BowlingRuleImpl(),set.getInt(1));
+				return gameEntity;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
+
 	}
 	
 	private BowlingTurnEntity query(TurnKey key) {
-		//TODO
+		try(Connection connection = DBUtil.getConnection()){
+			String sql = "select * from turn where turn_id=? and game_id=?";
+			PreparedStatement preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setInt(1, key.getId());
+			preparedStatement.setInt(2, key.getForeignId());
+			ResultSet set= preparedStatement.executeQuery();
+			BowlingTurnEntity bowlingTurnEntity=new BowlingTurnEntityImpl();
+			if (set.next()){
+				bowlingTurnEntity.setId(new TurnKeyImpl(set.getInt(1), set.getInt(4)));
+				bowlingTurnEntity.setFirstPin(set.getInt(2));
+				bowlingTurnEntity.setSecondPin(set.getInt(3));
+				return bowlingTurnEntity;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
