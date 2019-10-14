@@ -134,10 +134,9 @@ public class BowlingRuleImpl implements BowlingRule {
     @Override
     public Boolean isGameFinished(BowlingTurn[] allTurns) {
         // The only 3 possibilities if current game has finished
-        // Poss 3: 10th Turn is MISS
         return (allTurns.length >= MAX_TURN + 2)  // Poss 1: >= 12 Turns
                 || (allTurns.length == MAX_TURN + 1 && isSpare(allTurns[MAX_TURN - 1]))  // Poss 2: 11th Turn is SPARE
-                || (allTurns.length == MAX_TURN && isMiss(allTurns[MAX_TURN - 1]));
+                || (allTurns.length == MAX_TURN && isMiss(allTurns[MAX_TURN - 1]));  // Poss 3: 10th Turn is MISS
     }
 
     @Override
