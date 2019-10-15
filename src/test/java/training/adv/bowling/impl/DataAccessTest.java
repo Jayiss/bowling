@@ -1,107 +1,136 @@
 package training.adv.bowling.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import training.adv.bowling.api.BowlingGame;
-import training.adv.bowling.api.BowlingGameFactory;
-import training.adv.bowling.api.BowlingService;
-import training.adv.bowling.api.BowlingTurn;
-import training.adv.bowling.api.BowlingTurnEntity;
-import training.adv.bowling.api.GameEntity;
-import training.adv.bowling.api.TurnKey;
+import training.adv.bowling.api.*;
+import training.adv.bowling.impl.xushizhi.BowlingGameFactoryImpl;
+import training.adv.bowling.impl.xushizhi.BowlingGameImpl;
+import training.adv.bowling.impl.xushizhi.BowlingRuleImpl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class DataAccessTest {
-	
-	private BowlingService bowlingService = new BowlingServiceImpl();
-	private BowlingGameFactory factory = null; // new BowlingGameFactoryImpl();
-	
-	@Before
-	public void before() {
-		String path = ClassLoader.getSystemResource("script/setup.sql").getPath();
-		System.out.println(path);
-		try (Connection conn = DBUtil.getConnection();
-				FileReader fr = new FileReader(new File(path))) {
-			RunScript.execute(conn, fr);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	@After
-	public void after() {
-		String path = ClassLoader.getSystemResource("script/clean.sql").getPath();
-		System.out.println(path);
-		try (Connection conn = DBUtil.getConnection();
-			 FileReader fr = new FileReader(new File(path))) {
-			RunScript.execute(conn, fr);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	@Test
-	public void testSave() {
-		BowlingGame game = factory.getGame();
-		game.addScores(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
-		bowlingService.save(game);
-		GameEntity result = query(game.getEntity().getId());
-		assertEquals(game.getEntity().getId(), result.getId());
-		assertEquals(game.getEntity().getMaxTurn(), result.getMaxTurn());
-		
-		for (BowlingTurn turn : game.getTurns()) {
-			BowlingTurnEntity turnEntity = turn.getEntity();
-			BowlingTurnEntity turnResult = query(turnEntity.getId());
-			assertEquals(turnEntity.getId(), turnResult.getId());
-			assertEquals(turnEntity.getFirstPin(), turnResult.getFirstPin());
-			assertEquals(turnEntity.getSecondPin(), turnResult.getSecondPin());
-		}
-	}
-	
-	//Prepared data in db.
-	@Test
-	public void testLoad() {
-		BowlingGame game = bowlingService.load(1001);
-		GameEntity entity = game.getEntity();
-		
-		assertEquals(Integer.valueOf(1001), entity.getId());
-		assertEquals(Integer.valueOf(10), entity.getMaxTurn());
-		assertEquals(12, game.getTurns().length);
-		assertEquals(Integer.valueOf(300), game.getTotalScore());
-	}
-	
-	//Prepared data in db.
-	@Test
-	public void testRemove() {
-		GameEntity before = query(1001);
-		assertEquals(Integer.valueOf(1001), before.getId());
-		
-		bowlingService.remove(1001);
-		
-		GameEntity after = query(1001);
-		assertNull(after);
-	}	
-	
-	
-	private GameEntity query(Integer id) {
-		//TODO
-		return null;
-	}
-	
-	private BowlingTurnEntity query(TurnKey key) {
-		//TODO
-		return null;
-	}
-	
+
+    private BowlingService bowlingService = new BowlingServiceImpl();
+    private BowlingGameFactory factory = new BowlingGameFactoryImpl();
+
+    @Before
+    public void before() {
+        String path_before = "/src/main/java/training/adv/bowling/impl/xushizhi/resources/scripts/setup.sql";
+        String path = System.getProperty("user.dir") + path_before;
+        System.out.println("SQL Setup File Path : " + path.replace("%20"," "));
+
+        try (Connection conn = DBUtil.getConnection();
+             FileReader fr = new FileReader(new File(path.replace("%20"," ")))) {
+            RunScript.execute(conn, fr);
+            conn.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @After
+    public void after() {
+        String path_after = "/src/main/java/training/adv/bowling/impl/xushizhi/resources/scripts/clean.sql";
+        String path = System.getProperty("user.dir") + path_after;
+        System.out.println("SQL Clean File Path : " + path.replace("%20"," "));
+
+        try (Connection conn = DBUtil.getConnection();
+             FileReader fr = new FileReader(new File(path.replace("%20"," ")))) {
+            RunScript.execute(conn, fr);
+            conn.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testSave() {
+        BowlingGame game = factory.getGame();
+        game.addScores(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
+        bowlingService.save(game);
+        GameEntity result = query(game.getEntity().getId());
+        assertEquals(game.getEntity().getId(), result.getId());
+        assertEquals(game.getEntity().getMaxTurn(), result.getMaxTurn());
+
+        for (BowlingTurn turn : game.getTurns()) {
+            BowlingTurnEntity turnEntity = turn.getEntity();
+            BowlingTurnEntity turnResult = query(turnEntity.getId());
+            assertEquals(turnEntity.getId(), turnResult.getId());
+            assertEquals(turnEntity.getFirstPin(), turnResult.getFirstPin());
+            assertEquals(turnEntity.getSecondPin(), turnResult.getSecondPin());
+        }
+    }
+
+    //Prepared data in db.
+    @Test
+    public void testLoad() {
+        BowlingGame game = bowlingService.load(1001);
+        GameEntity entity = game.getEntity();
+
+        assertEquals(1001, entity.getId());
+        assertEquals(Integer.valueOf(10), entity.getMaxTurn());
+        assertEquals(12, game.getTurns().length);
+        assertEquals(Integer.valueOf(300), game.getTotalScore());
+    }
+
+    //Prepared data in db.
+    @Test
+    public void testRemove() {
+        GameEntity before = query(1001);
+        assertEquals(1001, before.getId());
+
+        bowlingService.remove(1001);
+
+        GameEntity after = query(1001);
+        assertNull(after);
+    }
+
+    // Get designated game entity by given id_game
+    private GameEntity query(Integer id) {
+        Integer maxTurn = null;
+        String sql = "Select * From GAME Where id_game = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);) {
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            conn.commit();
+
+            while (rs.next()) {
+                maxTurn = rs.getInt(2);
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        // If result game entity is valid
+        if (maxTurn != null) {
+            GameEntity gameEntity = new BowlingGameImpl(new BowlingRuleImpl()).getEntity();
+            gameEntity.setId(id);
+            return gameEntity;
+        }
+        return null;
+    }
+
+    // Get designated turn entities by given turn key
+    private BowlingTurnEntity query(TurnKey key) {
+        BowlingGame bowlingGame = bowlingService.load(key.getForeignId());
+        BowlingTurnEntity[] turnEntities = bowlingGame.getEntity().getTurnEntities();
+        for (BowlingTurnEntity turnEntity : turnEntities) {
+            if (turnEntity.getId().getId().equals((key.getId()))) {
+                return turnEntity;
+            }
+        }
+        return null;
+    }
 }
